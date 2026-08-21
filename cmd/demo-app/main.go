@@ -1,60 +1,3 @@
-/*
-Package main provides a comprehensive demo application showcasing gio-shadcn components.
-
-This demo application demonstrates all available gio-shadcn UI components in action,
-including theming, interactivity, and responsive design. It serves as both a
-functional example and a testing ground for the component library.
-
-# Features
-
-• Complete showcase of all available components
-• Light/dark theme switching with live preview
-• Interactive zoom functionality (Ctrl+/-, Ctrl+0)
-• Custom frameless window with titlebar
-• Responsive layout design
-• Component interaction examples
-• Theme integration demonstration
-
-# Usage
-
-Run the demo application:
-
-	go run ./cmd/demo-app
-
-# Components Demonstrated
-
-• Button - All variants (default, destructive, outline, secondary, ghost, link)
-• Card - Container with structured content
-• Input - Text input with placeholder and validation
-• Label - Typography elements (H1-H4, body text, small text)
-• Titlebar - Custom window controls and branding
-
-# Interactive Features
-
-Keyboard shortcuts:
-• Ctrl + Plus/Equals - Zoom in
-• Ctrl + Minus - Zoom out
-• Ctrl + 0 - Reset zoom to 100%
-
-UI controls:
-• Theme toggle button (light/dark mode switching)
-• Zoom control buttons with current zoom display
-• Window controls (minimize, maximize, close)
-• Interactive component examples
-
-# Architecture
-
-The demo follows a clean architecture pattern:
-• Theme management with runtime switching
-• Component state management
-• Event handling for keyboard and mouse
-• Responsive layout with zoom support
-• Window management for frameless design
-
-This demo serves as the primary example for integrating gio-shadcn
-components into real applications and demonstrates best practices
-for theme usage, component composition, and user interaction.
-*/
 package main
 
 import (
@@ -69,10 +12,17 @@ import (
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
+
+	"github.com/bnema/gio-shadcn/components/alert"
+	"github.com/bnema/gio-shadcn/components/badge"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/components/card"
+	"github.com/bnema/gio-shadcn/components/checkbox"
 	"github.com/bnema/gio-shadcn/components/input"
 	"github.com/bnema/gio-shadcn/components/label"
+	"github.com/bnema/gio-shadcn/components/progress"
+	"github.com/bnema/gio-shadcn/components/separator"
+	switchcomp "github.com/bnema/gio-shadcn/components/switch"
 	"github.com/bnema/gio-shadcn/components/titlebar"
 	"github.com/bnema/gio-shadcn/theme"
 )
@@ -81,7 +31,7 @@ func main() {
 	go func() {
 		w := &app.Window{}
 		w.Option(app.Title("Gio-shadcn Demo"))
-		w.Option(app.Size(800, 600))
+		w.Option(app.Size(900, 700))
 		w.Option(app.Decorated(false)) // Disable system title bar
 
 		err := run(w)
@@ -93,21 +43,18 @@ func main() {
 	app.Main()
 }
 
-// updateWindowColors updates the window colors based on the current theme.
 func updateWindowColors(w *app.Window, th *theme.Theme) {
 	w.Option(app.NavigationColor(th.Colors.Background))
 	w.Option(app.StatusColor(th.Colors.Background))
 }
 
-// layoutButtonRow renders a horizontal row of buttons with spacing.
 func layoutButtonRow(gtx layout.Context, th *theme.Theme, buttons ...*button.Button) layout.Dimensions {
 	children := make([]layout.FlexChild, 0, len(buttons)*2)
 	for i, btn := range buttons {
-		btn := btn // capture loop variable
+		btn := btn
 		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return btn.Layout(gtx, th)
 		}))
-		// Add spacing between buttons (except after the last one)
 		if i < len(buttons)-1 {
 			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
@@ -118,105 +65,85 @@ func layoutButtonRow(gtx layout.Context, th *theme.Theme, buttons ...*button.But
 }
 
 func run(w *app.Window) error {
-	// Initialize theme
-	th := theme.New()
+	th := theme.NewDark()
 
-	// Set initial window colors to match theme
 	updateWindowColors(w, th)
 
-	// Initialize title bar with secondary variant
 	tb := titlebar.NewTitleBar(
-		titlebar.WithTitle("Gio-shadcn Demo"),
+		titlebar.WithTitle("Gio-shadcn Demo (Flutter Parity Source of Truth)"),
 		titlebar.WithWindow(w),
 		titlebar.WithVariant(theme.VariantSecondary),
 	)
 
-	// Zoom state
 	var zoomScale float32 = 1.0
 	const minZoom = 0.5
 	const maxZoom = 3.0
 	const zoomStep = 0.1
 
-	// Create zoom label first (needed by zoom buttons)
 	zoomLabel := label.NewTypography("Zoom: 100%", label.Small, "")
 
-	// Initialize components
+	// Initialize Button components
 	primaryBtn := button.New(button.Config{
 		Text:    "Primary Button",
 		Variant: theme.VariantDefault,
 		Size:    theme.SizeDefault,
-		OnClick: func() {
-			log.Println("Primary button clicked!")
-		},
+		OnClick: func() { log.Println("Primary button clicked!") },
 	})
 
 	destructiveBtn := button.New(button.Config{
 		Text:    "Destructive",
 		Variant: theme.VariantDestructive,
 		Size:    theme.SizeDefault,
-		OnClick: func() {
-			log.Println("Destructive button clicked!")
-		},
+		OnClick: func() { log.Println("Destructive button clicked!") },
 	})
 
 	outlineBtn := button.New(button.Config{
 		Text:    "Outline",
 		Variant: theme.VariantOutline,
 		Size:    theme.SizeDefault,
-		OnClick: func() {
-			log.Println("Outline button clicked!")
-		},
+		OnClick: func() { log.Println("Outline button clicked!") },
 	})
 
 	secondaryBtn := button.New(button.Config{
 		Text:    "Secondary",
 		Variant: theme.VariantSecondary,
 		Size:    theme.SizeDefault,
-		OnClick: func() {
-			log.Println("Secondary button clicked!")
-		},
+		OnClick: func() { log.Println("Secondary button clicked!") },
 	})
 
 	ghostBtn := button.New(button.Config{
 		Text:    "Ghost",
 		Variant: theme.VariantGhost,
 		Size:    theme.SizeDefault,
-		OnClick: func() {
-			log.Println("Ghost button clicked!")
-		},
+		OnClick: func() { log.Println("Ghost button clicked!") },
 	})
 
 	linkBtn := button.New(button.Config{
 		Text:    "Link",
 		Variant: theme.VariantLink,
 		Size:    theme.SizeDefault,
-		OnClick: func() {
-			log.Println("Link button clicked!")
-		},
+		OnClick: func() { log.Println("Link button clicked!") },
 	})
 
-	// Theme toggle button
+	// Theme toggle
 	var themeToggleBtn *button.Button
 	themeToggleBtn = button.New(button.Config{
-		Text:    "🌙 Dark Mode",
+		Text:    "☀️ Light Mode",
 		Variant: theme.VariantOutline,
 		Size:    theme.SizeSM,
 		OnClick: func() {
 			th.ToggleDark()
-			// Update window colors to match new theme
 			updateWindowColors(w, th)
-			// Update button text based on new theme state
 			if th.IsDark {
 				themeToggleBtn.SetText("☀️ Light Mode")
 			} else {
 				themeToggleBtn.SetText("🌙 Dark Mode")
 			}
-			w.Invalidate() // Force immediate redraw
-			log.Println("Theme toggled!")
+			w.Invalidate()
 		},
 	})
 
-	// Zoom control buttons
+	// Zoom controls
 	zoomInBtn := button.New(button.Config{
 		Text:    "+",
 		Variant: theme.VariantOutline,
@@ -229,7 +156,6 @@ func run(w *app.Window) error {
 				}
 				zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
 				w.Invalidate()
-				log.Printf("Zoom in (button): %.1f%%", zoomScale*100)
 			}
 		},
 	})
@@ -246,7 +172,6 @@ func run(w *app.Window) error {
 				}
 				zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
 				w.Invalidate()
-				log.Printf("Zoom out (button): %.1f%%", zoomScale*100)
 			}
 		},
 	})
@@ -259,21 +184,33 @@ func run(w *app.Window) error {
 			zoomScale = 1.0
 			zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
 			w.Invalidate()
-			log.Printf("Reset zoom (button): %.1f%%", zoomScale*100)
 		},
 	})
 
-	// Components
-	demoCard := card.New(card.Config{
-		Variant: theme.VariantDefault,
+	// Containers & Inputs
+	demoCard := card.New(card.Config{Variant: theme.VariantDefault})
+	textInput := input.Text("Enter track name...")
+
+	// Badges
+	defaultBadge := badge.New(badge.Config{Text: "Default", Variant: theme.VariantDefault})
+	secBadge := badge.New(badge.Config{Text: "Secondary", Variant: theme.VariantSecondary})
+	outBadge := badge.New(badge.Config{Text: "Outline", Variant: theme.VariantOutline})
+	destBadge := badge.New(badge.Config{Text: "Destructive", Variant: theme.VariantDestructive})
+
+	// Progress & Toggles
+	progBar := progress.New(progress.Config{Value: 0.65})
+	sepLine := separator.New(separator.Config{Horizontal: true})
+	audioSwitch := switchcomp.New(switchcomp.Config{Value: true, OnChange: func(v bool) { log.Printf("Audio switch: %v", v) }})
+	gpuCheckbox := checkbox.New(checkbox.Config{Value: true, OnChange: func(v bool) { log.Printf("GPU checkbox: %v", v) }})
+
+	// Alert
+	systemAlert := alert.New(alert.Config{
+		Title:       "ASIO Driver Active",
+		Description: "Buffer size set to 64 samples (1.2ms latency).",
 	})
 
-	// Input component
-	textInput := input.Text("Enter your name...")
-
-	titleLabel := label.NewTypography("Demo-app", label.H1, "")
-	subtitleLabel := label.NewTypography("A shadcn/ui port for Gio", label.P, "")
-	zoomHelpLabel := label.NewTypography("Use buttons or Ctrl+/- to zoom, Ctrl+0 to reset", label.Small, "")
+	titleLabel := label.NewTypography("Gio-shadcn Showcase", label.H1, "")
+	subtitleLabel := label.NewTypography("Ported from Flutter shadcn_flutter Source of Truth", label.P, "")
 
 	var ops op.Ops
 
@@ -285,305 +222,174 @@ func run(w *app.Window) error {
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
 
-			// Process global keyboard events (without focus stealing)
+			// Process global zoom key events
 			for {
 				ev, ok := gtx.Event(
-					key.Filter{
-						Name:     "+",
-						Required: key.ModCtrl,
-					},
-					key.Filter{
-						Name:     "=",
-						Required: key.ModCtrl,
-					},
-					key.Filter{
-						Name:     "-",
-						Required: key.ModCtrl,
-					},
-					key.Filter{
-						Name:     "0",
-						Required: key.ModCtrl,
-					},
+					key.Filter{Name: "+", Required: key.ModCtrl},
+					key.Filter{Name: "=", Required: key.ModCtrl},
+					key.Filter{Name: "-", Required: key.ModCtrl},
+					key.Filter{Name: "0", Required: key.ModCtrl},
 				)
 				if !ok {
 					break
 				}
-
-				if e, ok := ev.(key.Event); ok {
-					// Debug logging for zoom key events
-					if e.State == key.Press {
-						log.Printf("Global key pressed: '%s' with modifiers: %v", e.Name, e.Modifiers)
-					}
-
-					// Handle zoom keyboard shortcuts
-					if e.State == key.Press {
-						switch {
-						case (e.Name == "+" || e.Name == "=") && e.Modifiers == key.ModCtrl:
-							// Zoom in (Ctrl+/= or Ctrl+numpad+)
-							if zoomScale < maxZoom {
-								zoomScale += zoomStep
-								if zoomScale > maxZoom {
-									zoomScale = maxZoom
-								}
-								zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
-								w.Invalidate()
-								log.Printf("Zoom in: %.1f%% (key: %s)", zoomScale*100, e.Name)
-							}
-						case e.Name == "-" && e.Modifiers == key.ModCtrl:
-							// Zoom out (Ctrl- or Ctrl+numpad-)
-							if zoomScale > minZoom {
-								zoomScale -= zoomStep
-								if zoomScale < minZoom {
-									zoomScale = minZoom
-								}
-								zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
-								w.Invalidate()
-								log.Printf("Zoom out: %.1f%% (key: %s)", zoomScale*100, e.Name)
-							}
-						case e.Name == "0" && e.Modifiers == key.ModCtrl:
-							// Reset zoom (Ctrl+0)
-							zoomScale = 1.0
+				if e, ok := ev.(key.Event); ok && e.State == key.Press {
+					switch {
+					case (e.Name == "+" || e.Name == "=") && e.Modifiers == key.ModCtrl:
+						if zoomScale < maxZoom {
+							zoomScale += zoomStep
 							zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
 							w.Invalidate()
-							log.Printf("Reset zoom: %.1f%% (key: %s)", zoomScale*100, e.Name)
 						}
+					case e.Name == "-" && e.Modifiers == key.ModCtrl:
+						if zoomScale > minZoom {
+							zoomScale -= zoomStep
+							zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
+							w.Invalidate()
+						}
+					case e.Name == "0" && e.Modifiers == key.ModCtrl:
+						zoomScale = 1.0
+						zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
+						w.Invalidate()
 					}
 				}
 			}
 
-			// Apply zoom scale to the context
 			if zoomScale != 1.0 {
-				scaledMetric := unit.Metric{
+				gtx.Metric = unit.Metric{
 					PxPerDp: e.Metric.PxPerDp * zoomScale,
 					PxPerSp: e.Metric.PxPerSp * zoomScale,
 				}
-				gtx.Metric = scaledMetric
 			}
 
-			// Set background color - fill the entire window first
 			background := clip.Rect{Max: gtx.Constraints.Max}.Op()
 			paint.FillShape(gtx.Ops, th.Colors.Background, background)
 
-			// Main layout
-			layout.Flex{
-				Axis: layout.Vertical,
-			}.Layout(gtx,
-				// Custom title bar
+			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return tb.Layout(gtx, th, w)
 				}),
-
-				// Header
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return layout.Inset{
-						Top:    th.Spacing.Space8,
-						Bottom: th.Spacing.Space8,
-						Left:   th.Spacing.Space8,
-						Right:  th.Spacing.Space8,
+						Top:    th.Spacing.Space6,
+						Bottom: th.Spacing.Space6,
+						Left:   th.Spacing.Space6,
+						Right:  th.Spacing.Space6,
 					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						return layout.Flex{
-							Axis:      layout.Horizontal,
-							Alignment: layout.Middle,
-						}.Layout(gtx,
+						return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-								return layout.Flex{
-									Axis: layout.Vertical,
-								}.Layout(gtx,
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return titleLabel.Layout(gtx, th)
-									}),
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-									}),
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return subtitleLabel.Layout(gtx, th)
-									}),
+								return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return titleLabel.Layout(gtx, th) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return subtitleLabel.Layout(gtx, th) }),
 								)
 							}),
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return layout.Flex{
-									Axis:      layout.Vertical,
-									Alignment: layout.End,
-								}.Layout(gtx,
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return themeToggleBtn.Layout(gtx, th)
-									}),
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
-									}),
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return layout.Flex{
-											Axis:      layout.Horizontal,
-											Alignment: layout.Middle,
-										}.Layout(gtx,
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return zoomOutBtn.Layout(gtx, th)
-											}),
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-											}),
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return zoomInBtn.Layout(gtx, th)
-											}),
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-											}),
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return zoomResetBtn.Layout(gtx, th)
-											}),
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return layout.Spacer{Width: th.Spacing.Space4}.Layout(gtx)
-											}),
-											layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-												return zoomLabel.Layout(gtx, th)
-											}),
-										)
-									}),
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-										return zoomHelpLabel.Layout(gtx, th)
-									}),
+								return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return themeToggleBtn.Layout(gtx, th) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return zoomOutBtn.Layout(gtx, th) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return zoomInBtn.Layout(gtx, th) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return zoomResetBtn.Layout(gtx, th) }),
 								)
 							}),
 						)
 					})
 				}),
-
-				// Main content
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 					return layout.Inset{
-						Top:    th.Spacing.Space4,
-						Bottom: th.Spacing.Space8,
-						Left:   th.Spacing.Space8,
-						Right:  th.Spacing.Space8,
+						Top:    th.Spacing.Space2,
+						Bottom: th.Spacing.Space6,
+						Left:   th.Spacing.Space6,
+						Right:  th.Spacing.Space6,
 					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 						return demoCard.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-							return layout.Flex{
-								Axis: layout.Vertical,
-							}.Layout(gtx,
-								// Card header
+							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+								// Section 1: Buttons
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									cardTitle := label.NewTypography("Component Examples", label.H3, "")
-									return layout.Flex{
-										Axis: layout.Vertical,
-									}.Layout(gtx,
+									sectionTitle := label.NewTypography("Buttons & Badges", label.H4, "")
+									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sectionTitle.Layout(gtx, th) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return cardTitle.Layout(gtx, th)
+											return layoutButtonRow(gtx, th, primaryBtn, destructiveBtn, outlineBtn, secondaryBtn, ghostBtn, linkBtn)
 										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
+											return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return defaultBadge.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return secBadge.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return outBadge.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return destBadge.Layout(gtx, th) }),
+											)
 										}),
 									)
 								}),
 
-								// Button examples
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									sectionTitle := label.NewTypography("Buttons", label.H4, "")
-									return layout.Flex{
-										Axis: layout.Vertical,
-									}.Layout(gtx,
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return sectionTitle.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layoutButtonRow(gtx, th, primaryBtn, destructiveBtn, outlineBtn)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layoutButtonRow(gtx, th, secondaryBtn, ghostBtn, linkBtn)
-										}),
-									)
-								}),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sepLine.Layout(gtx, th) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
 
-								// Input examples
+								// Section 2: Inputs & Toggles
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return layout.Spacer{Height: th.Spacing.Space8}.Layout(gtx)
-								}),
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									sectionTitle := label.NewTypography("Input Components", label.H4, "")
-									return layout.Flex{
-										Axis: layout.Vertical,
-									}.Layout(gtx,
+									sectionTitle := label.NewTypography("Inputs & Toggles", label.H4, "")
+									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sectionTitle.Layout(gtx, th) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return sectionTitle.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											// Create a constrained context for inputs
 											maxWidth := gtx.Metric.Dp(400)
 											if gtx.Constraints.Max.X < maxWidth {
 												maxWidth = gtx.Constraints.Max.X
 											}
-
 											gtx.Constraints.Max.X = maxWidth
 											gtx.Constraints.Min.X = maxWidth
-
 											return textInput.Layout(gtx, th)
+										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return audioSwitch.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+													return label.NewTypography("High Quality Audio (96kHz)", label.Small, "").Layout(gtx, th)
+												}),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return gpuCheckbox.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+													return label.NewTypography("Hardware GPU Acceleration", label.Small, "").Layout(gtx, th)
+												}),
+											)
+										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+													return label.NewTypography("Audio Buffer Progress (65%)", label.Small, "").Layout(gtx, th)
+												}),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return progBar.Layout(gtx, th) }),
+											)
 										}),
 									)
 								}),
 
-								// Typography examples
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return layout.Spacer{Height: th.Spacing.Space8}.Layout(gtx)
-								}),
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									sectionTitle := label.NewTypography("Typography", label.H4, "")
-									h1Example := label.NewTypography("Heading 1", label.H1, "")
-									h2Example := label.NewTypography("Heading 2", label.H2, "")
-									h3Example := label.NewTypography("Heading 3", label.H3, "")
-									bodyExample := label.NewTypography("This is a paragraph of body text demonstrating the typography system.", label.P, "")
-									smallExample := label.NewTypography("Small text for captions and fine print.", label.Small, "")
-									mutedExample := label.NewTypography("Muted text for secondary information.", label.Muted, "")
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sepLine.Layout(gtx, th) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
 
-									return layout.Flex{
-										Axis: layout.Vertical,
-									}.Layout(gtx,
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return sectionTitle.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return h1Example.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return h2Example.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return h3Example.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return bodyExample.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return smallExample.Layout(gtx, th)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return mutedExample.Layout(gtx, th)
-										}),
+								// Section 3: Alerts
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									sectionTitle := label.NewTypography("Alert Callout", label.H4, "")
+									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sectionTitle.Layout(gtx, th) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return systemAlert.Layout(gtx, th) }),
 									)
 								}),
 							)
