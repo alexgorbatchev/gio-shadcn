@@ -1,0 +1,160 @@
+/*
+Package togglegroup provides a grouped toggle selector component for gio-shadcn applications.
+
+Toggle groups allow users to switch between exclusive option buttons following
+shadcn/ui design principles.
+*/
+package togglegroup
+
+import (
+	"image"
+
+	"gioui.org/font"
+	"gioui.org/layout"
+	"gioui.org/op/clip"
+	"gioui.org/op/paint"
+	"gioui.org/widget"
+	"gioui.org/widget/material"
+	"github.com/bnema/gio-shadcn/theme"
+	"github.com/bnema/gio-shadcn/utils"
+)
+
+// Item represents a single toggle item.
+type Item struct {
+	Key       string
+	Label     string
+	clickable *widget.Clickable
+}
+
+// NewItem creates a new Toggle Item.
+func NewItem(key, label string) *Item {
+	return &Item{
+		Key:       key,
+		Label:     label,
+		clickable: new(widget.Clickable),
+	}
+}
+
+// ToggleGroup represents a grouped toggle selector container.
+type ToggleGroup struct {
+	Items       []*Item
+	SelectedKey string
+	Classes     string
+	OnChange    func(string)
+}
+
+// Config represents configuration for creating a ToggleGroup.
+type Config struct {
+	Items       []*Item
+	SelectedKey string
+	Classes     string
+	OnChange    func(string)
+}
+
+// New creates a new ToggleGroup component.
+func New(config Config) *ToggleGroup {
+	sel := config.SelectedKey
+	if sel == "" && len(config.Items) > 0 {
+		sel = config.Items[0].Key
+	}
+	return &ToggleGroup{
+		Items:       config.Items,
+		SelectedKey: sel,
+		Classes:     config.Classes,
+		OnChange:    config.OnChange,
+	}
+}
+
+// Layout renders the group of toggle items.
+func (tg *ToggleGroup) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+
+	children := make([]layout.FlexChild, 0, len(tg.Items)*2)
+
+	for i, item := range tg.Items {
+		item := item // capture loop variable
+
+		if item.clickable.Clicked(gtx) {
+			tg.SelectedKey = item.Key
+			if tg.OnChange != nil {
+				tg.OnChange(tg.SelectedKey)
+			}
+		}
+
+		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return tg.layoutItem(gtx, th, item)
+		}))
+
+		if i < len(tg.Items)-1 {
+			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx)
+			}))
+		}
+	}
+
+	padding := layout.Inset{
+		Top:    th.Spacing.Space1,
+		Bottom: th.Spacing.Space1,
+		Left:   th.Spacing.Space1,
+		Right:  th.Spacing.Space1,
+	}
+
+	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		containerDims := layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+
+		rect := image.Rectangle{Max: containerDims.Size}
+		radius := gtx.Dp(th.Radius.RadiusMD)
+		rr := clip.UniformRRect(rect, radius)
+
+		paint.FillShape(gtx.Ops, th.Colors.Muted, rr.Op(gtx.Ops))
+
+		return containerDims
+	})
+}
+
+func (tg *ToggleGroup) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) layout.Dimensions {
+	isSelected := item.Key == tg.SelectedKey
+
+	bgColor := th.Colors.Muted
+	fgColor := th.Colors.MutedFg
+
+	if isSelected {
+		bgColor = th.Colors.Background
+		fgColor = th.Colors.Foreground
+	}
+
+	styles := utils.ParseClasses(tg.Classes)
+	if styles.Background.A > 0 && isSelected {
+		bgColor = styles.Background
+	}
+
+	mTheme := material.NewTheme()
+
+	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		padding := layout.Inset{
+			Top:    th.Spacing.Space2,
+			Bottom: th.Spacing.Space2,
+			Left:   th.Spacing.Space3,
+			Right:  th.Spacing.Space3,
+		}
+
+		itemDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			lbl := material.Label(mTheme, th.Typography.FontSizeSM, item.Label)
+			lbl.Color = fgColor
+			if isSelected {
+				lbl.Font.Weight = font.Medium
+			}
+			return lbl.Layout(gtx)
+		})
+
+		rect := image.Rectangle{Max: itemDims.Size}
+		radius := gtx.Dp(th.Radius.RadiusSM)
+		rr := clip.UniformRRect(rect, radius)
+
+		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+
+		return itemDims
+	})
+}
