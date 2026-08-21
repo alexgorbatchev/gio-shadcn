@@ -13,7 +13,9 @@ import (
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 
+	"github.com/bnema/gio-shadcn/components/accordion"
 	"github.com/bnema/gio-shadcn/components/alert"
+	"github.com/bnema/gio-shadcn/components/avatar"
 	"github.com/bnema/gio-shadcn/components/badge"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/components/card"
@@ -21,9 +23,13 @@ import (
 	"github.com/bnema/gio-shadcn/components/input"
 	"github.com/bnema/gio-shadcn/components/label"
 	"github.com/bnema/gio-shadcn/components/progress"
+	"github.com/bnema/gio-shadcn/components/radio"
 	"github.com/bnema/gio-shadcn/components/separator"
+	"github.com/bnema/gio-shadcn/components/slider"
 	switchcomp "github.com/bnema/gio-shadcn/components/switch"
+	"github.com/bnema/gio-shadcn/components/tabs"
 	"github.com/bnema/gio-shadcn/components/titlebar"
+	"github.com/bnema/gio-shadcn/components/tooltip"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
@@ -31,8 +37,8 @@ func main() {
 	go func() {
 		w := &app.Window{}
 		w.Option(app.Title("Gio-shadcn Demo"))
-		w.Option(app.Size(900, 700))
-		w.Option(app.Decorated(false)) // Disable system title bar
+		w.Option(app.Size(950, 750))
+		w.Option(app.Decorated(false))
 
 		err := run(w)
 		if err != nil {
@@ -70,7 +76,7 @@ func run(w *app.Window) error {
 	updateWindowColors(w, th)
 
 	tb := titlebar.NewTitleBar(
-		titlebar.WithTitle("Gio-shadcn Demo (Flutter Parity Source of Truth)"),
+		titlebar.WithTitle("Gio-shadcn Showcase (Flutter Source of Truth Parity)"),
 		titlebar.WithWindow(w),
 		titlebar.WithVariant(theme.VariantSecondary),
 	)
@@ -82,50 +88,15 @@ func run(w *app.Window) error {
 
 	zoomLabel := label.NewTypography("Zoom: 100%", label.Small, "")
 
-	// Initialize Button components
-	primaryBtn := button.New(button.Config{
-		Text:    "Primary Button",
-		Variant: theme.VariantDefault,
-		Size:    theme.SizeDefault,
-		OnClick: func() { log.Println("Primary button clicked!") },
-	})
+	// Initialize Buttons
+	primaryBtn := button.New(button.Config{Text: "Primary", Variant: theme.VariantDefault, OnClick: func() { log.Println("Primary clicked!") }})
+	destructiveBtn := button.New(button.Config{Text: "Destructive", Variant: theme.VariantDestructive, OnClick: func() { log.Println("Destructive clicked!") }})
+	outlineBtn := button.New(button.Config{Text: "Outline", Variant: theme.VariantOutline, OnClick: func() { log.Println("Outline clicked!") }})
+	secondaryBtn := button.New(button.Config{Text: "Secondary", Variant: theme.VariantSecondary, OnClick: func() { log.Println("Secondary clicked!") }})
+	ghostBtn := button.New(button.Config{Text: "Ghost", Variant: theme.VariantGhost, OnClick: func() { log.Println("Ghost clicked!") }})
+	linkBtn := button.New(button.Config{Text: "Link", Variant: theme.VariantLink, OnClick: func() { log.Println("Link clicked!") }})
 
-	destructiveBtn := button.New(button.Config{
-		Text:    "Destructive",
-		Variant: theme.VariantDestructive,
-		Size:    theme.SizeDefault,
-		OnClick: func() { log.Println("Destructive button clicked!") },
-	})
-
-	outlineBtn := button.New(button.Config{
-		Text:    "Outline",
-		Variant: theme.VariantOutline,
-		Size:    theme.SizeDefault,
-		OnClick: func() { log.Println("Outline button clicked!") },
-	})
-
-	secondaryBtn := button.New(button.Config{
-		Text:    "Secondary",
-		Variant: theme.VariantSecondary,
-		Size:    theme.SizeDefault,
-		OnClick: func() { log.Println("Secondary button clicked!") },
-	})
-
-	ghostBtn := button.New(button.Config{
-		Text:    "Ghost",
-		Variant: theme.VariantGhost,
-		Size:    theme.SizeDefault,
-		OnClick: func() { log.Println("Ghost button clicked!") },
-	})
-
-	linkBtn := button.New(button.Config{
-		Text:    "Link",
-		Variant: theme.VariantLink,
-		Size:    theme.SizeDefault,
-		OnClick: func() { log.Println("Link button clicked!") },
-	})
-
-	// Theme toggle
+	// Theme toggle & zoom controls
 	var themeToggleBtn *button.Button
 	themeToggleBtn = button.New(button.Config{
 		Text:    "☀️ Light Mode",
@@ -143,7 +114,6 @@ func run(w *app.Window) error {
 		},
 	})
 
-	// Zoom controls
 	zoomInBtn := button.New(button.Config{
 		Text:    "+",
 		Variant: theme.VariantOutline,
@@ -151,9 +121,6 @@ func run(w *app.Window) error {
 		OnClick: func() {
 			if zoomScale < maxZoom {
 				zoomScale += zoomStep
-				if zoomScale > maxZoom {
-					zoomScale = maxZoom
-				}
 				zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
 				w.Invalidate()
 			}
@@ -167,9 +134,6 @@ func run(w *app.Window) error {
 		OnClick: func() {
 			if zoomScale > minZoom {
 				zoomScale -= zoomStep
-				if zoomScale < minZoom {
-					zoomScale = minZoom
-				}
 				zoomLabel.SetText(fmt.Sprintf("Zoom: %.0f%%", zoomScale*100))
 				w.Invalidate()
 			}
@@ -187,27 +151,53 @@ func run(w *app.Window) error {
 		},
 	})
 
-	// Containers & Inputs
+	// Navigation Tabs
+	navTabs := tabs.New(tabs.Config{
+		Tabs: []*tabs.Tab{
+			tabs.NewTab("sink", "Kitchen Sink"),
+			tabs.NewTab("deck", "Audio Deck"),
+			tabs.NewTab("library", "Track Library"),
+		},
+		ActiveKey: "sink",
+		OnChange: func(key string) {
+			log.Printf("Tab changed: %s", key)
+		},
+	})
+
+	// Card Container & Text Input
 	demoCard := card.New(card.Config{Variant: theme.VariantDefault})
 	textInput := input.Text("Enter track name...")
 
-	// Badges
+	// Badges & Avatars
 	defaultBadge := badge.New(badge.Config{Text: "Default", Variant: theme.VariantDefault})
 	secBadge := badge.New(badge.Config{Text: "Secondary", Variant: theme.VariantSecondary})
 	outBadge := badge.New(badge.Config{Text: "Outline", Variant: theme.VariantOutline})
 	destBadge := badge.New(badge.Config{Text: "Destructive", Variant: theme.VariantDestructive})
 
-	// Progress & Toggles
+	av1 := avatar.New(avatar.Config{Initials: "DJ", ShowBadge: true})
+	av2 := avatar.New(avatar.Config{Initials: "AG", ShowBadge: false})
+
+	// Interactive Form Controls
 	progBar := progress.New(progress.Config{Value: 0.65})
 	sepLine := separator.New(separator.Config{Horizontal: true})
 	audioSwitch := switchcomp.New(switchcomp.Config{Value: true, OnChange: func(v bool) { log.Printf("Audio switch: %v", v) }})
 	gpuCheckbox := checkbox.New(checkbox.Config{Value: true, OnChange: func(v bool) { log.Printf("GPU checkbox: %v", v) }})
 
-	// Alert
-	systemAlert := alert.New(alert.Config{
-		Title:       "ASIO Driver Active",
-		Description: "Buffer size set to 64 samples (1.2ms latency).",
+	audioRadioMaster := radio.New(radio.Config{Selected: true})
+	audioRadioCue := radio.New(radio.Config{Selected: false})
+
+	gainSlider := slider.New(slider.Config{Value: 65.0, Min: 0.0, Max: 100.0, OnChange: func(v float32) { log.Printf("Slider value: %.1f", v) }})
+
+	// Accordions & Tooltip Callout
+	infoAccordion := accordion.New(accordion.Config{
+		Items: []*accordion.Item{
+			accordion.NewItem("Audio Engine Specifications", "Runs at 96kHz 24-bit floating point precision with low-jitter clocking.", false),
+			accordion.NewItem("GPU Vector Pipeline", "Gio immediate-mode engine renders vector paths directly on GPU with Metal shaders.", true),
+		},
 	})
+
+	tipCallout := tooltip.New(tooltip.Config{Text: "ASIO Low Latency Buffer: 64 samples"})
+	systemAlert := alert.New(alert.Config{Title: "ASIO Driver Active", Description: "Buffer size set to 64 samples (1.2ms latency)."})
 
 	titleLabel := label.NewTypography("Gio-shadcn Showcase", label.H1, "")
 	subtitleLabel := label.NewTypography("Ported from Flutter shadcn_flutter Source of Truth", label.P, "")
@@ -222,7 +212,6 @@ func run(w *app.Window) error {
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
 
-			// Process global zoom key events
 			for {
 				ev, ok := gtx.Event(
 					key.Filter{Name: "+", Required: key.ModCtrl},
@@ -266,13 +255,11 @@ func run(w *app.Window) error {
 			paint.FillShape(gtx.Ops, th.Colors.Background, background)
 
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return tb.Layout(gtx, th, w)
-				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return tb.Layout(gtx, th, w) }),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return layout.Inset{
-						Top:    th.Spacing.Space6,
-						Bottom: th.Spacing.Space6,
+						Top:    th.Spacing.Space4,
+						Bottom: th.Spacing.Space4,
 						Left:   th.Spacing.Space6,
 						Right:  th.Spacing.Space6,
 					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -280,7 +267,7 @@ func run(w *app.Window) error {
 							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 								return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return titleLabel.Layout(gtx, th) }),
-									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx) }),
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions { return subtitleLabel.Layout(gtx, th) }),
 								)
 							}),
@@ -298,6 +285,11 @@ func run(w *app.Window) error {
 						)
 					})
 				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Inset{Left: th.Spacing.Space6, Right: th.Spacing.Space6, Bottom: th.Spacing.Space3}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						return navTabs.Layout(gtx, th)
+					})
+				}),
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 					return layout.Inset{
 						Top:    th.Spacing.Space2,
@@ -307,9 +299,9 @@ func run(w *app.Window) error {
 					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 						return demoCard.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-								// Section 1: Buttons
+								// Section 1: Buttons & Badges & Avatars
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									sectionTitle := label.NewTypography("Buttons & Badges", label.H4, "")
+									sectionTitle := label.NewTypography("Buttons, Badges & Avatars", label.H4, "")
 									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sectionTitle.Layout(gtx, th) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
@@ -326,18 +318,24 @@ func run(w *app.Window) error {
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return outBadge.Layout(gtx, th) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return destBadge.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return av1.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return av2.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space4}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return tipCallout.Layout(gtx, th) }),
 											)
 										}),
 									)
 								}),
 
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sepLine.Layout(gtx, th) }),
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
 
-								// Section 2: Inputs & Toggles
+								// Section 2: Form Inputs & Range Slider
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									sectionTitle := label.NewTypography("Inputs & Toggles", label.H4, "")
+									sectionTitle := label.NewTypography("Inputs, Sliders & Radio Toggles", label.H4, "")
 									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sectionTitle.Layout(gtx, th) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
@@ -356,13 +354,25 @@ func run(w *app.Window) error {
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return audioSwitch.Layout(gtx, th) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return label.NewTypography("High Quality Audio (96kHz)", label.Small, "").Layout(gtx, th)
+													return label.NewTypography("High Quality Audio", label.Small, "").Layout(gtx, th)
 												}),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return gpuCheckbox.Layout(gtx, th) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return label.NewTypography("Hardware GPU Acceleration", label.Small, "").Layout(gtx, th)
+													return label.NewTypography("GPU Acceleration", label.Small, "").Layout(gtx, th)
+												}),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return audioRadioMaster.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+													return label.NewTypography("Master Out", label.Small, "").Layout(gtx, th)
+												}),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space3}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return audioRadioCue.Layout(gtx, th) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+													return label.NewTypography("Headphones Cue", label.Small, "").Layout(gtx, th)
 												}),
 											)
 										}),
@@ -370,8 +380,10 @@ func run(w *app.Window) error {
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 											return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-													return label.NewTypography("Audio Buffer Progress (65%)", label.Small, "").Layout(gtx, th)
+													return label.NewTypography("Gain Slider (0-100%)", label.Small, "").Layout(gtx, th)
 												}),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return gainSlider.Layout(gtx, th) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 												layout.Rigid(func(gtx layout.Context) layout.Dimensions { return progBar.Layout(gtx, th) }),
 											)
@@ -379,15 +391,17 @@ func run(w *app.Window) error {
 									)
 								}),
 
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sepLine.Layout(gtx, th) }),
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
 
-								// Section 3: Alerts
+								// Section 3: Accordion & Alert
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									sectionTitle := label.NewTypography("Alert Callout", label.H4, "")
+									sectionTitle := label.NewTypography("Accordion & Alert Callout", label.H4, "")
 									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sectionTitle.Layout(gtx, th) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return infoAccordion.Layout(gtx, th) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
 										layout.Rigid(func(gtx layout.Context) layout.Dimensions { return systemAlert.Layout(gtx, th) }),
 									)
