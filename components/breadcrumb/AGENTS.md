@@ -21,13 +21,37 @@ Whenever adding, modifying, or refactoring the `breadcrumb` component implementa
 
 ### Variants
 - [x] **Standard Path**
+  - implementation:
+    - breadcrumb.go:54
+  - tests:
+    - breadcrumb_test.go:13
 - [x] **Active Page Link**
+  - implementation:
+    - breadcrumb.go:20
+  - tests:
+    - breadcrumb_test.go:13
 - [x] **Custom Separators**
+  - implementation:
+    - breadcrumb.go:54
+  - tests:
+    - breadcrumb_test.go:13
 
 ### Capabilities & Features
 - [x] **Horizontal Flex Layout**
+  - implementation:
+    - breadcrumb.go:92
+  - tests:
+    - breadcrumb_test.go:13
 - [x] **Chevron Dividers**
+  - implementation:
+    - breadcrumb.go:54
+  - tests:
+    - breadcrumb_test.go:13
 - [x] **Hover Highlight**
+  - implementation:
+    - breadcrumb.go:54
+  - tests:
+    - breadcrumb_test.go:13
 
 ---
 

@@ -21,10 +21,22 @@ Whenever adding, modifying, or refactoring the `tooltip` component implementatio
 
 ### Variants
 - [x] **Tooltip Callout**
+  - implementation:
+    - tooltip.go:2
+  - tests:
+    - tooltip_test.go:1
 
 ### Capabilities & Features
 - [x] **Callout Text Box**
+  - implementation:
+    - tooltip.go:43
+  - tests:
+    - tooltip_test.go:13
 - [x] **Dark Overlay Background**
+  - implementation:
+    - tooltip.go:43
+  - tests:
+    - tooltip_test.go:24
 
 ---
 

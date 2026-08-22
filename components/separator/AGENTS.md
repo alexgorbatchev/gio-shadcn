@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `separator` component implementat
 
 ### Variants
 - [x] **Horizontal Separator**
+  - implementation:
+    - separator.go:22
+  - tests:
+    - separator_test.go:15
 - [x] **Vertical Separator**
+  - implementation:
+    - separator.go:48
+  - tests:
+    - separator_test.go:13
 
 ### Capabilities & Features
 - [x] **1px Divider Stroke Line**
+  - implementation:
+    - separator.go:48
+  - tests:
+    - separator_test.go:13
 - [x] **Muted Border Theme Color**
+  - implementation:
+    - separator.go:48
+  - tests:
+    - separator_test.go:13
 
 ---
 

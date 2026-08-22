@@ -21,12 +21,32 @@ Whenever adding, modifying, or refactoring the `radio` component implementation 
 
 ### Variants
 - [x] **Unselected Radio Button**
+  - implementation:
+    - radio.go:51
+  - tests:
+    - radio_test.go:13
 - [x] **Selected Radio Button**
+  - implementation:
+    - radio.go:25
+  - tests:
+    - radio_test.go:15
 
 ### Capabilities & Features
 - [x] **Inner Circle Dot Selection**
+  - implementation:
+    - radio.go:50
+  - tests:
+    - radio_test.go:13
 - [x] **Label Association**
+  - implementation:
+    - radio.go:51
+  - tests:
+    - radio_test.go:13
 - [x] **Radio Group Row**
+  - implementation:
+    - radio.go:2
+  - tests:
+    - radio_test.go:1
 
 ---
 

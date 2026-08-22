@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `carousel` component implementati
 
 ### Variants
 - [x] **Horizontal Slide Carousel**
+  - implementation:
+    - carousel.go:82
+  - tests:
+    - carousel_test.go:13
 
 ### Capabilities & Features
 - [x] **Active Slide Index Tracking**
+  - implementation:
+    - carousel.go:23
+  - tests:
+    - carousel_test.go:19
 - [x] **Next / Previous Controls**
+  - implementation:
+    - carousel.go:26
+  - tests:
+    - carousel_test.go:13
 - [x] **Slide Item Container**
+  - implementation:
+    - carousel.go:2
+  - tests:
+    - carousel_test.go:13
 
 ---
 

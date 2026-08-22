@@ -21,13 +21,37 @@ Whenever adding, modifying, or refactoring the `switch` component implementation
 
 ### Variants
 - [x] **Off State**
+  - implementation:
+    - switch.go:4
+  - tests:
+    - switch_test.go:13
 - [x] **On State**
+  - implementation:
+    - switch.go:2
+  - tests:
+    - switch_test.go:9
 - [x] **Disabled State**
+  - implementation:
+    - switch.go:26
+  - tests:
+    - switch_test.go:13
 
 ### Capabilities & Features
 - [x] **Track Fill Transition**
+  - implementation:
+    - switch.go:63
+  - tests:
+    - switch_test.go:13
 - [x] **Sliding Thumb Knob**
+  - implementation:
+    - switch.go:51
+  - tests:
+    - switch_test.go:13
 - [x] **Interactive Click Toggle**
+  - implementation:
+    - switch.go:2
+  - tests:
+    - switch_test.go:13
 
 ---
 

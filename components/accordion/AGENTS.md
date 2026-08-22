@@ -21,14 +21,42 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
 
 ### Variants
 - [x] **Single Open Item**
+  - implementation:
+    - accordion.go:55
+  - tests:
+    - accordion_test.go:13
 - [x] **Multiple Open Items**
+  - implementation:
+    - accordion.go:55
+  - tests:
+    - accordion_test.go:13
 - [x] **Collapsed State**
+  - implementation:
+    - accordion.go:55
+  - tests:
+    - accordion_test.go:13
 
 ### Capabilities & Features
 - [x] **Expand/Collapse Animation State**
+  - implementation:
+    - accordion.go:55
+  - tests:
+    - accordion_test.go:13
 - [x] **Item Header Button**
+  - implementation:
+    - accordion.go:22
+  - tests:
+    - accordion_test.go:15
 - [x] **Item Content Panel**
+  - implementation:
+    - accordion.go:22
+  - tests:
+    - accordion_test.go:15
 - [x] **Border Dividers**
+  - implementation:
+    - accordion.go:85
+  - tests:
+    - accordion_test.go:13
 
 ---
 

@@ -21,12 +21,32 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
 
 ### Variants
 - [x] **Number Stepper**
+  - implementation:
+    - numberinput.go:2
+  - tests:
+    - numberinput_test.go:1
 
 ### Capabilities & Features
 - [x] **Increment / Decrement Buttons**
+  - implementation:
+    - numberinput.go:4
+  - tests:
+    - numberinput_test.go:13
 - [x] **Min / Max Range Bounds**
+  - implementation:
+    - numberinput.go:27
+  - tests:
+    - numberinput_test.go:17
 - [x] **Step Size Configuration**
+  - implementation:
+    - numberinput.go:2
+  - tests:
+    - numberinput_test.go:16
 - [x] **Direct Number Formatting**
+  - implementation:
+    - numberinput.go:75
+  - tests:
+    - numberinput_test.go:13
 
 ---
 

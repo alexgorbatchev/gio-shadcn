@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `collapsible` component implement
 
 ### Variants
 - [x] **Expanded State**
+  - implementation:
+    - collapsible.go:53
+  - tests:
+    - collapsible_test.go:13
 - [x] **Collapsed State**
+  - implementation:
+    - collapsible.go:53
+  - tests:
+    - collapsible_test.go:13
 
 ### Capabilities & Features
 - [x] **Trigger Button Header**
+  - implementation:
+    - collapsible.go:52
+  - tests:
+    - collapsible_test.go:13
 - [x] **Content Body Visibility Toggle**
+  - implementation:
+    - collapsible.go:4
+  - tests:
+    - collapsible_test.go:16
 
 ---
 

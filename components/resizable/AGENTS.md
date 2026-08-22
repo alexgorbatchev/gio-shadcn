@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `resizable` component implementat
 
 ### Variants
 - [x] **Horizontal Split Panels**
+  - implementation:
+    - resizable.go:57
+  - tests:
+    - resizable_test.go:13
 
 ### Capabilities & Features
 - [x] **Left Widget Container**
+  - implementation:
+    - resizable.go:21
+  - tests:
+    - resizable_test.go:13
 - [x] **Right Widget Container**
+  - implementation:
+    - resizable.go:23
+  - tests:
+    - resizable_test.go:13
 - [x] **Divider Handle Bar**
+  - implementation:
+    - resizable.go:4
+  - tests:
+    - resizable_test.go:13
 
 ---
 

@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `titlebar` component implementati
 
 ### Variants
 - [x] **Custom Window Titlebar**
+  - implementation:
+    - titlebar.go:2
+  - tests:
+    - titlebar_test.go:13
 
 ### Capabilities & Features
 - [x] **Title Text**
+  - implementation:
+    - titlebar.go:2
+  - tests:
+    - titlebar_test.go:1
 - [x] **Window Control Buttons (Close, Minimize, Maximize)**
+  - implementation:
+    - titlebar.go:2
+  - tests:
+    - titlebar_test.go:13
 - [x] **Window Drag Region**
+  - implementation:
+    - titlebar.go:2
+  - tests:
+    - titlebar_test.go:13
 
 ---
 

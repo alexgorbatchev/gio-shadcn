@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `tabs` component implementation o
 
 ### Variants
 - [x] **Tabs Navigation Header**
+  - implementation:
+    - tabs.go:2
+  - tests:
+    - tabs_test.go:1
 
 ### Capabilities & Features
 - [x] **Tab Selection Buttons**
+  - implementation:
+    - tabs.go:2
+  - tests:
+    - tabs_test.go:1
 - [x] **Active Tab Highlight**
+  - implementation:
+    - tabs.go:4
+  - tests:
+    - tabs_test.go:19
 - [x] **Selected Key State**
+  - implementation:
+    - tabs.go:69
+  - tests:
+    - tabs_test.go:13
 
 ---
 

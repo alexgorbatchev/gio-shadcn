@@ -21,11 +21,27 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
 
 ### Variants
 - [x] **Command Palette Search Box**
+  - implementation:
+    - command.go:2
+  - tests:
+    - command_test.go:1
 
 ### Capabilities & Features
 - [x] **Search Input Filter**
+  - implementation:
+    - command.go:2
+  - tests:
+    - command_test.go:13
 - [x] **Command Item List**
+  - implementation:
+    - command.go:2
+  - tests:
+    - command_test.go:1
 - [x] **Shortcut Badges**
+  - implementation:
+    - command.go:4
+  - tests:
+    - command_test.go:13
 
 ---
 

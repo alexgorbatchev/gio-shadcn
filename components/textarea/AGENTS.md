@@ -21,13 +21,37 @@ Whenever adding, modifying, or refactoring the `textarea` component implementati
 
 ### Variants
 - [x] **Standard Text Area**
+  - implementation:
+    - textarea.go:66
+  - tests:
+    - textarea_test.go:13
 - [x] **Prefilled Text Area**
+  - implementation:
+    - textarea.go:66
+  - tests:
+    - textarea_test.go:13
 - [x] **Disabled Text Area**
+  - implementation:
+    - textarea.go:66
+  - tests:
+    - textarea_test.go:13
 
 ### Capabilities & Features
 - [x] **Multi-Line Text Editing**
+  - implementation:
+    - textarea.go:66
+  - tests:
+    - textarea_test.go:13
 - [x] **Placeholder Text**
+  - implementation:
+    - textarea.go:27
+  - tests:
+    - textarea_test.go:16
 - [x] **Focus Ring Stroke**
+  - implementation:
+    - textarea.go:66
+  - tests:
+    - textarea_test.go:13
 
 ---
 

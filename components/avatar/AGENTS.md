@@ -21,13 +21,37 @@ Whenever adding, modifying, or refactoring the `avatar` component implementation
 
 ### Variants
 - [x] **Text Initials Avatar**
+  - implementation:
+    - avatar.go:13
+  - tests:
+    - avatar_test.go:31
 - [x] **Image Avatar Placeholder**
+  - implementation:
+    - avatar.go:7
+  - tests:
+    - avatar_test.go:4
 - [x] **Online Status Badge Indicator**
+  - implementation:
+    - avatar.go:50
+  - tests:
+    - avatar_test.go:13
 
 ### Capabilities & Features
 - [x] **Circular Clip Ellipse**
+  - implementation:
+    - avatar.go:50
+  - tests:
+    - avatar_test.go:13
 - [x] **Custom Sizes (32px, 40px, 56px)**
+  - implementation:
+    - avatar.go:50
+  - tests:
+    - avatar_test.go:13
 - [x] **Status Dot Indicator**
+  - implementation:
+    - avatar.go:50
+  - tests:
+    - avatar_test.go:13
 
 ---
 

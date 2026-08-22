@@ -21,19 +21,67 @@ Whenever adding, modifying, or refactoring the `button` component implementation
 
 ### Variants
 - [x] **Default / Primary**
+  - implementation:
+    - button.go:84
+  - tests:
+    - button_test.go:16
 - [x] **Secondary**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:17
 - [x] **Outline**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:18
 - [x] **Ghost**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:19
 - [x] **Destructive**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:20
 - [x] **Link**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:21
 
 ### Capabilities & Features
 - [x] **Small (SM) Size**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:23
 - [x] **Default Size**
+  - implementation:
+    - button.go:84
+  - tests:
+    - button_test.go:16
 - [x] **Large (LG) Size**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:25
 - [x] **Icon Size**
+  - implementation:
+    - button.go:27
+  - tests:
+    - button_test.go:13
 - [x] **Disabled State**
+  - implementation:
+    - button.go:28
+  - tests:
+    - button_test.go:13
 - [x] **Pointer Click Event**
+  - implementation:
+    - button.go:111
+  - tests:
+    - button_test.go:13
 
 ---
 

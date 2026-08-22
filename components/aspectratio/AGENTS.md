@@ -21,12 +21,32 @@ Whenever adding, modifying, or refactoring the `aspectratio` component implement
 
 ### Variants
 - [x] **16:9 Standard Ratio**
+  - implementation:
+    - aspectratio.go:41
+  - tests:
+    - aspectratio_test.go:13
 - [x] **4:3 Classic Ratio**
+  - implementation:
+    - aspectratio.go:41
+  - tests:
+    - aspectratio_test.go:13
 - [x] **1:1 Square Ratio**
+  - implementation:
+    - aspectratio.go:41
+  - tests:
+    - aspectratio_test.go:13
 
 ### Capabilities & Features
 - [x] **Proportional Constraint Layout**
+  - implementation:
+    - aspectratio.go:4
+  - tests:
+    - aspectratio_test.go:13
 - [x] **Wrapped Child Fitting**
+  - implementation:
+    - aspectratio.go:41
+  - tests:
+    - aspectratio_test.go:13
 
 ---
 

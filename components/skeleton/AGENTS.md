@@ -21,12 +21,32 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
 
 ### Variants
 - [x] **Text Line Skeleton**
+  - implementation:
+    - skeleton.go:52
+  - tests:
+    - skeleton_test.go:32
 - [x] **Circular Avatar Skeleton**
+  - implementation:
+    - skeleton.go:52
+  - tests:
+    - skeleton_test.go:14
 - [x] **Card Skeleton**
+  - implementation:
+    - skeleton.go:52
+  - tests:
+    - skeleton_test.go:14
 
 ### Capabilities & Features
 - [x] **Muted Shimmer Background**
+  - implementation:
+    - skeleton.go:62
+  - tests:
+    - skeleton_test.go:14
 - [x] **Custom Width & Height Dimensions**
+  - implementation:
+    - skeleton.go:52
+  - tests:
+    - skeleton_test.go:14
 
 ---
 

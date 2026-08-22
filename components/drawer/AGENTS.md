@@ -21,14 +21,42 @@ Whenever adding, modifying, or refactoring the `drawer` component implementation
 
 ### Variants
 - [x] **Bottom Sheet Drawer Panel**
+  - implementation:
+    - drawer.go:2
+  - tests:
+    - drawer_test.go:13
 
 ### Capabilities & Features
 - [x] **Dark Backdrop Overlay**
+  - implementation:
+    - drawer.go:82
+  - tests:
+    - drawer_test.go:26
 - [x] **Backdrop Click-To-Close**
+  - implementation:
+    - drawer.go:36
+  - tests:
+    - drawer_test.go:13
 - [x] **South Viewport Edge Alignment**
+  - implementation:
+    - drawer.go:126
+  - tests:
+    - drawer_test.go:13
 - [x] **Drag Handle Indicator**
+  - implementation:
+    - drawer.go:83
+  - tests:
+    - drawer_test.go:13
 - [x] **Close Button**
+  - implementation:
+    - drawer.go:34
+  - tests:
+    - drawer_test.go:13
 - [x] **Custom Content Widget**
+  - implementation:
+    - drawer.go:201
+  - tests:
+    - drawer_test.go:13
 
 ---
 

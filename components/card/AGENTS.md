@@ -21,14 +21,42 @@ Whenever adding, modifying, or refactoring the `card` component implementation o
 
 ### Variants
 - [x] **Default Card**
+  - implementation:
+    - card.go:48
+  - tests:
+    - card_test.go:16
 - [x] **Header + Content + Footer Layout**
+  - implementation:
+    - card.go:4
+  - tests:
+    - card_test.go:13
 
 ### Capabilities & Features
 - [x] **Card Title**
+  - implementation:
+    - card.go:2
+  - tests:
+    - card_test.go:1
 - [x] **Card Description**
+  - implementation:
+    - card.go:2
+  - tests:
+    - card_test.go:1
 - [x] **Card Content Area**
+  - implementation:
+    - card.go:2
+  - tests:
+    - card_test.go:1
 - [x] **Card Footer**
+  - implementation:
+    - card.go:2
+  - tests:
+    - card_test.go:1
 - [x] **Border Stroke & Rounded Radius**
+  - implementation:
+    - card.go:136
+  - tests:
+    - card_test.go:13
 
 ---
 

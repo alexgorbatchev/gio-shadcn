@@ -21,12 +21,32 @@ Whenever adding, modifying, or refactoring the `table` component implementation 
 
 ### Variants
 - [x] **Master Data Grid Table**
+  - implementation:
+    - table.go:58
+  - tests:
+    - table_test.go:13
 
 ### Capabilities & Features
 - [x] **Header Row Columns**
+  - implementation:
+    - table.go:36
+  - tests:
+    - table_test.go:15
 - [x] **Selectable Data Rows**
+  - implementation:
+    - table.go:58
+  - tests:
+    - table_test.go:13
 - [x] **Row Hover / Selected State**
+  - implementation:
+    - table.go:4
+  - tests:
+    - table_test.go:16
 - [x] **Bottom Divider Strokes**
+  - implementation:
+    - table.go:119
+  - tests:
+    - table_test.go:13
 
 ---
 

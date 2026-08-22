@@ -21,10 +21,22 @@ Whenever adding, modifying, or refactoring the `hovercard` component implementat
 
 ### Variants
 - [x] **Hover Preview Card**
+  - implementation:
+    - hovercard.go:2
+  - tests:
+    - hovercard_test.go:1
 
 ### Capabilities & Features
 - [x] **Hovered Trigger Detector**
+  - implementation:
+    - hovercard.go:24
+  - tests:
+    - hovercard_test.go:17
 - [x] **Popover Profile Details**
+  - implementation:
+    - hovercard.go:49
+  - tests:
+    - hovercard_test.go:13
 
 ---
 
