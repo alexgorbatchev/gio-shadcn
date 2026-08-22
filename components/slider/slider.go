@@ -143,7 +143,8 @@ func (s *Slider) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Max: image.Pt(widthPx, trackY+trackHeight),
 	}
 	rrTrack := clip.UniformRRect(trackRect, trackHeight/2)
-	paint.FillShape(gtx.Ops, trackColor, rrTrack.Op(gtx.Ops))
+	theme.DrawRRectBackground(gtx, trackRect, trackHeight/2, trackColor)
+	_ = rrTrack
 
 	// Draw filled portion
 	progWidth := int(float32(widthPx) * ratio)
@@ -152,8 +153,7 @@ func (s *Slider) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			Min: image.Pt(0, trackY),
 			Max: image.Pt(progWidth, trackY+trackHeight),
 		}
-		rrProg := clip.UniformRRect(progRect, trackHeight/2)
-		paint.FillShape(gtx.Ops, progressColor, rrProg.Op(gtx.Ops))
+		theme.DrawRRectBackground(gtx, progRect, trackHeight/2, progressColor)
 	}
 
 	// Draw thumb circle
@@ -163,14 +163,15 @@ func (s *Slider) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	thumbRect := image.Rectangle{Min: thumbMin, Max: thumbMax}
 
 	ellipseThumb := clip.Ellipse(thumbRect)
-	paint.FillShape(gtx.Ops, thumbColor, ellipseThumb.Op(gtx.Ops))
+	elClip := ellipseThumb.Push(gtx.Ops)
+	theme.DrawRRectBackground(gtx, thumbRect, thumbRadius, thumbColor)
+	elClip.Pop()
 
 	// Draw thumb border
-	stroke := clip.Stroke{
-		Path:  ellipseThumb.Path(gtx.Ops),
-		Width: 1.5,
-	}
-	paint.FillShape(gtx.Ops, th.Colors.Primary, stroke.Op())
+	theme.DrawStroke(gtx, ellipseThumb.Path(gtx.Ops), 1.5, th.Colors.Primary)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: size}
 }

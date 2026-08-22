@@ -10,7 +10,6 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"github.com/bnema/gio-shadcn/theme"
@@ -78,18 +77,19 @@ func (p *Progress) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 
 	// Draw background track
 	trackRect := image.Rectangle{Max: size}
-	rrTrack := clip.UniformRRect(trackRect, radius)
-	paint.FillShape(gtx.Ops, trackColor, rrTrack.Op(gtx.Ops))
+	theme.DrawRRectBackground(gtx, trackRect, radius, trackColor)
 
 	// Draw filled progress bar
 	if p.Value > 0 {
 		progWidth := int(float32(widthPx) * p.Value)
 		if progWidth > 0 {
 			progRect := image.Rectangle{Max: image.Pt(progWidth, heightPx)}
-			rrProg := clip.UniformRRect(progRect, radius)
-			paint.FillShape(gtx.Ops, progressColor, rrProg.Op(gtx.Ops))
+			theme.DrawRRectBackground(gtx, progRect, radius, progressColor)
 		}
 	}
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: size}
 }
