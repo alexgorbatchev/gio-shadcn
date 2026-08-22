@@ -82,7 +82,7 @@ func DrawRRectBackground(gtx layout.Context, rect image.Rectangle, radius int, c
 	paint.ColorOp{Color: c}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 	cl.Pop()
-	paint.ColorOp{Color: color.NRGBA{R: 0, G: 0, B: 0, A: 255}}.Add(gtx.Ops)
+	paint.ColorOp{Color: color.NRGBA{R: 9, G: 9, B: 11, A: 255}}.Add(gtx.Ops)
 }
 
 // DrawStroke safely draws a stroke path with isolated push/pop clips and color state reset.
@@ -98,7 +98,7 @@ func DrawStroke(gtx layout.Context, path clip.PathSpec, width float32, c color.N
 	paint.ColorOp{Color: c}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 	cl.Pop()
-	paint.ColorOp{Color: color.NRGBA{R: 0, G: 0, B: 0, A: 255}}.Add(gtx.Ops)
+	paint.ColorOp{Color: color.NRGBA{R: 9, G: 9, B: 11, A: 255}}.Add(gtx.Ops)
 }
 
 func ValidateTheme(t *Theme) error {
