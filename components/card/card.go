@@ -4,49 +4,6 @@ Package card provides a flexible container component for gio-shadcn applications
 The card component serves as a versatile container for grouping related content
 with consistent styling, padding, and theming. It follows shadcn/ui design
 principles and integrates seamlessly with the theme system.
-
-# Quick Start
-
-Create a basic card:
-
-	card := card.New(card.Config{
-		Variant: theme.VariantDefault,
-	})
-
-Use as a container:
-
-	dims := card.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-		// Your content here
-		return widget.Layout(gtx)
-	})
-
-# Features
-
-• Consistent container styling following shadcn/ui patterns
-• Automatic theme integration with proper colors and spacing
-• Customizable padding and border radius
-• Support for CSS-like class utilities
-• Flexible content layout with layout function parameter
-• Proper background and border rendering
-
-# Examples
-
-Basic card with content:
-
-	card := card.New(card.Config{})
-	dims := card.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(titleWidget),
-			layout.Rigid(contentWidget),
-		)
-	})
-
-Card with custom padding:
-
-	card := card.New(card.Config{
-		Variant: theme.VariantDefault,
-	})
-	// Custom padding applied in Layout call
 */
 package card
 
@@ -126,6 +83,10 @@ func New(config Config) *Card {
 
 // Layout renders the card with the given content.
 func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+
 	// Get variant configuration
 	variant := theme.GetCardVariant(c.Variant, &th.Colors)
 
@@ -161,12 +122,9 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 	}
 
 	return layout.Stack{}.Layout(gtx,
-		// Background
-		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			dims := padding.Layout(gtx, content)
-
-			// Draw background
-			rect := image.Rectangle{Max: dims.Size}
+		// Background (expanded to match stacked content size)
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: gtx.Constraints.Min}
 			rr := clip.UniformRRect(rect, gtx.Dp(radius))
 			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 
@@ -179,10 +137,10 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 				paint.FillShape(gtx.Ops, variant.Border, border.Op())
 			}
 
-			return dims
+			return layout.Dimensions{Size: gtx.Constraints.Min}
 		}),
 
-		// Content
+		// Content (evaluated ONLY ONCE)
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			return padding.Layout(gtx, content)
 		}),
@@ -242,10 +200,8 @@ func NewHeader(classes string) *Header {
 
 // Layout renders the card header.
 func (h *Header) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
-	// Parse additional classes
 	styles := utils.ParseClasses(h.Classes)
 
-	// Determine padding
 	padding := h.Padding
 	if padding == (layout.Inset{}) {
 		padding = layout.Inset{
@@ -256,7 +212,6 @@ func (h *Header) Layout(gtx layout.Context, th *theme.Theme, content layout.Widg
 		}
 	}
 
-	// Apply custom padding if specified in classes
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
@@ -279,10 +234,8 @@ func NewContent(classes string) *Content {
 
 // Layout renders the card content.
 func (c *Content) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
-	// Parse additional classes
 	styles := utils.ParseClasses(c.Classes)
 
-	// Determine padding
 	padding := c.Padding
 	if padding == (layout.Inset{}) {
 		padding = layout.Inset{
@@ -293,7 +246,6 @@ func (c *Content) Layout(gtx layout.Context, th *theme.Theme, content layout.Wid
 		}
 	}
 
-	// Apply custom padding if specified in classes
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
@@ -316,10 +268,8 @@ func NewFooter(classes string) *Footer {
 
 // Layout renders the card footer.
 func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
-	// Parse additional classes
 	styles := utils.ParseClasses(f.Classes)
 
-	// Determine padding
 	padding := f.Padding
 	if padding == (layout.Inset{}) {
 		padding = layout.Inset{
@@ -330,7 +280,6 @@ func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, content layout.Widg
 		}
 	}
 
-	// Apply custom padding if specified in classes
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
@@ -394,17 +343,13 @@ func (d *Description) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 	)
 }
 
-// Helper function to render text.
 func renderText(gtx layout.Context, style theme.TextStyle, text string) layout.Dimensions {
-	// Create a material theme and label for text rendering
 	thMat := material.NewTheme()
 	label := material.Label(thMat, style.Size, text)
-	// Use foreground color from the color scheme
 	if style.Color != nil {
 		label.Color = style.Color.Foreground
 	}
 
-	// Apply font weight if available
 	if style.Weight > 0 {
 		label.Font.Weight = style.Weight
 	}

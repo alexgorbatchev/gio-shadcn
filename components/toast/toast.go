@@ -85,48 +85,56 @@ func (t *Toast) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Right:  th.Spacing.Space4,
 	}
 
-	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		contentDims := layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if t.Title == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeSM, t.Title)
-				lbl.Color = fgColor
-				lbl.Font.Weight = font.Bold
-				return lbl.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if t.Title != "" && t.Description != "" {
-					return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
-				}
-				return layout.Dimensions{}
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if t.Description == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Description)
-				lbl.Color = th.Colors.MutedFg
-				if t.Variant == theme.VariantDestructive {
-					lbl.Color = fgColor
-				}
-				return lbl.Layout(gtx)
-			}),
-		)
+	return layout.Stack{}.Layout(gtx,
+		// Background (drawn first)
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: gtx.Constraints.Min}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+			rr := clip.UniformRRect(rect, radius)
 
-		rect := image.Rectangle{Max: contentDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusMD)
-		rr := clip.UniformRRect(rect, radius)
+			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+			stroke := clip.Stroke{
+				Path:  rr.Path(gtx.Ops),
+				Width: 1.0,
+			}
+			paint.FillShape(gtx.Ops, borderColor, stroke.Op())
 
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+			return layout.Dimensions{Size: gtx.Constraints.Min}
+		}),
 
-		return contentDims
-	})
+		// Content (drawn on top)
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if t.Title == "" {
+							return layout.Dimensions{}
+						}
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, t.Title)
+						lbl.Color = fgColor
+						lbl.Font.Weight = font.Bold
+						return lbl.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if t.Title != "" && t.Description != "" {
+							return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
+						}
+						return layout.Dimensions{}
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if t.Description == "" {
+							return layout.Dimensions{}
+						}
+						lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Description)
+						lbl.Color = th.Colors.MutedFg
+						if t.Variant == theme.VariantDestructive {
+							lbl.Color = fgColor
+						}
+						return lbl.Layout(gtx)
+					}),
+				)
+			})
+		}),
+	)
 }

@@ -3,23 +3,6 @@ Package badge provides a badge component for gio-shadcn applications.
 
 Badges display small status indicators, tags, or count labels following
 shadcn/ui design principles.
-
-# Quick Start
-
-Create a default badge:
-
-	bg := badge.New(badge.Config{
-		Text: "Default",
-	})
-
-	dims := bg.Layout(gtx, th)
-
-# Variants
-
-• VariantDefault - Primary background badge
-• VariantSecondary - Muted background badge
-• VariantOutline - Border only badge
-• VariantDestructive - Dangerous/Error indicator badge
 */
 package badge
 
@@ -63,16 +46,14 @@ func New(config Config) *Badge {
 	}
 }
 
-// Layout renders the badge with the given graphics context and theme.
+// Layout renders the badge with background painted before text.
 func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	// Get variant colors
 	bgColor, fgColor, borderColor, borderWidth := b.getVariantColors(&th.Colors)
 
-	// Inset padding
 	padding := layout.Inset{
 		Top:    th.Spacing.Space1,
 		Bottom: th.Spacing.Space1,
@@ -80,39 +61,41 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Right:  th.Spacing.Space2,
 	}
 
-	// Calculate custom classes if present
 	styles := utils.ParseClasses(b.Classes)
 	if styles.Background.A > 0 {
 		bgColor = styles.Background
 	}
 
-	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		// Render label text
-		lbl := material.Label(material.NewTheme(), th.Typography.FontSizeXS, b.Text)
-		lbl.Color = fgColor
-		lbl.Alignment = text.Middle
-		textDims := lbl.Layout(gtx)
+	return layout.Stack{}.Layout(gtx,
+		// Background (drawn first)
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: gtx.Constraints.Min}
+			radius := gtx.Dp(th.Radius.RadiusFull)
+			rr := clip.UniformRRect(rect, radius)
 
-		// Border radius
-		radius := gtx.Dp(th.Radius.RadiusFull)
+			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 
-		// Expand area for background & border
-		rect := image.Rectangle{Max: textDims.Size}
-		rr := clip.UniformRRect(rect, radius)
-
-		// Record operations
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-		if borderWidth > 0 {
-			stroke := clip.Stroke{
-				Path:  rr.Path(gtx.Ops),
-				Width: borderWidth,
+			if borderWidth > 0 {
+				stroke := clip.Stroke{
+					Path:  rr.Path(gtx.Ops),
+					Width: borderWidth,
+				}
+				paint.FillShape(gtx.Ops, borderColor, stroke.Op())
 			}
-			paint.FillShape(gtx.Ops, borderColor, stroke.Op())
-		}
 
-		return textDims
-	})
+			return layout.Dimensions{Size: gtx.Constraints.Min}
+		}),
+
+		// Text Content (drawn on top)
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				lbl := material.Label(material.NewTheme(), th.Typography.FontSizeXS, b.Text)
+				lbl.Color = fgColor
+				lbl.Alignment = text.Middle
+				return lbl.Layout(gtx)
+			})
+		}),
+	)
 }
 
 func (b *Badge) getVariantColors(cs *theme.ColorScheme) (bg, fg, border color.NRGBA, borderWidth float32) {

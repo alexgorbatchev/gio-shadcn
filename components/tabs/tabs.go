@@ -74,7 +74,7 @@ func (t *Tabs) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	children := make([]layout.FlexChild, 0, len(t.Tabs)*2)
 
 	for i, tab := range t.Tabs {
-		tab := tab // capture loop variable
+		tab := tab
 
 		if tab.clickable.Clicked(gtx) {
 			t.ActiveKey = tab.Key
@@ -101,17 +101,20 @@ func (t *Tabs) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Right:  th.Spacing.Space1,
 	}
 
-	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		containerDims := layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
-
-		rect := image.Rectangle{Max: containerDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusMD)
-		rr := clip.UniformRRect(rect, radius)
-
-		paint.FillShape(gtx.Ops, th.Colors.Muted, rr.Op(gtx.Ops))
-
-		return containerDims
-	})
+	return layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: gtx.Constraints.Min}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+			rr := clip.UniformRRect(rect, radius)
+			paint.FillShape(gtx.Ops, th.Colors.Muted, rr.Op(gtx.Ops))
+			return layout.Dimensions{Size: gtx.Constraints.Min}
+		}),
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+			})
+		}),
+	)
 }
 
 func (t *Tabs) layoutTab(gtx layout.Context, th *theme.Theme, tab *Tab) layout.Dimensions {
@@ -140,21 +143,24 @@ func (t *Tabs) layoutTab(gtx layout.Context, th *theme.Theme, tab *Tab) layout.D
 			Right:  th.Spacing.Space4,
 		}
 
-		tabDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			lbl := material.Label(mTheme, th.Typography.FontSizeSM, tab.Label)
-			lbl.Color = fgColor
-			if isActive {
-				lbl.Font.Weight = font.Medium
-			}
-			return lbl.Layout(gtx)
-		})
-
-		rect := image.Rectangle{Max: tabDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusSM)
-		rr := clip.UniformRRect(rect, radius)
-
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-		return tabDims
+		return layout.Stack{}.Layout(gtx,
+			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+				rect := image.Rectangle{Max: gtx.Constraints.Min}
+				radius := gtx.Dp(th.Radius.RadiusSM)
+				rr := clip.UniformRRect(rect, radius)
+				paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+				return layout.Dimensions{Size: gtx.Constraints.Min}
+			}),
+			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+				return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, tab.Label)
+					lbl.Color = fgColor
+					if isActive {
+						lbl.Font.Weight = font.Medium
+					}
+					return lbl.Layout(gtx)
+				})
+			}),
+		)
 	})
 }

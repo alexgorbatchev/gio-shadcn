@@ -38,7 +38,7 @@ func New(config Config) *Tooltip {
 	}
 }
 
-// Layout renders the tooltip popover box.
+// Layout renders the tooltip popover box with background drawn before text.
 func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -59,19 +59,27 @@ func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		Right:  th.Spacing.Space3,
 	}
 
-	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		mTheme := material.NewTheme()
-		lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Text)
-		lbl.Color = fgColor
-		lbl.Alignment = text.Middle
-		textDims := lbl.Layout(gtx)
+	return layout.Stack{}.Layout(gtx,
+		// Background (drawn first)
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: gtx.Constraints.Min}
+			radius := gtx.Dp(th.Radius.RadiusSM)
+			rr := clip.UniformRRect(rect, radius)
 
-		rect := image.Rectangle{Max: textDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusSM)
-		rr := clip.UniformRRect(rect, radius)
+			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+			return layout.Dimensions{Size: gtx.Constraints.Min}
+		}),
 
-		return textDims
-	})
+		// Text Content (drawn on top)
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				mTheme := material.NewTheme()
+				lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Text)
+				lbl.Color = fgColor
+				lbl.Alignment = text.Middle
+				return lbl.Layout(gtx)
+			})
+		}),
+	)
 }
