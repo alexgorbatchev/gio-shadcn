@@ -123,9 +123,12 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			})
 		}),
 
-		// Drawer panel positioned on the bottom edge
+		// Drawer panel aligned to the SOUTH (bottom edge) of the viewport
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return layout.S.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			gtxDrawer := gtx
+			gtxDrawer.Constraints.Min.Y = 0
+
+			return layout.S.Layout(gtxDrawer, func(gtx layout.Context) layout.Dimensions {
 				gtx.Constraints.Min.X = gtx.Constraints.Max.X
 				gtx.Constraints.Min.Y = drawerHeightPx
 				gtx.Constraints.Max.Y = drawerHeightPx
