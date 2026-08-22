@@ -55,6 +55,28 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
 
 ---
 
+### Demos
+- [x] **Default / Info Alert**
+  - implementation:
+    - alert.go:44
+  - tests:
+    - alert_test.go:14
+- [x] **Destructive Warning Alert**
+  - implementation:
+    - alert.go:65
+  - tests:
+    - alert_test.go:24
+- [x] **With Icon**
+  - implementation:
+    - alert.go:39
+  - tests:
+    - alert_test.go:47
+- [x] **With Title & Description**
+  - implementation:
+    - alert.go:40
+  - tests:
+    - alert_test.go:53
+
 ## Code Structure & Entry Points
 - `alert.go`: Primary component widget layout and state logic.
 - `alert_test.go`: Automated unit test suite verifying layout dimensions and state updates.

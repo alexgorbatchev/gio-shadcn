@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `tabs` component implementation o
 
 ---
 
+### Demos
+- [x] **Default Tabs Header**
+  - implementation:
+    - tabs.go:70
+  - tests:
+    - tabs_test.go:32
+- [x] **Active Tab Selection**
+  - implementation:
+    - tabs.go:6
+  - tests:
+    - tabs_test.go:19
+- [x] **Secondary Variant Tabs**
+  - implementation:
+    - tabs.go:72
+  - tests:
+    - tabs_test.go:34
+
 ## Code Structure & Entry Points
 - `tabs.go`: Primary component widget layout and state logic.
 - `tabs_test.go`: Automated unit test suite verifying layout dimensions and state updates.

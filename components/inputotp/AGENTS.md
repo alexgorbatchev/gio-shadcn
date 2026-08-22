@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `inputotp` component implementati
 
 ---
 
+### Demos
+- [x] **4-Digit PIN Box**
+  - implementation:
+    - inputotp.go:62
+  - tests:
+    - inputotp_test.go:23
+- [x] **6-Digit PIN Box**
+  - implementation:
+    - inputotp.go:63
+  - tests:
+    - inputotp_test.go:33
+- [x] **Digit Active Highlight**
+  - implementation:
+    - inputotp.go:4
+  - tests:
+    - inputotp_test.go:14
+
 ## Code Structure & Entry Points
 - `inputotp.go`: Primary component widget layout and state logic.
 - `inputotp_test.go`: Automated unit test suite verifying layout dimensions and state updates.

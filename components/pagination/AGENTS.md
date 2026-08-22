@@ -50,6 +50,23 @@ Whenever adding, modifying, or refactoring the `pagination` component implementa
 
 ---
 
+### Demos
+- [x] **Standard Page Bar**
+  - implementation:
+    - pagination.go:60
+  - tests:
+    - pagination_test.go:29
+- [x] **Previous / Next Buttons**
+  - implementation:
+    - pagination.go:61
+  - tests:
+    - pagination_test.go:15
+- [x] **Active Page Highlight**
+  - implementation:
+    - pagination.go:91
+  - tests:
+    - pagination_test.go:31
+
 ## Code Structure & Entry Points
 - `pagination.go`: Primary component widget layout and state logic.
 - `pagination_test.go`: Automated unit test suite verifying layout dimensions and state updates.

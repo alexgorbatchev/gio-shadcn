@@ -1,6 +1,6 @@
 ---
 created_on: 2026-08-22 14:45
-last_modified: 2026-08-22 14:45
+last_modified: 2026-08-22 15:10
 status: current
 ---
 
@@ -30,7 +30,7 @@ Every UI component in `gio-shadcn` MUST maintain its own dedicated specification
    Must include a direct link to the corresponding `shadcn/ui` specification (`https://ui.shadcn.com/docs/components/<slug>`).
 
 2. **Line-Numbered Checklist Mapping:**
-   Every variant, capability, and feature supported by the component MUST be listed in the checklist with nested sub-bullets for `implementation` and `tests`:
+   Every variant, capability/feature, and official `shadcn/ui` demo example supported by the component MUST be listed in the checklist with nested sub-bullets for `implementation` and `tests`:
    ```markdown
    ### Variants
    - [x] **Variant Name**
@@ -45,14 +45,21 @@ Every UI component in `gio-shadcn` MUST maintain its own dedicated specification
        - <component>.go:<line_number>
      - tests:
        - <component>_test.go:<line_number>
+
+   ### Demos
+   - [x] **Official Demo Example Name**
+     - implementation:
+       - <component>.go:<line_number>
+     - tests:
+       - <component>_test.go:<line_number>
    ```
 
 3. **Distinct Test Function Requirement:**
-   - Every variant and feature capability MUST have dedicated, distinct unit test assertions in `<component>_test.go`.
+   - Every variant, feature capability, and official demo MUST have dedicated, distinct unit test assertions in `<component>_test.go`.
    - Shared or generic line numbers across different checklist items are strictly prohibited. Each checklist item must point to its own unique, manually verified implementation and test code location.
 
 4. **Maintenance Directive for Developers & AI Agents:**
-   - Whenever creating, modifying, or refactoring a component in `components/<component>/`, developers and AI agents MUST manually inspect the source files and update the line numbers and checklist items in `components/<component>/AGENTS.md`.
+   - Whenever creating, modifying, or refactoring a component in `components/<component>/`, developers and AI agents MUST manually inspect the source files and update the line numbers and checklist items for variants, features, and demos in `components/<component>/AGENTS.md`.
 
 ---
 
@@ -80,7 +87,7 @@ To prevent GPU canvas color bleeding, clipping bugs, or Metal swapchain clear pa
 
 - **Always:** Automatically record all new user instructions in the appropriate `AGENTS.md` file immediately upon receipt (check with user if existing instructions conflict).
 - **Always:** Any time code is changed such that results from running that code are changed, a test file must be changed as well; 90% code coverage is required (the `scripts/` folder is excluded from this rule).
-- **Always:** Keep `components/<component>/AGENTS.md` line numbers, variants, and test mappings accurate and up-to-date.
+- **Always:** Keep `components/<component>/AGENTS.md` line numbers, variants, features, demos, and test mappings accurate and up-to-date.
 - **Ask first:** Modifying public component constructor APIs or changing theme token color definitions in `theme/colors.go`.
 - **Never:** Use raw `paint.FillShape` with unclamped corner radii or bypass `theme.DrawRRectBackground` / `theme.DrawStroke`.
 

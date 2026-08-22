@@ -50,6 +50,23 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
 
 ---
 
+### Demos
+- [x] **Text Line Skeleton**
+  - implementation:
+    - skeleton.go:53
+  - tests:
+    - skeleton_test.go:33
+- [x] **Circular Avatar Skeleton**
+  - implementation:
+    - skeleton.go:54
+  - tests:
+    - skeleton_test.go:16
+- [x] **Card Container Skeleton**
+  - implementation:
+    - skeleton.go:55
+  - tests:
+    - skeleton_test.go:28
+
 ## Code Structure & Entry Points
 - `skeleton.go`: Primary component widget layout and state logic.
 - `skeleton_test.go`: Automated unit test suite verifying layout dimensions and state updates.

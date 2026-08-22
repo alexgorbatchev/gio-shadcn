@@ -55,6 +55,23 @@ Whenever adding, modifying, or refactoring the `toast` component implementation 
 
 ---
 
+### Demos
+- [x] **Info Toast Banner**
+  - implementation:
+    - toast.go:57
+  - tests:
+    - toast_test.go:26
+- [x] **Destructive Toast Banner**
+  - implementation:
+    - toast.go:71
+  - tests:
+    - toast_test.go:15
+- [x] **Toast Action Button**
+  - implementation:
+    - toast.go:2
+  - tests:
+    - toast_test.go:2
+
 ## Code Structure & Entry Points
 - `toast.go`: Primary component widget layout and state logic.
 - `toast_test.go`: Automated unit test suite verifying layout dimensions and state updates.

@@ -50,6 +50,23 @@ Whenever adding, modifying, or refactoring the `aspectratio` component implement
 
 ---
 
+### Demos
+- [x] **16:9 Landscape Image**
+  - implementation:
+    - aspectratio.go:42
+  - tests:
+    - aspectratio_test.go:29
+- [x] **4:3 Classic Display**
+  - implementation:
+    - aspectratio.go:43
+  - tests:
+    - aspectratio_test.go:45
+- [x] **1:1 Square Card**
+  - implementation:
+    - aspectratio.go:44
+  - tests:
+    - aspectratio_test.go:61
+
 ## Code Structure & Entry Points
 - `aspectratio.go`: Primary component widget layout and state logic.
 - `aspectratio_test.go`: Automated unit test suite verifying layout dimensions and state updates.

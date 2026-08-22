@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `empty` component implementation 
 
 ---
 
+### Demos
+- [x] **Empty State Card**
+  - implementation:
+    - empty.go:3
+  - tests:
+    - empty_test.go:2
+- [x] **With Illustrated Icon**
+  - implementation:
+    - empty.go:46
+  - tests:
+    - empty_test.go:32
+- [x] **With Action Button**
+  - implementation:
+    - empty.go:44
+  - tests:
+    - empty_test.go:43
+
 ## Code Structure & Entry Points
 - `empty.go`: Primary component widget layout and state logic.
 - `empty_test.go`: Automated unit test suite verifying layout dimensions and state updates.

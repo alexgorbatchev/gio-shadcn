@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `separator` component implementat
 
 ---
 
+### Demos
+- [x] **Horizontal Separator**
+  - implementation:
+    - separator.go:23
+  - tests:
+    - separator_test.go:16
+- [x] **Vertical Separator**
+  - implementation:
+    - separator.go:50
+  - tests:
+    - separator_test.go:15
+- [x] **Muted Stroke Line**
+  - implementation:
+    - separator.go:51
+  - tests:
+    - separator_test.go:26
+
 ## Code Structure & Entry Points
 - `separator.go`: Primary component widget layout and state logic.
 - `separator_test.go`: Automated unit test suite verifying layout dimensions and state updates.

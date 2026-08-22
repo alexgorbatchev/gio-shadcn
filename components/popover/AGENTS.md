@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
 
 ---
 
+### Demos
+- [x] **Anchored Card Popover**
+  - implementation:
+    - popover.go:3
+  - tests:
+    - popover_test.go:26
+- [x] **Filter Form Popover**
+  - implementation:
+    - popover.go:51
+  - tests:
+    - popover_test.go:15
+- [x] **Popover Trigger Button**
+  - implementation:
+    - popover.go:2
+  - tests:
+    - popover_test.go:2
+
 ## Code Structure & Entry Points
 - `popover.go`: Primary component widget layout and state logic.
 - `popover_test.go`: Automated unit test suite verifying layout dimensions and state updates.

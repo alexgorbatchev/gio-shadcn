@@ -50,6 +50,23 @@ Whenever adding, modifying, or refactoring the `radio` component implementation 
 
 ---
 
+### Demos
+- [x] **Default Radio Group**
+  - implementation:
+    - radio.go:52
+  - tests:
+    - radio_test.go:24
+- [x] **Selected Radio Option**
+  - implementation:
+    - radio.go:27
+  - tests:
+    - radio_test.go:15
+- [x] **Unselected Radio Option**
+  - implementation:
+    - radio.go:54
+  - tests:
+    - radio_test.go:26
+
 ## Code Structure & Entry Points
 - `radio.go`: Primary component widget layout and state logic.
 - `radio_test.go`: Automated unit test suite verifying layout dimensions and state updates.

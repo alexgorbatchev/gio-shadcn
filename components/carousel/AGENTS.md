@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `carousel` component implementati
 
 ---
 
+### Demos
+- [x] **Standard Horizontal Slider**
+  - implementation:
+    - carousel.go:51
+  - tests:
+    - carousel_test.go:27
+- [x] **Autoplay Slide**
+  - implementation:
+    - carousel.go:52
+  - tests:
+    - carousel_test.go:41
+- [x] **Slide Navigation Buttons**
+  - implementation:
+    - carousel.go:2
+  - tests:
+    - carousel_test.go:14
+
 ## Code Structure & Entry Points
 - `carousel.go`: Primary component widget layout and state logic.
 - `carousel_test.go`: Automated unit test suite verifying layout dimensions and state updates.

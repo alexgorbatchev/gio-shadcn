@@ -40,6 +40,18 @@ Whenever adding, modifying, or refactoring the `hovercard` component implementat
 
 ---
 
+### Demos
+- [x] **User Profile Preview**
+  - implementation:
+    - hovercard.go:50
+  - tests:
+    - hovercard_test.go:25
+- [x] **Link Detail Card**
+  - implementation:
+    - hovercard.go:51
+  - tests:
+    - hovercard_test.go:35
+
 ## Code Structure & Entry Points
 - `hovercard.go`: Primary component widget layout and state logic.
 - `hovercard_test.go`: Automated unit test suite verifying layout dimensions and state updates.

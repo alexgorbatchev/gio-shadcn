@@ -55,6 +55,23 @@ Whenever adding, modifying, or refactoring the `textarea` component implementati
 
 ---
 
+### Demos
+- [x] **Standard Text Area**
+  - implementation:
+    - textarea.go:67
+  - tests:
+    - textarea_test.go:25
+- [x] **Prefilled Track Notes**
+  - implementation:
+    - textarea.go:68
+  - tests:
+    - textarea_test.go:15
+- [x] **Disabled Text Area**
+  - implementation:
+    - textarea.go:69
+  - tests:
+    - textarea_test.go:27
+
 ## Code Structure & Entry Points
 - `textarea.go`: Primary component widget layout and state logic.
 - `textarea_test.go`: Automated unit test suite verifying layout dimensions and state updates.

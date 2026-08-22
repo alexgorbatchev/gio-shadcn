@@ -40,6 +40,18 @@ Whenever adding, modifying, or refactoring the `tooltip` component implementatio
 
 ---
 
+### Demos
+- [x] **Default Tooltip Callout**
+  - implementation:
+    - tooltip.go:44
+  - tests:
+    - tooltip_test.go:24
+- [x] **Hover Detail Tooltip**
+  - implementation:
+    - tooltip.go:4
+  - tests:
+    - tooltip_test.go:15
+
 ## Code Structure & Entry Points
 - `tooltip.go`: Primary component widget layout and state logic.
 - `tooltip_test.go`: Automated unit test suite verifying layout dimensions and state updates.

@@ -40,6 +40,23 @@ Whenever adding, modifying, or refactoring the `spinner` component implementatio
 
 ---
 
+### Demos
+- [x] **Small Spinner**
+  - implementation:
+    - spinner.go:48
+  - tests:
+    - spinner_test.go:22
+- [x] **Default Activity Spinner**
+  - implementation:
+    - spinner.go:49
+  - tests:
+    - spinner_test.go:15
+- [x] **Large Loader Spinner**
+  - implementation:
+    - spinner.go:50
+  - tests:
+    - spinner_test.go:24
+
 ## Code Structure & Entry Points
 - `spinner.go`: Primary component widget layout and state logic.
 - `spinner_test.go`: Automated unit test suite verifying layout dimensions and state updates.

@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `resizable` component implementat
 
 ---
 
+### Demos
+- [x] **Horizontal Split Panels**
+  - implementation:
+    - resizable.go:58
+  - tests:
+    - resizable_test.go:24
+- [x] **Vertical Split Panels**
+  - implementation:
+    - resizable.go:49
+  - tests:
+    - resizable_test.go:15
+- [x] **Divider Handle Drag**
+  - implementation:
+    - resizable.go:4
+  - tests:
+    - resizable_test.go:26
+
 ## Code Structure & Entry Points
 - `resizable.go`: Primary component widget layout and state logic.
 - `resizable_test.go`: Automated unit test suite verifying layout dimensions and state updates.

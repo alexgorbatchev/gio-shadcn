@@ -45,6 +45,28 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
 
 ---
 
+### Demos
+- [x] **Progress Bar (0%)**
+  - implementation:
+    - progress.go:3
+  - tests:
+    - progress_test.go:2
+- [x] **Progress Bar (35%)**
+  - implementation:
+    - progress.go:4
+  - tests:
+    - progress_test.go:1
+- [x] **Progress Bar (65%)**
+  - implementation:
+    - progress.go:2
+  - tests:
+    - progress_test.go:2
+- [x] **Progress Bar (100%)**
+  - implementation:
+    - progress.go:3
+  - tests:
+    - progress_test.go:1
+
 ## Code Structure & Entry Points
 - `progress.go`: Primary component widget layout and state logic.
 - `progress_test.go`: Automated unit test suite verifying layout dimensions and state updates.

@@ -60,6 +60,28 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
 
 ---
 
+### Demos
+- [x] **Single Open**
+  - implementation:
+    - accordion.go:56
+  - tests:
+    - accordion_test.go:14
+- [x] **Multiple Open**
+  - implementation:
+    - accordion.go:57
+  - tests:
+    - accordion_test.go:25
+- [x] **Collapsible Item**
+  - implementation:
+    - accordion.go:4
+  - tests:
+    - accordion_test.go:51
+- [x] **Custom Styling**
+  - implementation:
+    - accordion.go:59
+  - tests:
+    - accordion_test.go:66
+
 ## Code Structure & Entry Points
 - `accordion.go`: Primary component widget layout and state logic.
 - `accordion_test.go`: Automated unit test suite verifying layout dimensions and state updates.

@@ -85,6 +85,53 @@ Whenever adding, modifying, or refactoring the `button` component implementation
 
 ---
 
+### Demos
+- [x] **Default Primary**
+  - implementation:
+    - button.go:85
+  - tests:
+    - button_test.go:11
+- [x] **Secondary**
+  - implementation:
+    - button.go:113
+  - tests:
+    - button_test.go:17
+- [x] **Outline**
+  - implementation:
+    - button.go:114
+  - tests:
+    - button_test.go:25
+- [x] **Ghost**
+  - implementation:
+    - button.go:115
+  - tests:
+    - button_test.go:31
+- [x] **Destructive**
+  - implementation:
+    - button.go:116
+  - tests:
+    - button_test.go:39
+- [x] **Link**
+  - implementation:
+    - button.go:117
+  - tests:
+    - button_test.go:45
+- [x] **Icon Only**
+  - implementation:
+    - button.go:28
+  - tests:
+    - button_test.go:74
+- [x] **With Icon**
+  - implementation:
+    - button.go:41
+  - tests:
+    - button_test.go:66
+- [x] **Loading State**
+  - implementation:
+    - button.go:120
+  - tests:
+    - button_test.go:74
+
 ## Code Structure & Entry Points
 - `button.go`: Primary component widget layout and state logic.
 - `button_test.go`: Automated unit test suite verifying layout dimensions and state updates.

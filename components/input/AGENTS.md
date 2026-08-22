@@ -55,6 +55,28 @@ Whenever adding, modifying, or refactoring the `input` component implementation 
 
 ---
 
+### Demos
+- [x] **Standard Text Input**
+  - implementation:
+    - input.go:26
+  - tests:
+    - input_test.go:14
+- [x] **With Placeholder**
+  - implementation:
+    - input.go:8
+  - tests:
+    - input_test.go:30
+- [x] **Prefilled Value**
+  - implementation:
+    - input.go:270
+  - tests:
+    - input_test.go:21
+- [x] **Disabled Input**
+  - implementation:
+    - input.go:148
+  - tests:
+    - input_test.go:28
+
 ## Code Structure & Entry Points
 - `input.go`: Primary component widget layout and state logic.
 - `input_test.go`: Automated unit test suite verifying layout dimensions and state updates.

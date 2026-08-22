@@ -50,6 +50,28 @@ Whenever adding, modifying, or refactoring the `dropdownmenu` component implemen
 
 ---
 
+### Demos
+- [x] **Action Dropdown Menu**
+  - implementation:
+    - dropdownmenu.go:3
+  - tests:
+    - dropdownmenu_test.go:14
+- [x] **With Checkboxes**
+  - implementation:
+    - dropdownmenu.go:67
+  - tests:
+    - dropdownmenu_test.go:37
+- [x] **Radio Group Items**
+  - implementation:
+    - dropdownmenu.go:68
+  - tests:
+    - dropdownmenu_test.go:45
+- [x] **Shortcut Keys**
+  - implementation:
+    - dropdownmenu.go:26
+  - tests:
+    - dropdownmenu_test.go:42
+
 ## Code Structure & Entry Points
 - `dropdownmenu.go`: Primary component widget layout and state logic.
 - `dropdownmenu_test.go`: Automated unit test suite verifying layout dimensions and state updates.

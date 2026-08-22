@@ -55,6 +55,28 @@ Whenever adding, modifying, or refactoring the `breadcrumb` component implementa
 
 ---
 
+### Demos
+- [x] **Standard Path**
+  - implementation:
+    - breadcrumb.go:55
+  - tests:
+    - breadcrumb_test.go:14
+- [x] **Custom Separator**
+  - implementation:
+    - breadcrumb.go:56
+  - tests:
+    - breadcrumb_test.go:37
+- [x] **Dropdown Ellipsis**
+  - implementation:
+    - breadcrumb.go:57
+  - tests:
+    - breadcrumb_test.go:59
+- [x] **Active Link**
+  - implementation:
+    - breadcrumb.go:21
+  - tests:
+    - breadcrumb_test.go:25
+
 ## Code Structure & Entry Points
 - `breadcrumb.go`: Primary component widget layout and state logic.
 - `breadcrumb_test.go`: Automated unit test suite verifying layout dimensions and state updates.

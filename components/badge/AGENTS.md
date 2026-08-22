@@ -60,6 +60,28 @@ Whenever adding, modifying, or refactoring the `badge` component implementation 
 
 ---
 
+### Demos
+- [x] **Default Badge**
+  - implementation:
+    - badge.go:41
+  - tests:
+    - badge_test.go:13
+- [x] **Secondary Badge**
+  - implementation:
+    - badge.go:131
+  - tests:
+    - badge_test.go:22
+- [x] **Outline Badge**
+  - implementation:
+    - badge.go:131
+  - tests:
+    - badge_test.go:33
+- [x] **Destructive Badge**
+  - implementation:
+    - badge.go:134
+  - tests:
+    - badge_test.go:42
+
 ## Code Structure & Entry Points
 - `badge.go`: Primary component widget layout and state logic.
 - `badge_test.go`: Automated unit test suite verifying layout dimensions and state updates.

@@ -60,6 +60,23 @@ Whenever adding, modifying, or refactoring the `sheet` component implementation 
 
 ---
 
+### Demos
+- [x] **Side Sheet Panel (Right)**
+  - implementation:
+    - sheet.go:3
+  - tests:
+    - sheet_test.go:26
+- [x] **Track Metadata Sheet**
+  - implementation:
+    - sheet.go:193
+  - tests:
+    - sheet_test.go:15
+- [x] **Close Button & Backdrop Click**
+  - implementation:
+    - sheet.go:33
+  - tests:
+    - sheet_test.go:28
+
 ## Code Structure & Entry Points
 - `sheet.go`: Primary component widget layout and state logic.
 - `sheet_test.go`: Automated unit test suite verifying layout dimensions and state updates.

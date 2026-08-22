@@ -60,6 +60,28 @@ Whenever adding, modifying, or refactoring the `card` component implementation o
 
 ---
 
+### Demos
+- [x] **Simple Card**
+  - implementation:
+    - card.go:75
+  - tests:
+    - card_test.go:21
+- [x] **With Header & Footer**
+  - implementation:
+    - card.go:6
+  - tests:
+    - card_test.go:46
+- [x] **Form Input Card**
+  - implementation:
+    - card.go:137
+  - tests:
+    - card_test.go:54
+- [x] **Notification Card**
+  - implementation:
+    - card.go:78
+  - tests:
+    - card_test.go:58
+
 ## Code Structure & Entry Points
 - `card.go`: Primary component widget layout and state logic.
 - `card_test.go`: Automated unit test suite verifying layout dimensions and state updates.

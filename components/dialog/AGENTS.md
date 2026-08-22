@@ -55,6 +55,28 @@ Whenever adding, modifying, or refactoring the `dialog` component implementation
 
 ---
 
+### Demos
+- [x] **Modal Dialog Window**
+  - implementation:
+    - dialog.go:3
+  - tests:
+    - dialog_test.go:14
+- [x] **Custom Content Body**
+  - implementation:
+    - dialog.go:183
+  - tests:
+    - dialog_test.go:72
+- [x] **Action Buttons Row**
+  - implementation:
+    - dialog.go:191
+  - tests:
+    - dialog_test.go:67
+- [x] **Backdrop Overlay**
+  - implementation:
+    - dialog.go:40
+  - tests:
+    - dialog_test.go:24
+
 ## Code Structure & Entry Points
 - `dialog.go`: Primary component widget layout and state logic.
 - `dialog_test.go`: Automated unit test suite verifying layout dimensions and state updates.

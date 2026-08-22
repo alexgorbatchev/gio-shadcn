@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `togglegroup` component implement
 
 ---
 
+### Demos
+- [x] **Single Selection Toggle Group**
+  - implementation:
+    - togglegroup.go:23
+  - tests:
+    - togglegroup_test.go:32
+- [x] **Multiple Selection Group**
+  - implementation:
+    - togglegroup.go:71
+  - tests:
+    - togglegroup_test.go:15
+- [x] **Segmented Option Buttons**
+  - implementation:
+    - togglegroup.go:72
+  - tests:
+    - togglegroup_test.go:34
+
 ## Code Structure & Entry Points
 - `togglegroup.go`: Primary component widget layout and state logic.
 - `togglegroup_test.go`: Automated unit test suite verifying layout dimensions and state updates.

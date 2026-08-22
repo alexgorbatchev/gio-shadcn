@@ -45,6 +45,28 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
 
 ---
 
+### Demos
+- [x] **Command Palette Search Box**
+  - implementation:
+    - command.go:3
+  - tests:
+    - command_test.go:2
+- [x] **Filtered Results List**
+  - implementation:
+    - command.go:78
+  - tests:
+    - command_test.go:46
+- [x] **Keyboard Shortcuts**
+  - implementation:
+    - command.go:79
+  - tests:
+    - command_test.go:59
+- [x] **Action Items**
+  - implementation:
+    - command.go:5
+  - tests:
+    - command_test.go:15
+
 ## Code Structure & Entry Points
 - `command.go`: Primary component widget layout and state logic.
 - `command_test.go`: Automated unit test suite verifying layout dimensions and state updates.

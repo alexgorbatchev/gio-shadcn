@@ -60,6 +60,28 @@ Whenever adding, modifying, or refactoring the `drawer` component implementation
 
 ---
 
+### Demos
+- [x] **Bottom Sheet Drawer**
+  - implementation:
+    - drawer.go:3
+  - tests:
+    - drawer_test.go:14
+- [x] **Drag Handle Bar**
+  - implementation:
+    - drawer.go:85
+  - tests:
+    - drawer_test.go:73
+- [x] **Telemetry Metrics Content**
+  - implementation:
+    - drawer.go:86
+  - tests:
+    - drawer_test.go:59
+- [x] **Backdrop Click-To-Close**
+  - implementation:
+    - drawer.go:37
+  - tests:
+    - drawer_test.go:24
+
 ## Code Structure & Entry Points
 - `drawer.go`: Primary component widget layout and state logic.
 - `drawer_test.go`: Automated unit test suite verifying layout dimensions and state updates.

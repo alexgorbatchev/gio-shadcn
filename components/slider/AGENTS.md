@@ -55,6 +55,28 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
 
 ---
 
+### Demos
+- [x] **Single Thumb Range Slider**
+  - implementation:
+    - slider.go:70
+  - tests:
+    - slider_test.go:26
+- [x] **Volume Fader (65%)**
+  - implementation:
+    - slider.go:71
+  - tests:
+    - slider_test.go:15
+- [x] **Pitch Bend Slider**
+  - implementation:
+    - slider.go:72
+  - tests:
+    - slider_test.go:28
+- [x] **Disabled Slider**
+  - implementation:
+    - slider.go:28
+  - tests:
+    - slider_test.go:13
+
 ## Code Structure & Entry Points
 - `slider.go`: Primary component widget layout and state logic.
 - `slider_test.go`: Automated unit test suite verifying layout dimensions and state updates.

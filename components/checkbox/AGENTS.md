@@ -55,6 +55,28 @@ Whenever adding, modifying, or refactoring the `checkbox` component implementati
 
 ---
 
+### Demos
+- [x] **Default Checkbox**
+  - implementation:
+    - checkbox.go:53
+  - tests:
+    - checkbox_test.go:23
+- [x] **With Label**
+  - implementation:
+    - checkbox.go:42
+  - tests:
+    - checkbox_test.go:33
+- [x] **Disabled Checkbox**
+  - implementation:
+    - checkbox.go:27
+  - tests:
+    - checkbox_test.go:32
+- [x] **Form Control Checkbox**
+  - implementation:
+    - checkbox.go:93
+  - tests:
+    - checkbox_test.go:55
+
 ## Code Structure & Entry Points
 - `checkbox.go`: Primary component widget layout and state logic.
 - `checkbox_test.go`: Automated unit test suite verifying layout dimensions and state updates.

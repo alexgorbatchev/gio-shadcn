@@ -55,6 +55,23 @@ Whenever adding, modifying, or refactoring the `avatar` component implementation
 
 ---
 
+### Demos
+- [x] **Image Avatar**
+  - implementation:
+    - avatar.go:8
+  - tests:
+    - avatar_test.go:5
+- [x] **Fallback Text Initials**
+  - implementation:
+    - avatar.go:52
+  - tests:
+    - avatar_test.go:34
+- [x] **Status Badge Indicator**
+  - implementation:
+    - avatar.go:53
+  - tests:
+    - avatar_test.go:33
+
 ## Code Structure & Entry Points
 - `avatar.go`: Primary component widget layout and state logic.
 - `avatar_test.go`: Automated unit test suite verifying layout dimensions and state updates.

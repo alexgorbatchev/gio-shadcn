@@ -50,6 +50,28 @@ Whenever adding, modifying, or refactoring the `table` component implementation 
 
 ---
 
+### Demos
+- [x] **Data Grid Table**
+  - implementation:
+    - table.go:3
+  - tests:
+    - table_test.go:32
+- [x] **Header Columns**
+  - implementation:
+    - table.go:38
+  - tests:
+    - table_test.go:15
+- [x] **Selectable Data Rows**
+  - implementation:
+    - table.go:61
+  - tests:
+    - table_test.go:34
+- [x] **Row Selected State**
+  - implementation:
+    - table.go:5
+  - tests:
+    - table_test.go:16
+
 ## Code Structure & Entry Points
 - `table.go`: Primary component widget layout and state logic.
 - `table_test.go`: Automated unit test suite verifying layout dimensions and state updates.

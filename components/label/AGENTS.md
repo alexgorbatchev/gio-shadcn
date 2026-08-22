@@ -65,6 +65,23 @@ Whenever adding, modifying, or refactoring the `label` component implementation 
 
 ---
 
+### Demos
+- [x] **Form Field Label**
+  - implementation:
+    - label.go:69
+  - tests:
+    - label_test.go:21
+- [x] **Typography Scale (H1-H4)**
+  - implementation:
+    - label.go:4
+  - tests:
+    - label_test.go:14
+- [x] **Body & Muted Text**
+  - implementation:
+    - label.go:132
+  - tests:
+    - label_test.go:42
+
 ## Code Structure & Entry Points
 - `label.go`: Primary component widget layout and state logic.
 - `label_test.go`: Automated unit test suite verifying layout dimensions and state updates.

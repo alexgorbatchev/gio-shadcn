@@ -55,6 +55,23 @@ Whenever adding, modifying, or refactoring the `switch` component implementation
 
 ---
 
+### Demos
+- [x] **Off State Switch**
+  - implementation:
+    - switch.go:5
+  - tests:
+    - switch_test.go:24
+- [x] **On State Switch**
+  - implementation:
+    - switch.go:4
+  - tests:
+    - switch_test.go:9
+- [x] **Disabled Switch**
+  - implementation:
+    - switch.go:26
+  - tests:
+    - switch_test.go:26
+
 ## Code Structure & Entry Points
 - `switch.go`: Primary component widget layout and state logic.
 - `switch_test.go`: Automated unit test suite verifying layout dimensions and state updates.

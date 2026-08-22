@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `collapsible` component implement
 
 ---
 
+### Demos
+- [x] **Simple Collapsible**
+  - implementation:
+    - collapsible.go:3
+  - tests:
+    - collapsible_test.go:25
+- [x] **With Trigger Button**
+  - implementation:
+    - collapsible.go:55
+  - tests:
+    - collapsible_test.go:37
+- [x] **Nested Content Panel**
+  - implementation:
+    - collapsible.go:56
+  - tests:
+    - collapsible_test.go:47
+
 ## Code Structure & Entry Points
 - `collapsible.go`: Primary component widget layout and state logic.
 - `collapsible_test.go`: Automated unit test suite verifying layout dimensions and state updates.

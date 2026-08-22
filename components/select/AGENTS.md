@@ -45,6 +45,23 @@ Whenever adding, modifying, or refactoring the `select` component implementation
 
 ---
 
+### Demos
+- [x] **Select Dropdown Field**
+  - implementation:
+    - select.go:3
+  - tests:
+    - select_test.go:2
+- [x] **Genre Selection List**
+  - implementation:
+    - select.go:76
+  - tests:
+    - select_test.go:15
+- [x] **Active Selected Option**
+  - implementation:
+    - select.go:77
+  - tests:
+    - select_test.go:30
+
 ## Code Structure & Entry Points
 - `select.go`: Primary component widget layout and state logic.
 - `select_test.go`: Automated unit test suite verifying layout dimensions and state updates.

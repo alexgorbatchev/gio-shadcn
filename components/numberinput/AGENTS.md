@@ -50,6 +50,23 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
 
 ---
 
+### Demos
+- [x] **BPM Stepper (128)**
+  - implementation:
+    - numberinput.go:76
+  - tests:
+    - numberinput_test.go:27
+- [x] **Gain Range Input (-12 to +12)**
+  - implementation:
+    - numberinput.go:77
+  - tests:
+    - numberinput_test.go:15
+- [x] **Min/Max Bounded Stepper**
+  - implementation:
+    - numberinput.go:78
+  - tests:
+    - numberinput_test.go:29
+
 ## Code Structure & Entry Points
 - `numberinput.go`: Primary component widget layout and state logic.
 - `numberinput_test.go`: Automated unit test suite verifying layout dimensions and state updates.
