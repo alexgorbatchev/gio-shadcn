@@ -103,12 +103,10 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 		radius = styles.Radius
 	}
 
-	// Measure content dimensions with unconstrained max bounds
+	// Measure content dimensions bounded by parent max constraints
 	gtxContent := gtx
-	gtxContent.Constraints = layout.Constraints{
-		Min: image.Pt(0, 0),
-		Max: image.Pt(1e6, 1e6),
-	}
+	gtxContent.Constraints.Min = image.Pt(0, 0)
+	gtxContent.Constraints.Max = gtx.Constraints.Max
 
 	contentDims := padding.Layout(gtxContent, content)
 	cardSize := contentDims.Size

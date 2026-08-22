@@ -72,7 +72,7 @@ func (t *Theme) ToggleDark() {
 	}
 }
 
-// DrawRRectBackground safely draws a rounded rectangle fill with isolated push/pop clips and color state reset.
+// DrawRRectBackground safely draws a rounded rectangle fill with isolated push/pop clips.
 func DrawRRectBackground(gtx layout.Context, rect image.Rectangle, radius int, c color.NRGBA) {
 	if c.A == 0 || rect.Dx() <= 0 || rect.Dy() <= 0 {
 		return
@@ -82,10 +82,9 @@ func DrawRRectBackground(gtx layout.Context, rect image.Rectangle, radius int, c
 	paint.ColorOp{Color: c}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 	cl.Pop()
-	paint.ColorOp{Color: color.NRGBA{R: 9, G: 9, B: 11, A: 255}}.Add(gtx.Ops)
 }
 
-// DrawStroke safely draws a stroke path with isolated push/pop clips and color state reset.
+// DrawStroke safely draws a stroke path with isolated push/pop clips.
 func DrawStroke(gtx layout.Context, path clip.PathSpec, width float32, c color.NRGBA) {
 	if width <= 0 || c.A == 0 {
 		return
@@ -98,7 +97,6 @@ func DrawStroke(gtx layout.Context, path clip.PathSpec, width float32, c color.N
 	paint.ColorOp{Color: c}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 	cl.Pop()
-	paint.ColorOp{Color: color.NRGBA{R: 9, G: 9, B: 11, A: 255}}.Add(gtx.Ops)
 }
 
 func ValidateTheme(t *Theme) error {
