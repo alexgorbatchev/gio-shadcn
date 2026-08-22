@@ -73,7 +73,11 @@ func (p *Progress) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 		progressColor = styles.Background
 	}
 
-	radius := gtx.Dp(th.Radius.RadiusFull)
+	// Clamp radius to half height to prevent Gio vector clip mask overflow
+	radius := heightPx / 2
+	if radius <= 0 {
+		radius = 1
+	}
 
 	// Draw background track
 	trackRect := image.Rectangle{Max: size}

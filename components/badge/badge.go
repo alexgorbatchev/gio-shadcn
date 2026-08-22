@@ -91,7 +91,10 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	dims := layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			rect := image.Rectangle{Max: badgeSize}
-			radiusPx := gtx.Dp(th.Radius.RadiusFull)
+			radiusPx := badgeSize.Y / 2
+			if radiusPx <= 0 {
+				radiusPx = 1
+			}
 
 			bgClip := clip.Rect{Max: badgeSize}.Push(gtx.Ops)
 			theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
