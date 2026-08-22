@@ -9,7 +9,7 @@ Whenever adding, modifying, or refactoring the `pagination` component implementa
 1. **Maintain Parity:** Preserve strict 100% visual token and feature parity with `shadcn/ui` and the source-of-truth Flutter POC implementation.
 2. **Keep Checklist Updated:** Update the feature checklist below if new variants, subcomponents, configuration options, or interactive states are added.
 3. **GPU State Safety:** Ensure all rounded rectangle drawings pass through `theme.DrawRRectBackground` / `theme.DrawStroke` with radius clamped to half the component height (`heightPx / 2`).
-4. **Prevent Color State Leaks:** End all `Layout` functions with an explicit GPU color state reset:
+4. **Prevent Color State Leaking:** End all `Layout` functions with an explicit GPU color state reset:
    ```go
    paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
    ```
@@ -20,52 +20,52 @@ Whenever adding, modifying, or refactoring the `pagination` component implementa
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Pagination Bar**
+- [x] **Standard Page Bar (Pages 1-5)**
   - implementation:
-    - pagination.go:38
+    - pagination.go:39
   - tests:
     - pagination_test.go:13
-
-### Capabilities & Features
-- [x] **Previous Page Button**
-  - implementation:
-    - pagination.go:64
-  - tests:
-    - pagination_test.go:13
-- [x] **Next Page Button**
-  - implementation:
-    - pagination.go:71
-  - tests:
-    - pagination_test.go:13
-- [x] **Page Number Buttons**
-  - implementation:
-    - pagination.go:94
-  - tests:
-    - pagination_test.go:23
-- [x] **Active Page Highlight**
-  - implementation:
-    - pagination.go:124
-  - tests:
-    - pagination_test.go:18
-
----
-
-### Demos
-- [x] **Standard Page Bar**
-  - implementation:
-    - pagination.go:60
-  - tests:
-    - pagination_test.go:29
-- [x] **Previous / Next Buttons**
-  - implementation:
-    - pagination.go:61
-  - tests:
-    - pagination_test.go:15
-- [x] **Active Page Highlight**
+- [x] **Active Page Highlight Variant**
   - implementation:
     - pagination.go:91
   - tests:
-    - pagination_test.go:31
+    - pagination_test.go:23
+
+### Capabilities & Features
+- [x] **Previous / Next Navigation Buttons**
+  - implementation:
+    - pagination.go:83
+  - tests:
+    - pagination_test.go:33
+- [x] **OnSelectPage Event Callback**
+  - implementation:
+    - pagination.go:67
+  - tests:
+    - pagination_test.go:50
+- [x] **Page Button Hover & Active Styling**
+  - implementation:
+    - pagination.go:116
+  - tests:
+    - pagination_test.go:33
+
+### Demos
+- [x] **Standard Pagination**
+  - implementation:
+    - pagination.go:39
+  - tests:
+    - pagination_test.go:13
+- [x] **Previous / Next Buttons**
+  - implementation:
+    - pagination.go:83
+  - tests:
+    - pagination_test.go:33
+- [x] **Page Controls**
+  - implementation:
+    - pagination.go:90
+  - tests:
+    - pagination_test.go:23
+
+---
 
 ## Code Structure & Entry Points
 - `pagination.go`: Primary component widget layout and state logic.

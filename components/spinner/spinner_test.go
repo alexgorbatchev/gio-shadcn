@@ -6,19 +6,40 @@ import (
 
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/unit"
 	"github.com/bnema/gio-shadcn/components/spinner"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestSpinnerCreation(t *testing.T) {
-	sp := spinner.New(spinner.Config{})
+func TestSpinnerSmallSize(t *testing.T) {
+	sp := spinner.New(spinner.Config{
+		Size: unit.Dp(16),
+	})
 
-	if sp.Size <= 0 {
-		t.Errorf("expected Size to be > 0, got %v", sp.Size)
+	if sp.Size != unit.Dp(16) {
+		t.Errorf("expected Size 16dp, got %v", sp.Size)
 	}
 }
 
-func TestSpinnerLayout(t *testing.T) {
+func TestSpinnerDefaultSize(t *testing.T) {
+	sp := spinner.New(spinner.Config{})
+
+	if sp.Size != unit.Dp(24) {
+		t.Errorf("expected default Size 24dp, got %v", sp.Size)
+	}
+}
+
+func TestSpinnerLargeSize(t *testing.T) {
+	sp := spinner.New(spinner.Config{
+		Size: unit.Dp(48),
+	})
+
+	if sp.Size != unit.Dp(48) {
+		t.Errorf("expected Size 48dp, got %v", sp.Size)
+	}
+}
+
+func TestSpinnerArcStrokeLayout(t *testing.T) {
 	th := theme.NewDark()
 	sp := spinner.New(spinner.Config{})
 

@@ -20,67 +20,97 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Single Open Item**
+- [x] **Single Open Mode (`TypeSingle`)**
   - implementation:
-    - accordion.go:27
+    - accordion.go:107
   - tests:
     - accordion_test.go:13
-- [x] **Multiple Open Items**
+- [x] **Multiple Open Mode (`TypeMultiple`)**
   - implementation:
-    - accordion.go:34
+    - accordion.go:114
   - tests:
-    - accordion_test.go:24
-- [x] **Collapsed State**
-  - implementation:
-    - accordion.go:55
-  - tests:
-    - accordion_test.go:35
-
-### Capabilities & Features
-- [x] **Expand/Collapse Animation State**
-  - implementation:
-    - accordion.go:63
-  - tests:
-    - accordion_test.go:45
-- [x] **Item Header Button**
+    - accordion_test.go:25
+- [x] **Disabled Item State (`Disabled`)**
   - implementation:
     - accordion.go:106
   - tests:
+    - accordion_test.go:37
+- [x] **Borderless Variant (`Borderless`)**
+  - implementation:
+    - accordion.go:220
+  - tests:
     - accordion_test.go:61
-- [x] **Item Content Panel**
-  - implementation:
-    - accordion.go:131
-  - tests:
-    - accordion_test.go:68
-- [x] **Border Dividers**
-  - implementation:
-    - accordion.go:144
-  - tests:
-    - accordion_test.go:75
 
----
-
-### Demos
-- [x] **Single Open**
+### Capabilities & Features
+- [x] **Expand / Collapse Toggle**
   - implementation:
-    - accordion.go:56
+    - accordion.go:107
   - tests:
-    - accordion_test.go:14
-- [x] **Multiple Open**
+    - accordion_test.go:13
+- [x] **Custom Icon Indicator**
   - implementation:
-    - accordion.go:57
+    - accordion.go:180
+  - tests:
+    - accordion_test.go:49
+- [x] **Custom Header Widget**
+  - implementation:
+    - accordion.go:167
+  - tests:
+    - accordion_test.go:49
+- [x] **Nested Content Widget**
+  - implementation:
+    - accordion.go:204
+  - tests:
+    - accordion_test.go:72
+- [x] **Border & Background Drawing**
+  - implementation:
+    - accordion.go:221
+  - tests:
+    - accordion_test.go:87
+
+### Demos (All 8 Official shadcn Demos)
+- [x] **1. Single Open Accordion (Default)**
+  - implementation:
+    - accordion.go:107
+  - tests:
+    - accordion_test.go:13
+- [x] **2. Multiple Open Accordion**
+  - implementation:
+    - accordion.go:114
   - tests:
     - accordion_test.go:25
-- [x] **Collapsible Item**
+- [x] **3. Disabled Item Accordion**
   - implementation:
-    - accordion.go:4
+    - accordion.go:106
   - tests:
-    - accordion_test.go:51
-- [x] **Custom Styling**
+    - accordion_test.go:37
+- [x] **4. Chevron Icon Accordion**
   - implementation:
-    - accordion.go:59
+    - accordion.go:180
   - tests:
-    - accordion_test.go:66
+    - accordion_test.go:49
+- [x] **5. Custom Header with Badge Tag**
+  - implementation:
+    - accordion.go:167
+  - tests:
+    - accordion_test.go:49
+- [x] **6. Borderless Variant Accordion**
+  - implementation:
+    - accordion.go:220
+  - tests:
+    - accordion_test.go:61
+- [x] **7. Nested Accordion**
+  - implementation:
+    - accordion.go:204
+  - tests:
+    - accordion_test.go:72
+- [x] **8. Controlled Accordion State**
+  - implementation:
+    - accordion.go:107
+  - tests:
+    - accordion_test.go:25
+
+---
 
 ## Code Structure & Entry Points
 - `accordion.go`: Primary component widget layout and state logic.

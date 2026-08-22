@@ -22,65 +22,65 @@ Whenever adding, modifying, or refactoring the `badge` component implementation 
 ### Variants
 - [x] **Default / Primary Badge**
   - implementation:
-    - badge.go:135
+    - badge.go:133
   - tests:
-    - badge_test.go:12
+    - badge_test.go:13
 - [x] **Secondary Badge**
+  - implementation:
+    - badge.go:127
+  - tests:
+    - badge_test.go:23
+- [x] **Outline Badge**
   - implementation:
     - badge.go:129
   - tests:
-    - badge_test.go:22
-- [x] **Outline Badge**
+    - badge_test.go:33
+- [x] **Destructive Badge**
   - implementation:
     - badge.go:131
   - tests:
-    - badge_test.go:32
-- [x] **Destructive Badge**
-  - implementation:
-    - badge.go:133
-  - tests:
-    - badge_test.go:42
+    - badge_test.go:43
 
 ### Capabilities & Features
 - [x] **Full Rounded Radius**
   - implementation:
-    - badge.go:94
+    - badge.go:96
   - tests:
-    - badge_test.go:52
+    - badge_test.go:53
 - [x] **XS Typography Label**
   - implementation:
-    - badge.go:78
+    - badge.go:80
   - tests:
-    - badge_test.go:66
+    - badge_test.go:67
 - [x] **Compact Padding**
   - implementation:
     - badge.go:58
   - tests:
     - badge_test.go:80
 
----
-
-### Demos
-- [x] **Default Badge**
+### Demos (Official shadcn Demos)
+- [x] **1. Default Badge**
   - implementation:
-    - badge.go:41
+    - badge.go:133
   - tests:
     - badge_test.go:13
-- [x] **Secondary Badge**
+- [x] **2. Secondary Badge**
   - implementation:
-    - badge.go:131
+    - badge.go:127
   - tests:
-    - badge_test.go:22
-- [x] **Outline Badge**
+    - badge_test.go:23
+- [x] **3. Outline Badge**
   - implementation:
-    - badge.go:131
+    - badge.go:129
   - tests:
     - badge_test.go:33
-- [x] **Destructive Badge**
+- [x] **4. Destructive Badge**
   - implementation:
-    - badge.go:134
+    - badge.go:131
   - tests:
-    - badge_test.go:42
+    - badge_test.go:43
+
+---
 
 ## Code Structure & Entry Points
 - `badge.go`: Primary component widget layout and state logic.

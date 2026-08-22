@@ -20,47 +20,42 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Anchored Popover Card**
+- [x] **Anchored Popover Card (Open)**
   - implementation:
-    - popover.go:36
+    - popover.go:37
   - tests:
     - popover_test.go:13
+- [x] **Closed Popover State**
+  - implementation:
+    - popover.go:48
+  - tests:
+    - popover_test.go:23
 
 ### Capabilities & Features
-- [x] **Popover Trigger Button**
+- [x] **Title & Description Layout**
   - implementation:
-    - popover.go:49
+    - popover.go:76
   - tests:
-    - popover_test.go:13
-- [x] **Card Content Container**
+    - popover_test.go:39
+- [x] **Popover Card Background & Border**
   - implementation:
-    - popover.go:81
+    - popover.go:102
   - tests:
-    - popover_test.go:33
-- [x] **Open/Close State**
-  - implementation:
-    - popover.go:50
-  - tests:
-    - popover_test.go:20
-
----
+    - popover_test.go:39
 
 ### Demos
-- [x] **Anchored Card Popover**
+- [x] **Anchored Popover Card**
   - implementation:
-    - popover.go:3
+    - popover.go:37
   - tests:
-    - popover_test.go:26
+    - popover_test.go:13
 - [x] **Filter Form Popover**
   - implementation:
-    - popover.go:51
+    - popover.go:76
   - tests:
-    - popover_test.go:15
-- [x] **Popover Trigger Button**
-  - implementation:
-    - popover.go:2
-  - tests:
-    - popover_test.go:2
+    - popover_test.go:39
+
+---
 
 ## Code Structure & Entry Points
 - `popover.go`: Primary component widget layout and state logic.

@@ -22,50 +22,55 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
 ### Variants
 - [x] **Command Palette Search Box**
   - implementation:
-    - command.go:58
+    - command.go:35
   - tests:
     - command_test.go:13
 
 ### Capabilities & Features
-- [x] **Search Input Filter**
+- [x] **Search Input Filter (`searchEditor`)**
   - implementation:
     - command.go:88
   - tests:
     - command_test.go:24
-- [x] **Command Item List**
-  - implementation:
-    - command.go:107
-  - tests:
-    - command_test.go:42
-- [x] **Shortcut Badges**
-  - implementation:
-    - command.go:171
-  - tests:
-    - command_test.go:53
-
----
-
-### Demos
-- [x] **Command Palette Search Box**
-  - implementation:
-    - command.go:3
-  - tests:
-    - command_test.go:2
 - [x] **Filtered Results List**
   - implementation:
-    - command.go:78
+    - command.go:102
   - tests:
-    - command_test.go:46
-- [x] **Keyboard Shortcuts**
+    - command_test.go:42
+- [x] **Keyboard Shortcut Badges**
   - implementation:
-    - command.go:79
+    - command.go:151
   - tests:
-    - command_test.go:59
-- [x] **Action Items**
+    - command_test.go:52
+- [x] **Hover State Highlight**
   - implementation:
-    - command.go:5
+    - command.go:161
   - tests:
-    - command_test.go:15
+    - command_test.go:24
+
+### Demos (Official shadcn Demos)
+- [x] **1. Command Dialog**
+  - implementation:
+    - command.go:76
+  - tests:
+    - command_test.go:13
+- [x] **2. Search Filter List**
+  - implementation:
+    - command.go:102
+  - tests:
+    - command_test.go:24
+- [x] **3. Keyboard Shortcuts**
+  - implementation:
+    - command.go:151
+  - tests:
+    - command_test.go:52
+- [x] **4. Action Items Selection**
+  - implementation:
+    - command.go:106
+  - tests:
+    - command_test.go:42
+
+---
 
 ## Code Structure & Entry Points
 - `command.go`: Primary component widget layout and state logic.

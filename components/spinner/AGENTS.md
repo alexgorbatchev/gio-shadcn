@@ -20,42 +20,52 @@ Whenever adding, modifying, or refactoring the `spinner` component implementatio
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Activity Loading Spinner**
+- [x] **Small Spinner (16dp)**
   - implementation:
-    - spinner.go:34
+    - spinner.go:32
   - tests:
     - spinner_test.go:13
-
-### Capabilities & Features
-- [x] **Circular Arc Stroke**
+- [x] **Default Activity Spinner (24dp)**
   - implementation:
-    - spinner.go:68
-  - tests:
-    - spinner_test.go:31
-- [x] **Spin Animation Indicator**
-  - implementation:
-    - spinner.go:88
-  - tests:
-    - spinner_test.go:33
-
----
-
-### Demos
-- [x] **Small Spinner**
-  - implementation:
-    - spinner.go:48
+    - spinner.go:32
   - tests:
     - spinner_test.go:22
-- [x] **Default Activity Spinner**
+- [x] **Large Loader Spinner (48dp)**
   - implementation:
-    - spinner.go:49
+    - spinner.go:32
   - tests:
-    - spinner_test.go:15
-- [x] **Large Loader Spinner**
+    - spinner_test.go:31
+
+### Capabilities & Features
+- [x] **Circular Arc Stroke Path**
   - implementation:
-    - spinner.go:50
+    - spinner.go:75
   - tests:
-    - spinner_test.go:24
+    - spinner_test.go:40
+- [x] **Spin Animation Indicator**
+  - implementation:
+    - spinner.go:47
+  - tests:
+    - spinner_test.go:40
+
+### Demos
+- [x] **Small Spinner Demo**
+  - implementation:
+    - spinner.go:32
+  - tests:
+    - spinner_test.go:13
+- [x] **Default Activity Spinner Demo**
+  - implementation:
+    - spinner.go:32
+  - tests:
+    - spinner_test.go:22
+- [x] **Large Loader Spinner Demo**
+  - implementation:
+    - spinner.go:32
+  - tests:
+    - spinner_test.go:31
+
+---
 
 ## Code Structure & Entry Points
 - `spinner.go`: Primary component widget layout and state logic.

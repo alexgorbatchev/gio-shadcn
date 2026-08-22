@@ -22,65 +22,65 @@ Whenever adding, modifying, or refactoring the `card` component implementation o
 ### Variants
 - [x] **Default Card**
   - implementation:
-    - card.go:42
+    - card.go:68
   - tests:
     - card_test.go:13
 - [x] **Header + Content + Footer Layout**
   - implementation:
-    - card.go:133
+    - card.go:74
   - tests:
     - card_test.go:20
 
 ### Capabilities & Features
 - [x] **Card Title**
   - implementation:
-    - card.go:215
+    - card.go:217
   - tests:
-    - card_test.go:43
+    - card_test.go:42
 - [x] **Card Description**
   - implementation:
-    - card.go:240
+    - card.go:238
   - tests:
-    - card_test.go:50
+    - card_test.go:49
 - [x] **Card Content Area**
   - implementation:
-    - card.go:258
+    - card.go:256
   - tests:
-    - card_test.go:57
+    - card_test.go:56
 - [x] **Card Footer**
   - implementation:
-    - card.go:276
+    - card.go:272
   - tests:
-    - card_test.go:64
+    - card_test.go:63
 - [x] **Border Stroke & Rounded Radius**
   - implementation:
-    - card.go:142
+    - card.go:136
   - tests:
-    - card_test.go:71
+    - card_test.go:70
+
+### Demos (Official shadcn Demos)
+- [x] **1. Simple Card**
+  - implementation:
+    - card.go:68
+  - tests:
+    - card_test.go:13
+- [x] **2. With Header & Footer**
+  - implementation:
+    - card.go:74
+  - tests:
+    - card_test.go:20
+- [x] **3. Form Input Card**
+  - implementation:
+    - card.go:256
+  - tests:
+    - card_test.go:56
+- [x] **4. Notification Card**
+  - implementation:
+    - card.go:238
+  - tests:
+    - card_test.go:49
 
 ---
-
-### Demos
-- [x] **Simple Card**
-  - implementation:
-    - card.go:75
-  - tests:
-    - card_test.go:21
-- [x] **With Header & Footer**
-  - implementation:
-    - card.go:6
-  - tests:
-    - card_test.go:46
-- [x] **Form Input Card**
-  - implementation:
-    - card.go:137
-  - tests:
-    - card_test.go:54
-- [x] **Notification Card**
-  - implementation:
-    - card.go:78
-  - tests:
-    - card_test.go:58
 
 ## Code Structure & Entry Points
 - `card.go`: Primary component widget layout and state logic.

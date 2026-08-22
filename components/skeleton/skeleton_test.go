@@ -11,14 +11,36 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestSkeletonCreation(t *testing.T) {
+func TestSkeletonTextLineVariant(t *testing.T) {
 	sk := skeleton.New(skeleton.Config{
-		Width:  unit.Dp(150),
-		Height: unit.Dp(30),
+		Width:  unit.Dp(180),
+		Height: unit.Dp(16),
 	})
 
-	if sk.Width != unit.Dp(150) {
-		t.Errorf("expected Width to be 150dp, got %v", sk.Width)
+	if sk.Width != unit.Dp(180) || sk.Height != unit.Dp(16) {
+		t.Errorf("expected text line skeleton 180x16dp")
+	}
+}
+
+func TestSkeletonAvatarCircleVariant(t *testing.T) {
+	sk := skeleton.New(skeleton.Config{
+		Width:  unit.Dp(40),
+		Height: unit.Dp(40),
+	})
+
+	if sk.Width != unit.Dp(40) || sk.Height != unit.Dp(40) {
+		t.Errorf("expected avatar circle skeleton 40x40dp")
+	}
+}
+
+func TestSkeletonCardContainerVariant(t *testing.T) {
+	sk := skeleton.New(skeleton.Config{
+		Width:  unit.Dp(300),
+		Height: unit.Dp(120),
+	})
+
+	if sk.Width != unit.Dp(300) || sk.Height != unit.Dp(120) {
+		t.Errorf("expected card container skeleton 300x120dp")
 	}
 }
 

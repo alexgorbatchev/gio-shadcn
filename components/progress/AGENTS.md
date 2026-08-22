@@ -20,52 +20,62 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Linear Progress Bar**
+- [x] **0% Fill Level**
   - implementation:
     - progress.go:34
   - tests:
     - progress_test.go:13
+- [x] **65% Fill Level**
+  - implementation:
+    - progress.go:88
+  - tests:
+    - progress_test.go:20
+- [x] **100% Fill Level**
+  - implementation:
+    - progress.go:88
+  - tests:
+    - progress_test.go:27
 
 ### Capabilities & Features
-- [x] **Background Track**
+- [x] **Clamped Corner Radius (`heightPx / 2`)**
   - implementation:
-    - progress.go:83
+    - progress.go:78
   - tests:
-    - progress_test.go:33
-- [x] **Filled Progress Portion**
+    - progress_test.go:34
+- [x] **Background Track & Filled Bar Layout**
   - implementation:
-    - progress.go:89
+    - progress.go:85
   - tests:
-    - progress_test.go:25
-- [x] **Clamped Radius Half-Height**
+    - progress_test.go:48
+- [x] **GPU Color State Reset**
   - implementation:
-    - progress.go:76
+    - progress.go:96
   - tests:
-    - progress_test.go:33
-
----
+    - progress_test.go:34
 
 ### Demos
 - [x] **Progress Bar (0%)**
   - implementation:
-    - progress.go:3
+    - progress.go:34
   - tests:
-    - progress_test.go:2
+    - progress_test.go:13
 - [x] **Progress Bar (35%)**
   - implementation:
-    - progress.go:4
+    - progress.go:88
   - tests:
-    - progress_test.go:1
+    - progress_test.go:20
 - [x] **Progress Bar (65%)**
   - implementation:
-    - progress.go:2
+    - progress.go:88
   - tests:
-    - progress_test.go:2
+    - progress_test.go:20
 - [x] **Progress Bar (100%)**
   - implementation:
-    - progress.go:3
+    - progress.go:88
   - tests:
-    - progress_test.go:1
+    - progress_test.go:27
+
+---
 
 ## Code Structure & Entry Points
 - `progress.go`: Primary component widget layout and state logic.

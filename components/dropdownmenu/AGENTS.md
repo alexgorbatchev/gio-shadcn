@@ -22,55 +22,55 @@ Whenever adding, modifying, or refactoring the `dropdownmenu` component implemen
 ### Variants
 - [x] **Action Dropdown Menu**
   - implementation:
-    - dropdownmenu.go:53
+    - dropdownmenu.go:35
   - tests:
     - dropdownmenu_test.go:13
 
 ### Capabilities & Features
-- [x] **Menu Trigger Button**
+- [x] **Menu Item List**
   - implementation:
-    - dropdownmenu.go:65
-  - tests:
-    - dropdownmenu_test.go:25
-- [x] **Menu Items**
-  - implementation:
-    - dropdownmenu.go:28
+    - dropdownmenu.go:21
   - tests:
     - dropdownmenu_test.go:34
 - [x] **Keyboard Shortcut Badges**
   - implementation:
-    - dropdownmenu.go:138
+    - dropdownmenu.go:136
   - tests:
     - dropdownmenu_test.go:41
-- [x] **Open/Close State**
+- [x] **Open / Close State Toggle**
   - implementation:
-    - dropdownmenu.go:66
+    - dropdownmenu.go:70
+  - tests:
+    - dropdownmenu_test.go:48
+- [x] **Hover Highlight State**
+  - implementation:
+    - dropdownmenu.go:147
   - tests:
     - dropdownmenu_test.go:48
 
----
+### Demos (Official shadcn Demos)
+- [x] **1. Action Dropdown Menu**
+  - implementation:
+    - dropdownmenu.go:58
+  - tests:
+    - dropdownmenu_test.go:13
+- [x] **2. Menu Trigger Button**
+  - implementation:
+    - dropdownmenu.go:70
+  - tests:
+    - dropdownmenu_test.go:25
+- [x] **3. Menu Items List**
+  - implementation:
+    - dropdownmenu.go:128
+  - tests:
+    - dropdownmenu_test.go:34
+- [x] **4. Keyboard Shortcuts**
+  - implementation:
+    - dropdownmenu.go:136
+  - tests:
+    - dropdownmenu_test.go:41
 
-### Demos
-- [x] **Action Dropdown Menu**
-  - implementation:
-    - dropdownmenu.go:3
-  - tests:
-    - dropdownmenu_test.go:14
-- [x] **With Checkboxes**
-  - implementation:
-    - dropdownmenu.go:67
-  - tests:
-    - dropdownmenu_test.go:37
-- [x] **Radio Group Items**
-  - implementation:
-    - dropdownmenu.go:68
-  - tests:
-    - dropdownmenu_test.go:45
-- [x] **Shortcut Keys**
-  - implementation:
-    - dropdownmenu.go:26
-  - tests:
-    - dropdownmenu_test.go:42
+---
 
 ## Code Structure & Entry Points
 - `dropdownmenu.go`: Primary component widget layout and state logic.

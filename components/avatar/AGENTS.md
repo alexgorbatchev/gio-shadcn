@@ -22,12 +22,12 @@ Whenever adding, modifying, or refactoring the `avatar` component implementation
 ### Variants
 - [x] **Text Initials Avatar**
   - implementation:
-    - avatar.go:43
+    - avatar.go:37
   - tests:
     - avatar_test.go:14
 - [x] **Image Avatar Placeholder**
   - implementation:
-    - avatar.go:18
+    - avatar.go:32
   - tests:
     - avatar_test.go:23
 - [x] **Online Status Badge Indicator**
@@ -39,38 +39,38 @@ Whenever adding, modifying, or refactoring the `avatar` component implementation
 ### Capabilities & Features
 - [x] **Circular Clip Ellipse**
   - implementation:
-    - avatar.go:68
+    - avatar.go:73
   - tests:
-    - avatar_test.go:43
+    - avatar_test.go:42
 - [x] **Custom Sizes (32px, 40px, 56px)**
   - implementation:
-    - avatar.go:40
+    - avatar.go:33
   - tests:
-    - avatar_test.go:59
+    - avatar_test.go:58
 - [x] **Status Dot Indicator**
   - implementation:
     - avatar.go:118
   - tests:
-    - avatar_test.go:67
+    - avatar_test.go:66
+
+### Demos (Official shadcn Demos)
+- [x] **1. Image Avatar**
+  - implementation:
+    - avatar.go:32
+  - tests:
+    - avatar_test.go:23
+- [x] **2. Fallback Text Initials**
+  - implementation:
+    - avatar.go:37
+  - tests:
+    - avatar_test.go:14
+- [x] **3. Status Badge Indicator**
+  - implementation:
+    - avatar.go:106
+  - tests:
+    - avatar_test.go:32
 
 ---
-
-### Demos
-- [x] **Image Avatar**
-  - implementation:
-    - avatar.go:8
-  - tests:
-    - avatar_test.go:5
-- [x] **Fallback Text Initials**
-  - implementation:
-    - avatar.go:52
-  - tests:
-    - avatar_test.go:34
-- [x] **Status Badge Indicator**
-  - implementation:
-    - avatar.go:53
-  - tests:
-    - avatar_test.go:33
 
 ## Code Structure & Entry Points
 - `avatar.go`: Primary component widget layout and state logic.

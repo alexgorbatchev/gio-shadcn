@@ -20,62 +20,67 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Range Slider Fader**
+- [x] **Single Thumb Range Slider**
   - implementation:
     - slider.go:44
   - tests:
     - slider_test.go:13
+- [x] **Disabled Slider State**
+  - implementation:
+    - slider.go:128
+  - tests:
+    - slider_test.go:25
 
 ### Capabilities & Features
 - [x] **Interactive Pointer Drag**
   - implementation:
     - slider.go:88
   - tests:
-    - slider_test.go:25
+    - slider_test.go:37
 - [x] **Min / Max Value Range**
   - implementation:
     - slider.go:45
   - tests:
-    - slider_test.go:16
+    - slider_test.go:13
 - [x] **Track Fill Portion**
   - implementation:
     - slider.go:151
   - tests:
-    - slider_test.go:33
+    - slider_test.go:50
 - [x] **Circular Thumb Knob**
   - implementation:
-    - slider.go:160
+    - slider.go:161
   - tests:
-    - slider_test.go:33
+    - slider_test.go:50
 - [x] **Clamped Radius Half-Height**
   - implementation:
     - slider.go:142
   - tests:
-    - slider_test.go:33
-
----
+    - slider_test.go:50
 
 ### Demos
-- [x] **Single Thumb Range Slider**
+- [x] **Single Thumb Range Slider Demo**
   - implementation:
-    - slider.go:70
-  - tests:
-    - slider_test.go:26
-- [x] **Volume Fader (65%)**
-  - implementation:
-    - slider.go:71
-  - tests:
-    - slider_test.go:15
-- [x] **Pitch Bend Slider**
-  - implementation:
-    - slider.go:72
-  - tests:
-    - slider_test.go:28
-- [x] **Disabled Slider**
-  - implementation:
-    - slider.go:28
+    - slider.go:44
   - tests:
     - slider_test.go:13
+- [x] **Volume Fader (65%) Demo**
+  - implementation:
+    - slider.go:44
+  - tests:
+    - slider_test.go:13
+- [x] **Pitch Bend Slider Demo**
+  - implementation:
+    - slider.go:44
+  - tests:
+    - slider_test.go:13
+- [x] **Disabled Slider Demo**
+  - implementation:
+    - slider.go:128
+  - tests:
+    - slider_test.go:25
+
+---
 
 ## Code Structure & Entry Points
 - `slider.go`: Primary component widget layout and state logic.

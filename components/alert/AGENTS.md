@@ -22,10 +22,10 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
 ### Variants
 - [x] **Default / Info Alert**
   - implementation:
-    - alert.go:40
+    - alert.go:42
   - tests:
     - alert_test.go:13
-- [x] **Destructive / Warning Alert**
+- [x] **Destructive Warning Alert**
   - implementation:
     - alert.go:63
   - tests:
@@ -34,48 +34,48 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
 ### Capabilities & Features
 - [x] **Title Header**
   - implementation:
-    - alert.go:96
+    - alert.go:94
   - tests:
     - alert_test.go:33
 - [x] **Description Body**
   - implementation:
-    - alert.go:111
+    - alert.go:109
   - tests:
-    - alert_test.go:43
+    - alert_test.go:42
 - [x] **Variant Background Styling**
   - implementation:
-    - alert.go:64
+    - alert.go:121
   - tests:
-    - alert_test.go:53
+    - alert_test.go:51
 - [x] **Border Stroke**
   - implementation:
-    - alert.go:127
+    - alert.go:124
   - tests:
-    - alert_test.go:68
+    - alert_test.go:66
+
+### Demos (Official shadcn Demos)
+- [x] **1. Default / Info Alert**
+  - implementation:
+    - alert.go:42
+  - tests:
+    - alert_test.go:13
+- [x] **2. Destructive Warning Alert**
+  - implementation:
+    - alert.go:63
+  - tests:
+    - alert_test.go:23
+- [x] **3. With Title & Description**
+  - implementation:
+    - alert.go:94
+  - tests:
+    - alert_test.go:33
+- [x] **4. Custom Styling**
+  - implementation:
+    - alert.go:69
+  - tests:
+    - alert_test.go:51
 
 ---
-
-### Demos
-- [x] **Default / Info Alert**
-  - implementation:
-    - alert.go:44
-  - tests:
-    - alert_test.go:14
-- [x] **Destructive Warning Alert**
-  - implementation:
-    - alert.go:65
-  - tests:
-    - alert_test.go:24
-- [x] **With Icon**
-  - implementation:
-    - alert.go:39
-  - tests:
-    - alert_test.go:47
-- [x] **With Title & Description**
-  - implementation:
-    - alert.go:40
-  - tests:
-    - alert_test.go:53
 
 ## Code Structure & Entry Points
 - `alert.go`: Primary component widget layout and state logic.

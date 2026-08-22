@@ -27,45 +27,45 @@ Whenever adding, modifying, or refactoring the `aspectratio` component implement
     - aspectratio_test.go:13
 - [x] **4:3 Classic Ratio**
   - implementation:
-    - aspectratio.go:17
+    - aspectratio.go:30
   - tests:
-    - aspectratio_test.go:27
+    - aspectratio_test.go:28
 - [x] **1:1 Square Ratio**
   - implementation:
-    - aspectratio.go:48
+    - aspectratio.go:34
   - tests:
-    - aspectratio_test.go:41
+    - aspectratio_test.go:43
 
 ### Capabilities & Features
 - [x] **Proportional Constraint Layout**
   - implementation:
-    - aspectratio.go:49
+    - aspectratio.go:47
   - tests:
-    - aspectratio_test.go:55
+    - aspectratio_test.go:58
 - [x] **Wrapped Child Fitting**
   - implementation:
-    - aspectratio.go:52
+    - aspectratio.go:51
   - tests:
-    - aspectratio_test.go:69
+    - aspectratio_test.go:72
+
+### Demos (Official shadcn Demos)
+- [x] **1. 16:9 Landscape Image**
+  - implementation:
+    - aspectratio.go:31
+  - tests:
+    - aspectratio_test.go:13
+- [x] **2. 4:3 Classic Display**
+  - implementation:
+    - aspectratio.go:30
+  - tests:
+    - aspectratio_test.go:28
+- [x] **3. 1:1 Square Card**
+  - implementation:
+    - aspectratio.go:34
+  - tests:
+    - aspectratio_test.go:43
 
 ---
-
-### Demos
-- [x] **16:9 Landscape Image**
-  - implementation:
-    - aspectratio.go:42
-  - tests:
-    - aspectratio_test.go:29
-- [x] **4:3 Classic Display**
-  - implementation:
-    - aspectratio.go:43
-  - tests:
-    - aspectratio_test.go:45
-- [x] **1:1 Square Card**
-  - implementation:
-    - aspectratio.go:44
-  - tests:
-    - aspectratio_test.go:61
 
 ## Code Structure & Entry Points
 - `aspectratio.go`: Primary component widget layout and state logic.

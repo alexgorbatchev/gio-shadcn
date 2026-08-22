@@ -22,65 +22,65 @@ Whenever adding, modifying, or refactoring the `drawer` component implementation
 ### Variants
 - [x] **Bottom Sheet Drawer Panel**
   - implementation:
-    - drawer.go:61
+    - drawer.go:21
   - tests:
     - drawer_test.go:13
 
 ### Capabilities & Features
 - [x] **Dark Backdrop Overlay**
   - implementation:
-    - drawer.go:120
+    - drawer.go:121
   - tests:
-    - drawer_test.go:24
+    - drawer_test.go:23
 - [x] **Backdrop Click-To-Close**
   - implementation:
-    - drawer.go:98
+    - drawer.go:101
   - tests:
-    - drawer_test.go:40
-- [x] **South Viewport Edge Alignment**
+    - drawer_test.go:39
+- [x] **South Viewport Edge Alignment (`layout.S`)**
   - implementation:
-    - drawer.go:130
+    - drawer.go:126
   - tests:
-    - drawer_test.go:54
-- [x] **Drag Handle Indicator**
+    - drawer_test.go:53
+- [x] **Drag Handle Indicator Bar**
   - implementation:
-    - drawer.go:160
+    - drawer.go:172
   - tests:
-    - drawer_test.go:70
-- [x] **Close Button**
+    - drawer_test.go:68
+- [x] **Close Button (`closeBtn`)**
   - implementation:
-    - drawer.go:183
+    - drawer.go:181
   - tests:
-    - drawer_test.go:79
-- [x] **Custom Content Widget**
+    - drawer_test.go:77
+- [x] **Custom / Illustrated Content Body**
   - implementation:
-    - drawer.go:200
+    - drawer.go:202
   - tests:
-    - drawer_test.go:88
+    - drawer_test.go:86
+
+### Demos (Official shadcn Demos)
+- [x] **1. Bottom Sheet Drawer**
+  - implementation:
+    - drawer.go:92
+  - tests:
+    - drawer_test.go:13
+- [x] **2. Drag Handle Bar**
+  - implementation:
+    - drawer.go:172
+  - tests:
+    - drawer_test.go:68
+- [x] **3. Telemetry Metrics Content**
+  - implementation:
+    - drawer.go:202
+  - tests:
+    - drawer_test.go:86
+- [x] **4. Backdrop Click-To-Close**
+  - implementation:
+    - drawer.go:101
+  - tests:
+    - drawer_test.go:39
 
 ---
-
-### Demos
-- [x] **Bottom Sheet Drawer**
-  - implementation:
-    - drawer.go:3
-  - tests:
-    - drawer_test.go:14
-- [x] **Drag Handle Bar**
-  - implementation:
-    - drawer.go:85
-  - tests:
-    - drawer_test.go:73
-- [x] **Telemetry Metrics Content**
-  - implementation:
-    - drawer.go:86
-  - tests:
-    - drawer_test.go:59
-- [x] **Backdrop Click-To-Close**
-  - implementation:
-    - drawer.go:37
-  - tests:
-    - drawer_test.go:24
 
 ## Code Structure & Entry Points
 - `drawer.go`: Primary component widget layout and state logic.

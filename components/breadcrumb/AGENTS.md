@@ -20,62 +20,52 @@ Whenever adding, modifying, or refactoring the `breadcrumb` component implementa
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Standard Path**
+- [x] **Standard Path Trail**
   - implementation:
-    - breadcrumb.go:23
+    - breadcrumb.go:21
   - tests:
     - breadcrumb_test.go:13
 - [x] **Active Page Link**
   - implementation:
-    - breadcrumb.go:76
+    - breadcrumb.go:73
   - tests:
-    - breadcrumb_test.go:24
-- [x] **Custom Separators**
-  - implementation:
-    - breadcrumb.go:84
-  - tests:
-    - breadcrumb_test.go:35
+    - breadcrumb_test.go:25
 
 ### Capabilities & Features
 - [x] **Horizontal Flex Layout**
   - implementation:
-    - breadcrumb.go:91
+    - breadcrumb.go:89
   - tests:
-    - breadcrumb_test.go:52
-- [x] **Chevron Dividers**
+    - breadcrumb_test.go:56
+- [x] **Slash / Custom Separators**
   - implementation:
-    - breadcrumb.go:85
-  - tests:
-    - breadcrumb_test.go:69
-- [x] **Hover Highlight**
-  - implementation:
-    - breadcrumb.go:71
-  - tests:
-    - breadcrumb_test.go:87
-
----
-
-### Demos
-- [x] **Standard Path**
-  - implementation:
-    - breadcrumb.go:55
-  - tests:
-    - breadcrumb_test.go:14
-- [x] **Custom Separator**
-  - implementation:
-    - breadcrumb.go:56
+    - breadcrumb.go:81
   - tests:
     - breadcrumb_test.go:37
-- [x] **Dropdown Ellipsis**
+- [x] **Interactive Item Pointer Click**
   - implementation:
-    - breadcrumb.go:57
+    - breadcrumb.go:64
   - tests:
-    - breadcrumb_test.go:59
-- [x] **Active Link**
+    - breadcrumb_test.go:94
+
+### Demos (Official shadcn Demos)
+- [x] **1. Standard Path**
   - implementation:
     - breadcrumb.go:21
   - tests:
+    - breadcrumb_test.go:13
+- [x] **2. Active Link Highlight**
+  - implementation:
+    - breadcrumb.go:73
+  - tests:
     - breadcrumb_test.go:25
+- [x] **3. Custom Separator**
+  - implementation:
+    - breadcrumb.go:81
+  - tests:
+    - breadcrumb_test.go:37
+
+---
 
 ## Code Structure & Entry Points
 - `breadcrumb.go`: Primary component widget layout and state logic.

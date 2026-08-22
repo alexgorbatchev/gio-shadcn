@@ -20,52 +20,52 @@ Whenever adding, modifying, or refactoring the `radio` component implementation 
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Unselected Radio Button**
+- [x] **Selected Radio Option**
   - implementation:
-    - radio.go:39
+    - radio.go:37
   - tests:
     - radio_test.go:13
-- [x] **Selected Radio Button**
+- [x] **Unselected Radio Option**
+  - implementation:
+    - radio.go:37
+  - tests:
+    - radio_test.go:20
+- [x] **Disabled Radio Option**
+  - implementation:
+    - radio.go:73
+  - tests:
+    - radio_test.go:27
+
+### Capabilities & Features
+- [x] **Pointer Click Selection**
+  - implementation:
+    - radio.go:56
+  - tests:
+    - radio_test.go:34
+- [x] **Outer Circle & Inner Selected Dot Ellipse**
   - implementation:
     - radio.go:98
   - tests:
-    - radio_test.go:13
-
-### Capabilities & Features
-- [x] **Inner Circle Dot Selection**
-  - implementation:
-    - radio.go:103
-  - tests:
-    - radio_test.go:25
-- [x] **Label Association**
-  - implementation:
-    - radio.go:51
-  - tests:
-    - radio_test.go:33
-- [x] **Radio Group Row**
-  - implementation:
-    - radio.go:53
-  - tests:
-    - radio_test.go:33
-
----
+    - radio_test.go:34
 
 ### Demos
 - [x] **Default Radio Group**
   - implementation:
-    - radio.go:52
+    - radio.go:37
   - tests:
-    - radio_test.go:24
+    - radio_test.go:13
 - [x] **Selected Radio Option**
   - implementation:
-    - radio.go:27
+    - radio.go:98
   - tests:
-    - radio_test.go:15
+    - radio_test.go:13
 - [x] **Unselected Radio Option**
   - implementation:
-    - radio.go:54
+    - radio.go:37
   - tests:
-    - radio_test.go:26
+    - radio_test.go:20
+
+---
 
 ## Code Structure & Entry Points
 - `radio.go`: Primary component widget layout and state logic.

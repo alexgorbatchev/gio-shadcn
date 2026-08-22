@@ -22,45 +22,45 @@ Whenever adding, modifying, or refactoring the `empty` component implementation 
 ### Variants
 - [x] **Empty State Card**
   - implementation:
-    - empty.go:37
+    - empty.go:21
   - tests:
     - empty_test.go:13
 
 ### Capabilities & Features
-- [x] **Illustrated Icon / Vector**
+- [x] **Title Header & Description Body**
   - implementation:
-    - empty.go:73
-  - tests:
-    - empty_test.go:23
-- [x] **Title & Description**
-  - implementation:
-    - empty.go:76
+    - empty.go:75
   - tests:
     - empty_test.go:30
-- [x] **Primary Action Button**
+- [x] **Default Fallback Text**
   - implementation:
-    - empty.go:85
+    - empty.go:34
+  - tests:
+    - empty_test.go:23
+- [x] **Card Background & Border Stroke**
+  - implementation:
+    - empty.go:92
   - tests:
     - empty_test.go:40
 
----
+### Demos (Official shadcn Demos)
+- [x] **1. Empty State Card**
+  - implementation:
+    - empty.go:54
+  - tests:
+    - empty_test.go:13
+- [x] **2. Default Fallback State**
+  - implementation:
+    - empty.go:34
+  - tests:
+    - empty_test.go:23
+- [x] **3. Custom Title & Description**
+  - implementation:
+    - empty.go:75
+  - tests:
+    - empty_test.go:30
 
-### Demos
-- [x] **Empty State Card**
-  - implementation:
-    - empty.go:3
-  - tests:
-    - empty_test.go:2
-- [x] **With Illustrated Icon**
-  - implementation:
-    - empty.go:46
-  - tests:
-    - empty_test.go:32
-- [x] **With Action Button**
-  - implementation:
-    - empty.go:44
-  - tests:
-    - empty_test.go:43
+---
 
 ## Code Structure & Entry Points
 - `empty.go`: Primary component widget layout and state logic.

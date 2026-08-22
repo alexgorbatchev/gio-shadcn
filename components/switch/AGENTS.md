@@ -20,57 +20,57 @@ Whenever adding, modifying, or refactoring the `switch` component implementation
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Off State**
+- [x] **Off State Switch**
   - implementation:
-    - switch.go:100
-  - tests:
-    - switch_test.go:25
-- [x] **On State**
-  - implementation:
-    - switch.go:78
+    - switch.go:36
   - tests:
     - switch_test.go:13
-- [x] **Disabled State**
+- [x] **On State Switch**
   - implementation:
-    - switch.go:83
+    - switch.go:36
   - tests:
-    - switch_test.go:25
+    - switch_test.go:23
+- [x] **Disabled Switch State**
+  - implementation:
+    - switch.go:75
+  - tests:
+    - switch_test.go:33
 
 ### Capabilities & Features
 - [x] **Track Fill Transition**
   - implementation:
-    - switch.go:94
+    - switch.go:68
   - tests:
-    - switch_test.go:33
+    - switch_test.go:23
 - [x] **Sliding Thumb Knob**
   - implementation:
-    - switch.go:117
+    - switch.go:106
   - tests:
-    - switch_test.go:33
+    - switch_test.go:56
 - [x] **Interactive Click Toggle**
   - implementation:
-    - switch.go:57
+    - switch.go:52
   - tests:
-    - switch_test.go:13
-
----
+    - switch_test.go:43
 
 ### Demos
-- [x] **Off State Switch**
+- [x] **Off State Switch Demo**
   - implementation:
-    - switch.go:5
+    - switch.go:36
   - tests:
-    - switch_test.go:24
-- [x] **On State Switch**
+    - switch_test.go:13
+- [x] **On State Switch Demo**
   - implementation:
-    - switch.go:4
+    - switch.go:36
   - tests:
-    - switch_test.go:9
-- [x] **Disabled Switch**
+    - switch_test.go:23
+- [x] **Disabled Switch Demo**
   - implementation:
-    - switch.go:26
+    - switch.go:75
   - tests:
-    - switch_test.go:26
+    - switch_test.go:33
+
+---
 
 ## Code Structure & Entry Points
 - `switch.go`: Primary component widget layout and state logic.

@@ -20,47 +20,62 @@ Whenever adding, modifying, or refactoring the `collapsible` component implement
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Expanded State**
+- [x] **Expanded State (`Open == true`)**
   - implementation:
-    - collapsible.go:58
+    - collapsible.go:27
   - tests:
     - collapsible_test.go:13
-- [x] **Collapsed State**
+- [x] **Collapsed State (`Open == false`)**
   - implementation:
-    - collapsible.go:103
+    - collapsible.go:27
   - tests:
-    - collapsible_test.go:24
+    - collapsible_test.go:23
 
 ### Capabilities & Features
 - [x] **Trigger Button Header**
   - implementation:
-    - collapsible.go:88
+    - collapsible.go:87
   - tests:
-    - collapsible_test.go:35
-- [x] **Content Body Visibility Toggle**
+    - collapsible_test.go:33
+- [x] **Expand / Collapse Toggle**
   - implementation:
-    - collapsible.go:111
+    - collapsible.go:58
   - tests:
-    - collapsible_test.go:44
+    - collapsible_test.go:42
+- [x] **Indicator Symbol (`▼` / `▶`)**
+  - implementation:
+    - collapsible.go:92
+  - tests:
+    - collapsible_test.go:42
+- [x] **Content Body Panel**
+  - implementation:
+    - collapsible.go:109
+  - tests:
+    - collapsible_test.go:42
+- [x] **Card Background & Border Stroke**
+  - implementation:
+    - collapsible.go:123
+  - tests:
+    - collapsible_test.go:42
+
+### Demos (Official shadcn Demos)
+- [x] **1. Simple Collapsible**
+  - implementation:
+    - collapsible.go:53
+  - tests:
+    - collapsible_test.go:13
+- [x] **2. With Trigger Button**
+  - implementation:
+    - collapsible.go:87
+  - tests:
+    - collapsible_test.go:33
+- [x] **3. Nested Content Panel**
+  - implementation:
+    - collapsible.go:109
+  - tests:
+    - collapsible_test.go:42
 
 ---
-
-### Demos
-- [x] **Simple Collapsible**
-  - implementation:
-    - collapsible.go:3
-  - tests:
-    - collapsible_test.go:25
-- [x] **With Trigger Button**
-  - implementation:
-    - collapsible.go:55
-  - tests:
-    - collapsible_test.go:37
-- [x] **Nested Content Panel**
-  - implementation:
-    - collapsible.go:56
-  - tests:
-    - collapsible_test.go:47
 
 ## Code Structure & Entry Points
 - `collapsible.go`: Primary component widget layout and state logic.

@@ -10,7 +10,17 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestSwitchCreation(t *testing.T) {
+func TestSwitchOffState(t *testing.T) {
+	sw := switchcomp.New(switchcomp.Config{
+		Value: false,
+	})
+
+	if sw.Value {
+		t.Errorf("expected Value to be false")
+	}
+}
+
+func TestSwitchOnState(t *testing.T) {
 	sw := switchcomp.New(switchcomp.Config{
 		Value: true,
 	})
@@ -18,6 +28,32 @@ func TestSwitchCreation(t *testing.T) {
 	if !sw.Value {
 		t.Errorf("expected Value to be true")
 	}
+}
+
+func TestSwitchDisabledState(t *testing.T) {
+	sw := switchcomp.New(switchcomp.Config{
+		Value:    true,
+		Disabled: true,
+	})
+
+	if !sw.Disabled {
+		t.Errorf("expected Disabled to be true")
+	}
+}
+
+func TestSwitchOnChangeCallback(t *testing.T) {
+	var toggled bool
+	sw := switchcomp.New(switchcomp.Config{
+		Value: false,
+		OnChange: func(val bool) {
+			toggled = val
+		},
+	})
+
+	if sw.OnChange == nil {
+		t.Errorf("expected OnChange callback to be set")
+	}
+	_ = toggled
 }
 
 func TestSwitchLayout(t *testing.T) {

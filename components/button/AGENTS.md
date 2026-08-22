@@ -22,115 +22,100 @@ Whenever adding, modifying, or refactoring the `button` component implementation
 ### Variants
 - [x] **Default / Primary**
   - implementation:
-    - button.go:107
-  - tests:
-    - button_test.go:13
-- [x] **Secondary**
-  - implementation:
-    - button.go:28
-  - tests:
-    - button_test.go:21
-- [x] **Outline**
-  - implementation:
-    - button.go:28
-  - tests:
-    - button_test.go:29
-- [x] **Ghost**
-  - implementation:
-    - button.go:28
-  - tests:
-    - button_test.go:37
-- [x] **Destructive**
-  - implementation:
-    - button.go:28
-  - tests:
-    - button_test.go:45
-- [x] **Link**
-  - implementation:
-    - button.go:28
-  - tests:
-    - button_test.go:53
-
-### Capabilities & Features
-- [x] **Small (SM) Size**
-  - implementation:
-    - button.go:296
-  - tests:
-    - button_test.go:61
-- [x] **Default Size**
-  - implementation:
-    - button.go:318
-  - tests:
-    - button_test.go:68
-- [x] **Large (LG) Size**
-  - implementation:
-    - button.go:304
-  - tests:
-    - button_test.go:75
-- [x] **Icon Size**
-  - implementation:
-    - button.go:311
-  - tests:
-    - button_test.go:82
-- [x] **Disabled State**
-  - implementation:
-    - button.go:170
-  - tests:
-    - button_test.go:89
-- [x] **Pointer Click Event**
-  - implementation:
-    - button.go:151
-  - tests:
-    - button_test.go:96
-
----
-
-### Demos
-- [x] **Default Primary**
-  - implementation:
-    - button.go:85
+    - button.go:132
   - tests:
     - button_test.go:11
 - [x] **Secondary**
   - implementation:
-    - button.go:113
+    - button.go:153
   - tests:
-    - button_test.go:17
+    - button_test.go:18
 - [x] **Outline**
   - implementation:
-    - button.go:114
+    - button.go:153
   - tests:
     - button_test.go:25
 - [x] **Ghost**
   - implementation:
-    - button.go:115
+    - button.go:153
   - tests:
-    - button_test.go:31
+    - button_test.go:32
 - [x] **Destructive**
   - implementation:
-    - button.go:116
+    - button.go:153
   - tests:
     - button_test.go:39
 - [x] **Link**
   - implementation:
-    - button.go:117
+    - button.go:153
   - tests:
-    - button_test.go:45
-- [x] **Icon Only**
+    - button_test.go:46
+
+### Capabilities & Features
+- [x] **Small (SM) Size**
   - implementation:
-    - button.go:28
+    - button.go:154
+  - tests:
+    - button_test.go:53
+- [x] **Default Size**
+  - implementation:
+    - button.go:154
+  - tests:
+    - button_test.go:60
+- [x] **Large (LG) Size**
+  - implementation:
+    - button.go:154
+  - tests:
+    - button_test.go:67
+- [x] **Icon Size**
+  - implementation:
+    - button.go:154
   - tests:
     - button_test.go:74
-- [x] **With Icon**
+- [x] **Disabled State**
   - implementation:
-    - button.go:41
+    - button.go:174
   - tests:
-    - button_test.go:66
-- [x] **Loading State**
+    - button_test.go:81
+- [x] **Pointer Click Event**
   - implementation:
-    - button.go:120
+    - button.go:149
   - tests:
-    - button_test.go:74
+    - button_test.go:88
+
+### Demos (Official shadcn Demos)
+- [x] **1. Default Primary**
+  - implementation:
+    - button.go:132
+  - tests:
+    - button_test.go:11
+- [x] **2. Secondary**
+  - implementation:
+    - button.go:153
+  - tests:
+    - button_test.go:18
+- [x] **3. Outline**
+  - implementation:
+    - button.go:153
+  - tests:
+    - button_test.go:25
+- [x] **4. Ghost**
+  - implementation:
+    - button.go:153
+  - tests:
+    - button_test.go:32
+- [x] **5. Destructive**
+  - implementation:
+    - button.go:153
+  - tests:
+    - button_test.go:39
+- [x] **6. Link**
+  - implementation:
+    - button.go:153
+  - tests:
+    - button_test.go:46
+
+---
 
 ## Code Structure & Entry Points
 - `button.go`: Primary component widget layout and state logic.

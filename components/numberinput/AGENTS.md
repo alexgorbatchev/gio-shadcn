@@ -20,52 +20,57 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Number Stepper**
+- [x] **BPM Stepper Variant (128 BPM)**
   - implementation:
-    - numberinput.go:42
+    - numberinput.go:41
   - tests:
     - numberinput_test.go:13
-
-### Capabilities & Features
-- [x] **Increment / Decrement Buttons**
-  - implementation:
-    - numberinput.go:102
-  - tests:
-    - numberinput_test.go:25
-- [x] **Min / Max Range Bounds**
+- [x] **Gain Range Stepper Variant (-12 to +12 dB)**
   - implementation:
     - numberinput.go:46
   - tests:
-    - numberinput_test.go:14
-- [x] **Step Size Configuration**
+    - numberinput_test.go:24
+- [x] **Min/Max Bounded Stepper Variant**
   - implementation:
-    - numberinput.go:43
+    - numberinput.go:52
   - tests:
-    - numberinput_test.go:15
-- [x] **Direct Number Formatting**
-  - implementation:
-    - numberinput.go:121
-  - tests:
-    - numberinput_test.go:21
+    - numberinput_test.go:35
 
----
+### Capabilities & Features
+- [x] **Increment & Decrement Click Buttons**
+  - implementation:
+    - numberinput.go:73
+  - tests:
+    - numberinput_test.go:46
+- [x] **OnValueChange Event Callback**
+  - implementation:
+    - numberinput.go:78
+  - tests:
+    - numberinput_test.go:62
+- [x] **Value Display Box Formatting**
+  - implementation:
+    - numberinput.go:105
+  - tests:
+    - numberinput_test.go:76
 
 ### Demos
 - [x] **BPM Stepper (128)**
   - implementation:
-    - numberinput.go:76
+    - numberinput.go:41
   - tests:
-    - numberinput_test.go:27
+    - numberinput_test.go:13
 - [x] **Gain Range Input (-12 to +12)**
   - implementation:
-    - numberinput.go:77
+    - numberinput.go:46
   - tests:
-    - numberinput_test.go:15
+    - numberinput_test.go:24
 - [x] **Min/Max Bounded Stepper**
   - implementation:
-    - numberinput.go:78
+    - numberinput.go:52
   - tests:
-    - numberinput_test.go:29
+    - numberinput_test.go:35
+
+---
 
 ## Code Structure & Entry Points
 - `numberinput.go`: Primary component widget layout and state logic.

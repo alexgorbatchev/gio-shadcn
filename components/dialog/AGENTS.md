@@ -22,60 +22,60 @@ Whenever adding, modifying, or refactoring the `dialog` component implementation
 ### Variants
 - [x] **Modal Dialog Window**
   - implementation:
-    - dialog.go:61
+    - dialog.go:21
   - tests:
     - dialog_test.go:13
 
 ### Capabilities & Features
 - [x] **Dark Backdrop Overlay**
   - implementation:
-    - dialog.go:138
+    - dialog.go:129
   - tests:
-    - dialog_test.go:24
+    - dialog_test.go:23
 - [x] **Backdrop Click-To-Close**
   - implementation:
-    - dialog.go:117
+    - dialog.go:109
   - tests:
-    - dialog_test.go:40
-- [x] **Header Title & Description**
+    - dialog_test.go:39
+- [x] **Header Title & Description Body**
   - implementation:
-    - dialog.go:158
+    - dialog.go:151
   - tests:
-    - dialog_test.go:54
-- [x] **Confirm & Cancel Actions**
+    - dialog_test.go:53
+- [x] **Confirm & Cancel Action Buttons**
   - implementation:
-    - dialog.go:183
+    - dialog.go:175
   - tests:
-    - dialog_test.go:64
-- [x] **Custom Content Widget**
+    - dialog_test.go:62
+- [x] **Custom Content Body Widget**
   - implementation:
-    - dialog.go:173
+    - dialog.go:167
   - tests:
-    - dialog_test.go:74
+    - dialog_test.go:71
+
+### Demos (Official shadcn Demos)
+- [x] **1. Modal Dialog**
+  - implementation:
+    - dialog.go:100
+  - tests:
+    - dialog_test.go:13
+- [x] **2. Custom Content Body**
+  - implementation:
+    - dialog.go:167
+  - tests:
+    - dialog_test.go:71
+- [x] **3. Form Action Dialog**
+  - implementation:
+    - dialog.go:175
+  - tests:
+    - dialog_test.go:62
+- [x] **4. Confirmation Warning**
+  - implementation:
+    - dialog.go:151
+  - tests:
+    - dialog_test.go:39
 
 ---
-
-### Demos
-- [x] **Modal Dialog Window**
-  - implementation:
-    - dialog.go:3
-  - tests:
-    - dialog_test.go:14
-- [x] **Custom Content Body**
-  - implementation:
-    - dialog.go:183
-  - tests:
-    - dialog_test.go:72
-- [x] **Action Buttons Row**
-  - implementation:
-    - dialog.go:191
-  - tests:
-    - dialog_test.go:67
-- [x] **Backdrop Overlay**
-  - implementation:
-    - dialog.go:40
-  - tests:
-    - dialog_test.go:24
 
 ## Code Structure & Entry Points
 - `dialog.go`: Primary component widget layout and state logic.

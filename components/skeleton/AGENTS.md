@@ -27,45 +27,45 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
     - skeleton_test.go:13
 - [x] **Circular Avatar Skeleton**
   - implementation:
-    - skeleton.go:68
+    - skeleton.go:34
   - tests:
-    - skeleton_test.go:25
-- [x] **Card Skeleton**
+    - skeleton_test.go:24
+- [x] **Card Container Skeleton**
   - implementation:
-    - skeleton.go:59
+    - skeleton.go:34
   - tests:
-    - skeleton_test.go:33
+    - skeleton_test.go:35
 
 ### Capabilities & Features
-- [x] **Muted Shimmer Background**
+- [x] **Muted Background Shimmer**
   - implementation:
     - skeleton.go:62
   - tests:
-    - skeleton_test.go:25
+    - skeleton_test.go:46
 - [x] **Custom Width & Height Dimensions**
   - implementation:
-    - skeleton.go:35
+    - skeleton.go:58
   - tests:
-    - skeleton_test.go:15
-
----
+    - skeleton_test.go:13
 
 ### Demos
-- [x] **Text Line Skeleton**
+- [x] **Text Line Skeleton Demo**
   - implementation:
-    - skeleton.go:53
+    - skeleton.go:34
   - tests:
-    - skeleton_test.go:33
-- [x] **Circular Avatar Skeleton**
+    - skeleton_test.go:13
+- [x] **Circular Avatar Skeleton Demo**
   - implementation:
-    - skeleton.go:54
+    - skeleton.go:34
   - tests:
-    - skeleton_test.go:16
-- [x] **Card Container Skeleton**
+    - skeleton_test.go:24
+- [x] **Card Container Skeleton Demo**
   - implementation:
-    - skeleton.go:55
+    - skeleton.go:34
   - tests:
-    - skeleton_test.go:28
+    - skeleton_test.go:35
+
+---
 
 ## Code Structure & Entry Points
 - `skeleton.go`: Primary component widget layout and state logic.
