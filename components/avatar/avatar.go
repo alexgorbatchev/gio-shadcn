@@ -1,8 +1,5 @@
 /*
 Package avatar provides a user avatar profile component for gio-shadcn applications.
-
-Avatars display user profile pictures or fallback initials with optional status badges
-following shadcn/ui design principles.
 */
 package avatar
 
@@ -13,7 +10,6 @@ import (
 	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
@@ -21,7 +17,6 @@ import (
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Avatar represents a user profile avatar component.
 type Avatar struct {
 	Initials   string
 	Size       unit.Dp
@@ -30,7 +25,6 @@ type Avatar struct {
 	Classes    string
 }
 
-// Config represents configuration for creating an Avatar.
 type Config struct {
 	Initials   string
 	Size       unit.Dp
@@ -39,7 +33,6 @@ type Config struct {
 	Classes    string
 }
 
-// New creates a new Avatar component with the given configuration.
 func New(config Config) *Avatar {
 	sz := config.Size
 	if sz <= 0 {
@@ -54,7 +47,6 @@ func New(config Config) *Avatar {
 	}
 }
 
-// Layout renders the avatar circle and fallback initials with theme colors.
 func (a *Avatar) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -73,20 +65,20 @@ func (a *Avatar) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	// Draw outer circular background
 	rect := image.Rectangle{Max: size}
 	ellipse := clip.Ellipse(rect)
-	paint.FillShape(gtx.Ops, bgColor, ellipse.Op(gtx.Ops))
 
-	// Draw border
-	stroke := clip.Stroke{
-		Path:  ellipse.Path(gtx.Ops),
-		Width: 1.0,
+	// Draw background and border safely
+	bgClip := ellipse.Push(gtx.Ops)
+	theme.DrawRRectBackground(gtx, rect, sizePx/2, bgColor)
+	bgClip.Pop()
+
+	theme.DrawStroke(gtx, ellipse.Path(gtx.Ops), 1.0, borderColor)
+
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
 	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
-
-	// Draw centered initials
-	mTheme := material.NewTheme()
 	lblFontSize := th.Typography.FontSizeSM
 	if sizePx > 48 {
 		lblFontSize = th.Typography.FontSizeBase
@@ -101,7 +93,6 @@ func (a *Avatar) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		return lbl.Layout(gtx)
 	})
 
-	// Draw status badge dot at bottom right if enabled
 	if a.ShowBadge {
 		badgeSize := sizePx / 4
 		if badgeSize < 8 {
@@ -118,14 +109,11 @@ func (a *Avatar) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			bColor = th.Colors.Accent
 		}
 
-		paint.FillShape(gtx.Ops, bColor, badgeEllipse.Op(gtx.Ops))
+		bClip := badgeEllipse.Push(gtx.Ops)
+		theme.DrawRRectBackground(gtx, badgeRect, badgeSize/2, bColor)
+		bClip.Pop()
 
-		// Border around badge
-		bStroke := clip.Stroke{
-			Path:  badgeEllipse.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, th.Colors.Background, bStroke.Op())
+		theme.DrawStroke(gtx, badgeEllipse.Path(gtx.Ops), 1.0, th.Colors.Background)
 	}
 
 	return layout.Dimensions{Size: size}

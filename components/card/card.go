@@ -1,9 +1,5 @@
 /*
 Package card provides a flexible container component for gio-shadcn applications.
-
-The card component serves as a versatile container for grouping related content
-with consistent styling, padding, and theming. It follows shadcn/ui design
-principles and integrates seamlessly with the theme system.
 */
 package card
 
@@ -11,47 +7,40 @@ import (
 	"image"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Card represents a shadcn/ui card component.
 type Card struct {
-	// Configuration
 	Variant theme.Variant
 	Classes string
 	Padding layout.Inset
 }
 
-// Option is a functional option for configuring Card components.
 type Option func(*Card)
 
-// WithCardVariant sets the card variant.
 func WithCardVariant(variant theme.Variant) Option {
 	return func(c *Card) {
 		c.Variant = variant
 	}
 }
 
-// WithCardClasses sets additional CSS-like classes.
 func WithCardClasses(classes string) Option {
 	return func(c *Card) {
 		c.Classes = classes
 	}
 }
 
-// WithCardPadding sets custom padding.
 func WithCardPadding(padding layout.Inset) Option {
 	return func(c *Card) {
 		c.Padding = padding
 	}
 }
 
-// NewCard creates a new Card with the given options.
 func NewCard(options ...Option) *Card {
 	c := &Card{
 		Variant: theme.VariantDefault,
@@ -65,14 +54,12 @@ func NewCard(options ...Option) *Card {
 	return c
 }
 
-// Config represents card configuration.
 type Config struct {
 	Variant theme.Variant
 	Classes string
 	Padding layout.Inset
 }
 
-// New creates a new card with the given configuration.
 func New(config Config) *Card {
 	return &Card{
 		Variant: config.Variant,
@@ -81,19 +68,15 @@ func New(config Config) *Card {
 	}
 }
 
-// Layout renders the card with the given content.
+// Layout renders the card background FIRST, then content ON TOP using op.Record macro.
 func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	// Get variant configuration
 	variant := theme.GetCardVariant(c.Variant, &th.Colors)
-
-	// Parse additional classes
 	styles := utils.ParseClasses(c.Classes)
 
-	// Determine padding
 	padding := c.Padding
 	if padding == (layout.Inset{}) {
 		padding = layout.Inset{
@@ -104,60 +87,45 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 		}
 	}
 
-	// Apply custom padding if specified in classes
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
 
-	// Determine background color
 	bgColor := variant.Background
 	if styles.Background.A > 0 {
 		bgColor = styles.Background
 	}
 
-	// Determine border radius
 	radius := th.Radius.RadiusLG
 	if styles.Radius > 0 {
 		radius = styles.Radius
 	}
 
-	return layout.Stack{}.Layout(gtx,
-		// Background (expanded to match stacked content size)
-		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			rect := image.Rectangle{Max: gtx.Constraints.Min}
-			rr := clip.UniformRRect(rect, gtx.Dp(radius))
-			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	// 1. Record content operations into a macro to measure dimensions
+	macro := op.Record(gtx.Ops)
+	dims := padding.Layout(gtx, content)
+	callOp := macro.Stop()
 
-			// Draw border
-			if variant.BorderWidth > 0 {
-				border := clip.Stroke{
-					Path:  rr.Path(gtx.Ops),
-					Width: float32(gtx.Dp(unit.Dp(variant.BorderWidth))),
-				}
-				paint.FillShape(gtx.Ops, variant.Border, border.Op())
-			}
+	// 2. Draw card background FIRST using exact measured bounds
+	rect := image.Rectangle{Max: dims.Size}
+	radiusPx := gtx.Dp(radius)
+	theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
 
-			return layout.Dimensions{Size: gtx.Constraints.Min}
-		}),
-
-		// Content (evaluated ONLY ONCE)
-		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return padding.Layout(gtx, content)
-		}),
-	)
-}
-
-// Update returns the component state for Card.
-func (c *Card) Update(_ layout.Context) theme.ComponentState {
-	return &State{
-		active:   false,
-		hovered:  false,
-		pressed:  false,
-		disabled: false,
+	if variant.BorderWidth > 0 {
+		rr := clip.UniformRRect(rect, radiusPx)
+		theme.DrawStroke(gtx, rr.Path(gtx.Ops), float32(gtx.Dp(unit.Dp(variant.BorderWidth))), variant.Border)
 	}
+
+	// 3. Play recorded content operations ON TOP of background
+	callOp.Add(gtx.Ops)
+
+	return dims
 }
 
-// State implements ComponentState for Card.
+func (c *Card) Update(_ layout.Context) theme.ComponentState {
+	return &State{}
+}
+
 type State struct {
 	active   bool
 	hovered  bool
@@ -165,181 +133,105 @@ type State struct {
 	disabled bool
 }
 
-// IsActive returns true if the card is active.
-func (cs *State) IsActive() bool {
-	return cs.active
-}
+func (cs *State) IsActive() bool   { return cs.active }
+func (cs *State) IsHovered() bool  { return cs.hovered }
+func (cs *State) IsPressed() bool  { return cs.pressed }
+func (cs *State) IsDisabled() bool { return cs.disabled }
 
-// IsHovered returns true if the card is being hovered over.
-func (cs *State) IsHovered() bool {
-	return cs.hovered
-}
-
-// IsPressed returns true if the card is being pressed.
-func (cs *State) IsPressed() bool {
-	return cs.pressed
-}
-
-// IsDisabled returns true if the card is disabled.
-func (cs *State) IsDisabled() bool {
-	return cs.disabled
-}
-
-// Header represents a card header component.
 type Header struct {
 	Classes string
 	Padding layout.Inset
 }
 
-// NewHeader creates a new card header.
 func NewHeader(classes string) *Header {
-	return &Header{
-		Classes: classes,
-	}
+	return &Header{Classes: classes}
 }
 
-// Layout renders the card header.
 func (h *Header) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	styles := utils.ParseClasses(h.Classes)
-
 	padding := h.Padding
 	if padding == (layout.Inset{}) {
-		padding = layout.Inset{
-			Top:    th.Spacing.Space6,
-			Bottom: th.Spacing.Space6,
-			Left:   th.Spacing.Space6,
-			Right:  th.Spacing.Space6,
-		}
+		padding = layout.Inset{Top: th.Spacing.Space6, Bottom: th.Spacing.Space6, Left: th.Spacing.Space6, Right: th.Spacing.Space6}
 	}
-
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
-
 	return padding.Layout(gtx, content)
 }
 
-// Content represents a card content component.
 type Content struct {
 	Classes string
 	Padding layout.Inset
 }
 
-// NewContent creates a new card content.
 func NewContent(classes string) *Content {
-	return &Content{
-		Classes: classes,
-	}
+	return &Content{Classes: classes}
 }
 
-// Layout renders the card content.
 func (c *Content) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	styles := utils.ParseClasses(c.Classes)
-
 	padding := c.Padding
 	if padding == (layout.Inset{}) {
-		padding = layout.Inset{
-			Top:    th.Spacing.Space6,
-			Bottom: th.Spacing.Space6,
-			Left:   th.Spacing.Space6,
-			Right:  th.Spacing.Space6,
-		}
+		padding = layout.Inset{Top: th.Spacing.Space6, Bottom: th.Spacing.Space6, Left: th.Spacing.Space6, Right: th.Spacing.Space6}
 	}
-
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
-
 	return padding.Layout(gtx, content)
 }
 
-// Footer represents a card footer component.
 type Footer struct {
 	Classes string
 	Padding layout.Inset
 }
 
-// NewFooter creates a new card footer.
 func NewFooter(classes string) *Footer {
-	return &Footer{
-		Classes: classes,
-	}
+	return &Footer{Classes: classes}
 }
 
-// Layout renders the card footer.
 func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	styles := utils.ParseClasses(f.Classes)
-
 	padding := f.Padding
 	if padding == (layout.Inset{}) {
-		padding = layout.Inset{
-			Top:    th.Spacing.Space6,
-			Bottom: th.Spacing.Space6,
-			Left:   th.Spacing.Space6,
-			Right:  th.Spacing.Space6,
-		}
+		padding = layout.Inset{Top: th.Spacing.Space6, Bottom: th.Spacing.Space6, Left: th.Spacing.Space6, Right: th.Spacing.Space6}
 	}
-
 	if styles.Padding != (layout.Inset{}) {
 		padding = styles.Padding
 	}
-
 	return padding.Layout(gtx, content)
 }
 
-// Title represents a card title component.
 type Title struct {
 	Text    string
 	Classes string
 }
 
-// NewTitle creates a new card title.
 func NewTitle(text string, classes string) *Title {
-	return &Title{
-		Text:    text,
-		Classes: classes,
-	}
+	return &Title{Text: text, Classes: classes}
 }
 
-// Layout renders the card title.
 func (t *Title) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	textStyle := th.Typography.H3(&th.Colors)
-
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
-		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return renderText(gtx, textStyle, t.Text)
-		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return renderText(gtx, textStyle, t.Text) }),
 	)
 }
 
-// Description represents a card description component.
 type Description struct {
 	Text    string
 	Classes string
 }
 
-// NewDescription creates a new card description.
 func NewDescription(text string, classes string) *Description {
-	return &Description{
-		Text:    text,
-		Classes: classes,
-	}
+	return &Description{Text: text, Classes: classes}
 }
 
-// Layout renders the card description.
 func (d *Description) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	textStyle := th.Typography.BodySmall(&th.Colors)
-
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return renderText(gtx, textStyle, d.Text)
-		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return renderText(gtx, textStyle, d.Text) }),
 	)
 }
 
@@ -349,10 +241,8 @@ func renderText(gtx layout.Context, style theme.TextStyle, text string) layout.D
 	if style.Color != nil {
 		label.Color = style.Color.Foreground
 	}
-
 	if style.Weight > 0 {
 		label.Font.Weight = style.Weight
 	}
-
 	return label.Layout(gtx)
 }

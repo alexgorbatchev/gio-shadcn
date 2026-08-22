@@ -12,7 +12,6 @@ import (
 	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -20,7 +19,6 @@ import (
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Item represents a single expandable item in an accordion.
 type Item struct {
 	Title     string
 	Content   string
@@ -28,7 +26,6 @@ type Item struct {
 	clickable *widget.Clickable
 }
 
-// NewItem creates a new Accordion Item.
 func NewItem(title, content string, expanded bool) *Item {
 	return &Item{
 		Title:     title,
@@ -38,19 +35,16 @@ func NewItem(title, content string, expanded bool) *Item {
 	}
 }
 
-// Accordion represents an accordion container component.
 type Accordion struct {
 	Items   []*Item
 	Classes string
 }
 
-// Config represents configuration for creating an Accordion.
 type Config struct {
 	Items   []*Item
 	Classes string
 }
 
-// New creates a new Accordion component with the given configuration.
 func New(config Config) *Accordion {
 	return &Accordion{
 		Items:   config.Items,
@@ -58,7 +52,6 @@ func New(config Config) *Accordion {
 	}
 }
 
-// Layout renders the list of accordion items and manages expanded/collapsed states.
 func (a *Accordion) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -67,9 +60,8 @@ func (a *Accordion) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 	children := make([]layout.FlexChild, 0, len(a.Items)*2)
 
 	for i, item := range a.Items {
-		item := item // capture loop variable
+		item := item
 
-		// Handle trigger click
 		if item.clickable.Clicked(gtx) {
 			item.Expanded = !item.Expanded
 		}
@@ -97,7 +89,10 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		padding := layout.Inset{
@@ -109,7 +104,6 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 
 		itemDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				// Header Trigger Row
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
@@ -131,7 +125,6 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 					)
 				}),
 
-				// Collapsible Content
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					if !item.Expanded {
 						return layout.Dimensions{}
@@ -153,15 +146,10 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 
 		rect := image.Rectangle{Max: itemDims.Size}
 		radius := gtx.Dp(th.Radius.RadiusMD)
+
+		theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 		rr := clip.UniformRRect(rect, radius)
-
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+		theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 		return itemDims
 	})

@@ -5,9 +5,12 @@ package theme
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 
 	"gioui.org/layout"
+	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/widget/material"
 )
 
@@ -67,6 +70,35 @@ func (t *Theme) ToggleDark() {
 		t.MaterialTheme.Palette.Fg = t.Colors.Foreground
 		t.MaterialTheme.Palette.Bg = t.Colors.Background
 	}
+}
+
+// DrawRRectBackground safely draws a rounded rectangle fill with isolated push/pop clips and color state reset.
+func DrawRRectBackground(gtx layout.Context, rect image.Rectangle, radius int, c color.NRGBA) {
+	if c.A == 0 {
+		return
+	}
+	rr := clip.UniformRRect(rect, radius)
+	cl := rr.Push(gtx.Ops)
+	paint.ColorOp{Color: c}.Add(gtx.Ops)
+	paint.PaintOp{}.Add(gtx.Ops)
+	cl.Pop()
+	paint.ColorOp{Color: color.NRGBA{R: 0, G: 0, B: 0, A: 255}}.Add(gtx.Ops)
+}
+
+// DrawStroke safely draws a stroke path with isolated push/pop clips and color state reset.
+func DrawStroke(gtx layout.Context, path clip.PathSpec, width float32, c color.NRGBA) {
+	if width <= 0 || c.A == 0 {
+		return
+	}
+	stroke := clip.Stroke{
+		Path:  path,
+		Width: width,
+	}
+	cl := stroke.Op().Push(gtx.Ops)
+	paint.ColorOp{Color: c}.Add(gtx.Ops)
+	paint.PaintOp{}.Add(gtx.Ops)
+	cl.Pop()
+	paint.ColorOp{Color: color.NRGBA{R: 0, G: 0, B: 0, A: 255}}.Add(gtx.Ops)
 }
 
 func ValidateTheme(t *Theme) error {

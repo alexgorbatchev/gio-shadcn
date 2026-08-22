@@ -12,7 +12,6 @@ import (
 	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
@@ -64,7 +63,11 @@ func (otp *InputOTP) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 		th = theme.New()
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+
 	children := make([]layout.FlexChild, 0, otp.Length*2)
 
 	for i := 0; i < otp.Length; i++ {
@@ -114,29 +117,26 @@ func (otp *InputOTP) layoutBox(gtx layout.Context, th *theme.Theme, mTheme *mate
 		Right:  th.Spacing.Space2,
 	}
 
-	_ = padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		edWidget := material.Editor(mTheme, ed, "")
-		edWidget.Font.Weight = font.Bold
-		edWidget.TextSize = th.Typography.FontSizeBase
-		return edWidget.Layout(gtx)
-	})
-
 	rect := image.Rectangle{Max: size}
 	radius := gtx.Dp(th.Radius.RadiusMD)
-	rr := clip.UniformRRect(rect, radius)
-
-	paint.FillShape(gtx.Ops, th.Colors.Background, rr.Op(gtx.Ops))
 
 	borderColor := th.Colors.Input
 	if ed.Text() != "" {
 		borderColor = th.Colors.Ring
 	}
 
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.5,
-	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+	theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Background)
+
+	rr := clip.UniformRRect(rect, radius)
+	theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.5, borderColor)
+
+	_ = padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		edWidget := material.Editor(mTheme, ed, "")
+		edWidget.Color = th.Colors.Foreground
+		edWidget.Font.Weight = font.Bold
+		edWidget.TextSize = th.Typography.FontSizeBase
+		return edWidget.Layout(gtx)
+	})
 
 	return layout.Dimensions{Size: size}
 }

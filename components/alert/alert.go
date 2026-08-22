@@ -14,7 +14,6 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
@@ -117,15 +116,11 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	rect := image.Rectangle{Max: dims.Size}
 	radius := gtx.Dp(th.Radius.RadiusMD)
+
+	theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
 	rr := clip.UniformRRect(rect, radius)
-
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.0,
-	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+	theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 	callOp.Add(gtx.Ops)
 

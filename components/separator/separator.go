@@ -44,7 +44,7 @@ func New(config Config) *Separator {
 	}
 }
 
-// Layout renders the separator line with the given graphics context and theme.
+// Layout renders the separator line with isolated push/pop clip stack to prevent clip leaks.
 func (s *Separator) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -79,7 +79,10 @@ func (s *Separator) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 	}
 
 	rect := image.Rectangle{Max: size}
-	paint.FillShape(gtx.Ops, lineColor, clip.Rect(rect).Op())
+	cl := clip.Rect(rect).Push(gtx.Ops)
+	paint.ColorOp{Color: lineColor}.Add(gtx.Ops)
+	paint.PaintOp{}.Add(gtx.Ops)
+	cl.Pop()
 
 	return layout.Dimensions{Size: size}
 }
