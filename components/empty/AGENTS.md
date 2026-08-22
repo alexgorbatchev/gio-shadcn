@@ -22,26 +22,26 @@ Whenever adding, modifying, or refactoring the `empty` component implementation 
 ### Variants
 - [x] **Empty State Card**
   - implementation:
-    - empty.go:3
+    - empty.go:37
   - tests:
-    - empty_test.go:2
+    - empty_test.go:13
 
 ### Capabilities & Features
 - [x] **Illustrated Icon / Vector**
   - implementation:
-    - empty.go:81
+    - empty.go:73
   - tests:
-    - empty_test.go:15
+    - empty_test.go:23
 - [x] **Title & Description**
   - implementation:
-    - empty.go:24
+    - empty.go:76
   - tests:
-    - empty_test.go:19
+    - empty_test.go:30
 - [x] **Primary Action Button**
   - implementation:
-    - empty.go:55
+    - empty.go:85
   - tests:
-    - empty_test.go:17
+    - empty_test.go:40
 
 ---
 

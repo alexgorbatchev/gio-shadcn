@@ -1,4 +1,4 @@
-# Label Component Specification (`gio-shadcn`)
+# Label & Typography Component Specification (`gio-shadcn`)
 
 **Official shadcn Reference:** [https://ui.shadcn.com/docs/components/label](https://ui.shadcn.com/docs/components/label)
 
@@ -20,68 +20,48 @@ Whenever adding, modifying, or refactoring the `label` component implementation 
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **H1**
+- [x] **Heading 1 (H1)**
   - implementation:
-    - label.go:69
+    - label.go:167
   - tests:
-    - label_test.go:14
-- [x] **H2**
+    - label_test.go:13
+- [x] **Heading 2 (H2)**
   - implementation:
-    - label.go:70
+    - label.go:168
   - tests:
-    - label_test.go:15
-- [x] **H3**
+    - label_test.go:20
+- [x] **Heading 3 (H3)**
   - implementation:
-    - label.go:68
+    - label.go:169
   - tests:
-    - label_test.go:16
-- [x] **H4**
+    - label_test.go:27
+- [x] **Heading 4 (H4)**
   - implementation:
-    - label.go:69
+    - label.go:170
   - tests:
-    - label_test.go:17
-- [x] **Body Paragraph**
+    - label_test.go:34
+- [x] **Body Paragraph (P)**
   - implementation:
-    - label.go:134
+    - label.go:171
   - tests:
-    - label_test.go:17
-- [x] **Lead**
+    - label_test.go:41
+- [x] **Muted & Small Text**
   - implementation:
-    - label.go:184
+    - label.go:172
   - tests:
-    - label_test.go:14
-- [x] **Large**
-  - implementation:
-    - label.go:21
-  - tests:
-    - label_test.go:15
-- [x] **Muted**
-  - implementation:
-    - label.go:188
-  - tests:
-    - label_test.go:16
-- [x] **Small**
-  - implementation:
-    - label.go:20
-  - tests:
-    - label_test.go:17
+    - label_test.go:48
 
 ### Capabilities & Features
 - [x] **Typography Font Scale**
   - implementation:
-    - label.go:3
+    - label.go:197
   - tests:
-    - label_test.go:13
-- [x] **Font Weight Configuration**
-  - implementation:
-    - label.go:105
-  - tests:
-    - label_test.go:14
+    - label_test.go:56
 - [x] **Theme Color Integration**
   - implementation:
-    - label.go:11
+    - label.go:214
   - tests:
-    - label_test.go:12
+    - label_test.go:69
 
 ---
 

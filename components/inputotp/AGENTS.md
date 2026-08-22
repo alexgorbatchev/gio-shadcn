@@ -22,26 +22,26 @@ Whenever adding, modifying, or refactoring the `inputotp` component implementati
 ### Variants
 - [x] **4-Digit PIN Code**
   - implementation:
-    - inputotp.go:3
+    - inputotp.go:42
   - tests:
-    - inputotp_test.go:14
+    - inputotp_test.go:13
 - [x] **6-Digit PIN Code**
   - implementation:
-    - inputotp.go:4
+    - inputotp.go:44
   - tests:
-    - inputotp_test.go:15
+    - inputotp_test.go:22
 
 ### Capabilities & Features
 - [x] **Digit Box Layout**
   - implementation:
-    - inputotp.go:4
+    - inputotp.go:109
   - tests:
-    - inputotp_test.go:10
+    - inputotp_test.go:31
 - [x] **Active Cell Highlight**
   - implementation:
-    - inputotp.go:62
+    - inputotp.go:124
   - tests:
-    - inputotp_test.go:17
+    - inputotp_test.go:46
 
 ---
 

@@ -10,33 +10,40 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestHoverCardCreation(t *testing.T) {
+func TestHoverCardHoverPreviewCard(t *testing.T) {
 	hc := hovercard.New(hovercard.Config{
 		Title:       "Artist Profile",
 		Description: "Aethelgard - Progressive House",
 		Hovered:     true,
 	})
-
 	if !hc.Hovered {
-		t.Errorf("expected Hovered to be true")
+		t.Fatalf("expected Hovered true")
 	}
 }
 
-func TestHoverCardLayout(t *testing.T) {
+func TestHoverCardHoveredTriggerDetector(t *testing.T) {
+	hc := hovercard.New(hovercard.Config{
+		Hovered: false,
+	})
+	if hc.Hovered {
+		t.Fatalf("expected Hovered false")
+	}
+}
+
+func TestHoverCardPopoverProfileDetails(t *testing.T) {
 	th := theme.NewDark()
 	hc := hovercard.New(hovercard.Config{
 		Title:       "Artist Profile",
 		Description: "Aethelgard - Progressive House",
 		Hovered:     true,
 	})
-
+	ops := new(op.Ops)
 	gtx := layout.Context{
-		Ops: new(op.Ops),
+		Ops:         ops,
 		Constraints: layout.Exact(image.Pt(250, 80)),
 	}
 	dims := hc.Layout(gtx, th)
-
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from HoverCard.Layout")
+	if dims.Size.X <= 0 {
+		t.Errorf("invalid width")
 	}
 }

@@ -10,29 +10,52 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestInputOTPCreation(t *testing.T) {
+func TestInputOTP4DigitPin(t *testing.T) {
 	otp := inputotp.New(inputotp.Config{
-		Length: 6,
+		Length: 4,
 	})
-
-	if otp.Length != 6 {
-		t.Errorf("expected Length to be 6, got %d", otp.Length)
+	if otp.Length != 4 {
+		t.Fatalf("expected Length 4")
 	}
 }
 
-func TestInputOTPLayout(t *testing.T) {
+func TestInputOTP6DigitPin(t *testing.T) {
+	otp := inputotp.New(inputotp.Config{
+		Length: 6,
+	})
+	if otp.Length != 6 {
+		t.Fatalf("expected Length 6")
+	}
+}
+
+func TestInputOTPDigitBoxLayout(t *testing.T) {
 	th := theme.NewDark()
 	otp := inputotp.New(inputotp.Config{
 		Length: 6,
 	})
-
+	ops := new(op.Ops)
 	gtx := layout.Context{
-		Ops: new(op.Ops),
+		Ops:         ops,
 		Constraints: layout.Exact(image.Pt(300, 50)),
 	}
 	dims := otp.Layout(gtx, th)
+	if dims.Size.X <= 0 {
+		t.Errorf("invalid width")
+	}
+}
 
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from InputOTP.Layout")
+func TestInputOTPActiveCellHighlight(t *testing.T) {
+	th := theme.NewDark()
+	otp := inputotp.New(inputotp.Config{
+		Length: 6,
+	})
+	ops := new(op.Ops)
+	gtx := layout.Context{
+		Ops:         ops,
+		Constraints: layout.Exact(image.Pt(300, 50)),
+	}
+	dims := otp.Layout(gtx, th)
+	if dims.Size.Y <= 0 {
+		t.Errorf("invalid height")
 	}
 }
