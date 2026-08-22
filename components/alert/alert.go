@@ -14,6 +14,7 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
@@ -49,7 +50,7 @@ func New(config Config) *Alert {
 	}
 }
 
-// Layout renders the alert box with exact bounding background.
+// Layout renders the alert box with exact bounding background and clean color resets.
 func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -60,8 +61,9 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	borderColor := th.Colors.Border
 
 	if a.Variant == theme.VariantDestructive {
+		bgColor = th.Colors.Destructive
 		borderColor = th.Colors.Destructive
-		fgColor = th.Colors.Destructive
+		fgColor = th.Colors.DestructiveFg
 	}
 
 	styles := utils.ParseClasses(a.Classes)
@@ -123,6 +125,9 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 	callOp.Add(gtx.Ops)
+
+	// Reset color state back to foreground
+	paint.ColorOp{Color: th.Colors.Foreground}.Add(gtx.Ops)
 
 	return dims
 }

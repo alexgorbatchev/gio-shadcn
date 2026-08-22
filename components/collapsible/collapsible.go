@@ -11,8 +11,8 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -67,7 +67,10 @@ func (c *Collapsible) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	return c.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		padding := layout.Inset{
@@ -77,6 +80,7 @@ func (c *Collapsible) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 			Right:  th.Spacing.Space4,
 		}
 
+		macro := op.Record(gtx.Ops)
 		dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -116,18 +120,17 @@ func (c *Collapsible) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 				}),
 			)
 		})
+		callOp := macro.Stop()
 
 		rect := image.Rectangle{Max: dims.Size}
 		radius := gtx.Dp(th.Radius.RadiusMD)
+
+		theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
 		rr := clip.UniformRRect(rect, radius)
+		theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+		callOp.Add(gtx.Ops)
 
 		return dims
 	})

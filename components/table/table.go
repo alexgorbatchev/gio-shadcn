@@ -11,22 +11,20 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
-	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Row represents a single data row in the table.
 type Row struct {
 	Cells     []string
 	Selected  bool
 	clickable *widget.Clickable
 }
 
-// NewRow creates a new Table Row.
 func NewRow(cells ...string) *Row {
 	return &Row{
 		Cells:     cells,
@@ -34,7 +32,6 @@ func NewRow(cells ...string) *Row {
 	}
 }
 
-// Table represents a data grid table component.
 type Table struct {
 	Headers     []string
 	Rows        []*Row
@@ -42,7 +39,6 @@ type Table struct {
 	OnSelectRow func(index int)
 }
 
-// Config represents configuration for creating a Table.
 type Config struct {
 	Headers     []string
 	Rows        []*Row
@@ -50,7 +46,6 @@ type Config struct {
 	OnSelectRow func(index int)
 }
 
-// New creates a new Table component with the given configuration.
 func New(config Config) *Table {
 	return &Table{
 		Headers:     config.Headers,
@@ -60,22 +55,28 @@ func New(config Config) *Table {
 	}
 }
 
-// Layout renders the table headers and data rows.
 func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
+	bgColor := th.Colors.Card
+	borderColor := th.Colors.Border
+
+	styles := utils.ParseClasses(t.Classes)
+	if styles.Background.A > 0 {
+		bgColor = styles.Background
+	}
+
+	macro := op.Record(gtx.Ops)
 	children := make([]layout.FlexChild, 0, len(t.Rows)+1)
 
-	// Render Header Row
 	children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 		return t.layoutHeader(gtx, th)
 	}))
 
-	// Render Data Rows
 	for idx, row := range t.Rows {
-		idx, row := idx, row // capture loop variables
+		idx, row := idx, row
 
 		if row.clickable.Clicked(gtx) {
 			for i, r := range t.Rows {
@@ -92,32 +93,26 @@ func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	tableDims := layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
-
-	bgColor := th.Colors.Card
-	borderColor := th.Colors.Border
-
-	styles := utils.ParseClasses(t.Classes)
-	if styles.Background.A > 0 {
-		bgColor = styles.Background
-	}
+	callOp := macro.Stop()
 
 	rect := image.Rectangle{Max: tableDims.Size}
 	radius := gtx.Dp(th.Radius.RadiusMD)
+
+	theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
 	rr := clip.UniformRRect(rect, radius)
+	theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.0,
-	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+	callOp.Add(gtx.Ops)
 
 	return tableDims
 }
 
 func (t *Table) layoutHeader(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	padding := layout.Inset{
 		Top:    th.Spacing.Space3,
@@ -142,7 +137,10 @@ func (t *Table) layoutHeader(gtx layout.Context, th *theme.Theme) layout.Dimensi
 }
 
 func (t *Table) layoutRow(gtx layout.Context, th *theme.Theme, row *Row) layout.Dimensions {
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	bgColor := th.Colors.Background
 	if row.Selected {
@@ -157,6 +155,7 @@ func (t *Table) layoutRow(gtx layout.Context, th *theme.Theme, row *Row) layout.
 			Right:  th.Spacing.Space4,
 		}
 
+		macro := op.Record(gtx.Ops)
 		rowDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			colChildren := make([]layout.FlexChild, 0, len(row.Cells))
 			for _, cell := range row.Cells {
@@ -169,16 +168,18 @@ func (t *Table) layoutRow(gtx layout.Context, th *theme.Theme, row *Row) layout.
 			}
 			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, colChildren...)
 		})
+		callOp := macro.Stop()
 
 		rect := image.Rectangle{Max: rowDims.Size}
-		paint.FillShape(gtx.Ops, bgColor, clip.Rect(rect).Op())
+		theme.DrawRRectBackground(gtx, rect, 0, bgColor)
 
-		// Bottom divider line
 		lineRect := image.Rectangle{
 			Min: image.Pt(0, rowDims.Size.Y-1),
 			Max: image.Pt(rowDims.Size.X, rowDims.Size.Y),
 		}
-		paint.FillShape(gtx.Ops, th.Colors.Border, clip.Rect(lineRect).Op())
+		theme.DrawRRectBackground(gtx, lineRect, 0, th.Colors.Border)
+
+		callOp.Add(gtx.Ops)
 
 		return rowDims
 	})

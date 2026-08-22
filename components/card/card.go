@@ -1,5 +1,8 @@
 /*
-Package card provides a flexible container component for gio-shadcn applications.
+Package card provides a card container component for gio-shadcn applications.
+
+Cards are flexible content containers with customizable headers, content areas,
+footers, and variants following shadcn/ui design principles.
 */
 package card
 
@@ -7,10 +10,9 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/unit"
-	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -68,7 +70,7 @@ func New(config Config) *Card {
 	}
 }
 
-// Layout renders the card background FIRST, then content ON TOP using op.Record macro.
+// Layout renders the card background FIRST, then content ON TOP using layout.Stack.
 func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -101,23 +103,53 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 		radius = styles.Radius
 	}
 
-	// 1. Record content operations into a macro to measure dimensions
-	macro := op.Record(gtx.Ops)
-	dims := padding.Layout(gtx, content)
-	callOp := macro.Stop()
-
-	// 2. Draw card background FIRST using exact measured bounds
-	rect := image.Rectangle{Max: dims.Size}
-	radiusPx := gtx.Dp(radius)
-	theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
-
-	if variant.BorderWidth > 0 {
-		rr := clip.UniformRRect(rect, radiusPx)
-		theme.DrawStroke(gtx, rr.Path(gtx.Ops), float32(gtx.Dp(unit.Dp(variant.BorderWidth))), variant.Border)
+	// Measure content dimensions with unconstrained max bounds
+	gtxContent := gtx
+	gtxContent.Constraints = layout.Constraints{
+		Min: image.Pt(0, 0),
+		Max: image.Pt(1e6, 1e6),
 	}
 
-	// 3. Play recorded content operations ON TOP of background
-	callOp.Add(gtx.Ops)
+	contentDims := padding.Layout(gtxContent, content)
+	cardSize := contentDims.Size
+
+	if cardSize.X < gtx.Constraints.Min.X {
+		cardSize.X = gtx.Constraints.Min.X
+	}
+	if cardSize.Y < gtx.Constraints.Min.Y {
+		cardSize.Y = gtx.Constraints.Min.Y
+	}
+	if cardSize.X > gtx.Constraints.Max.X {
+		cardSize.X = gtx.Constraints.Max.X
+	}
+	if cardSize.Y > gtx.Constraints.Max.Y {
+		cardSize.Y = gtx.Constraints.Max.Y
+	}
+
+	gtx.Constraints = layout.Exact(cardSize)
+
+	dims := layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: cardSize}
+			radiusPx := gtx.Dp(radius)
+
+			theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
+
+			if variant.BorderWidth > 0 {
+				rr := clip.UniformRRect(rect, radiusPx)
+				theme.DrawStroke(gtx, rr.Path(gtx.Ops), float32(gtx.Dp(unit.Dp(variant.BorderWidth))), variant.Border)
+			}
+
+			return layout.Dimensions{Size: cardSize}
+		}),
+
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, content)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
 }
@@ -127,78 +159,53 @@ func (c *Card) Update(_ layout.Context) theme.ComponentState {
 }
 
 type State struct {
-	active   bool
-	hovered  bool
-	pressed  bool
-	disabled bool
+	hovered bool
+	focused bool
+	active  bool
 }
 
-func (cs *State) IsActive() bool   { return cs.active }
-func (cs *State) IsHovered() bool  { return cs.hovered }
-func (cs *State) IsPressed() bool  { return cs.pressed }
-func (cs *State) IsDisabled() bool { return cs.disabled }
+func (s *State) IsActive() bool   { return s.active }
+func (s *State) IsHovered() bool  { return s.hovered }
+func (s *State) IsPressed() bool  { return false }
+func (s *State) IsDisabled() bool { return false }
 
 type Header struct {
-	Classes string
-	Padding layout.Inset
+	Title       string
+	Description string
+	Classes     string
 }
 
-func NewHeader(classes string) *Header {
-	return &Header{Classes: classes}
+type HeaderConfig struct {
+	Title       string
+	Description string
+	Classes     string
 }
 
-func (h *Header) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
-	styles := utils.ParseClasses(h.Classes)
-	padding := h.Padding
-	if padding == (layout.Inset{}) {
-		padding = layout.Inset{Top: th.Spacing.Space6, Bottom: th.Spacing.Space6, Left: th.Spacing.Space6, Right: th.Spacing.Space6}
+func NewHeader(config HeaderConfig) *Header {
+	return &Header{
+		Title:       config.Title,
+		Description: config.Description,
+		Classes:     config.Classes,
 	}
-	if styles.Padding != (layout.Inset{}) {
-		padding = styles.Padding
+}
+
+func (h *Header) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
 	}
-	return padding.Layout(gtx, content)
-}
 
-type Content struct {
-	Classes string
-	Padding layout.Inset
-}
-
-func NewContent(classes string) *Content {
-	return &Content{Classes: classes}
-}
-
-func (c *Content) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
-	styles := utils.ParseClasses(c.Classes)
-	padding := c.Padding
-	if padding == (layout.Inset{}) {
-		padding = layout.Inset{Top: th.Spacing.Space6, Bottom: th.Spacing.Space6, Left: th.Spacing.Space6, Right: th.Spacing.Space6}
-	}
-	if styles.Padding != (layout.Inset{}) {
-		padding = styles.Padding
-	}
-	return padding.Layout(gtx, content)
-}
-
-type Footer struct {
-	Classes string
-	Padding layout.Inset
-}
-
-func NewFooter(classes string) *Footer {
-	return &Footer{Classes: classes}
-}
-
-func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget) layout.Dimensions {
-	styles := utils.ParseClasses(f.Classes)
-	padding := f.Padding
-	if padding == (layout.Inset{}) {
-		padding = layout.Inset{Top: th.Spacing.Space6, Bottom: th.Spacing.Space6, Left: th.Spacing.Space6, Right: th.Spacing.Space6}
-	}
-	if styles.Padding != (layout.Inset{}) {
-		padding = styles.Padding
-	}
-	return padding.Layout(gtx, content)
+	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{Bottom: th.Spacing.Space1}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Dimensions{}
+			})
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{Top: 0}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Dimensions{}
+			})
+		}),
+	)
 }
 
 type Title struct {
@@ -206,16 +213,20 @@ type Title struct {
 	Classes string
 }
 
-func NewTitle(text string, classes string) *Title {
-	return &Title{Text: text, Classes: classes}
+type TitleConfig struct {
+	Text    string
+	Classes string
+}
+
+func NewTitle(config TitleConfig) *Title {
+	return &Title{
+		Text:    config.Text,
+		Classes: config.Classes,
+	}
 }
 
 func (t *Title) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	textStyle := th.Typography.H3(&th.Colors)
-	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return renderText(gtx, textStyle, t.Text) }),
-	)
+	return layout.Dimensions{}
 }
 
 type Description struct {
@@ -223,26 +234,54 @@ type Description struct {
 	Classes string
 }
 
-func NewDescription(text string, classes string) *Description {
-	return &Description{Text: text, Classes: classes}
+type DescriptionConfig struct {
+	Text    string
+	Classes string
+}
+
+func NewDescription(config DescriptionConfig) *Description {
+	return &Description{
+		Text:    config.Text,
+		Classes: config.Classes,
+	}
 }
 
 func (d *Description) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	textStyle := th.Typography.BodySmall(&th.Colors)
-	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return renderText(gtx, textStyle, d.Text) }),
-	)
+	return layout.Dimensions{}
 }
 
-func renderText(gtx layout.Context, style theme.TextStyle, text string) layout.Dimensions {
-	thMat := material.NewTheme()
-	label := material.Label(thMat, style.Size, text)
-	if style.Color != nil {
-		label.Color = style.Color.Foreground
+type Content struct {
+	Classes string
+}
+
+type ContentConfig struct {
+	Classes string
+}
+
+func NewContent(config ContentConfig) *Content {
+	return &Content{
+		Classes: config.Classes,
 	}
-	if style.Weight > 0 {
-		label.Font.Weight = style.Weight
+}
+
+func (c *Content) Layout(gtx layout.Context, th *theme.Theme, children layout.Widget) layout.Dimensions {
+	return children(gtx)
+}
+
+type Footer struct {
+	Classes string
+}
+
+type FooterConfig struct {
+	Classes string
+}
+
+func NewFooter(config FooterConfig) *Footer {
+	return &Footer{
+		Classes: config.Classes,
 	}
-	return label.Layout(gtx)
+}
+
+func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, children layout.Widget) layout.Dimensions {
+	return children(gtx)
 }

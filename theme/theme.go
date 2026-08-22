@@ -74,7 +74,7 @@ func (t *Theme) ToggleDark() {
 
 // DrawRRectBackground safely draws a rounded rectangle fill with isolated push/pop clips and color state reset.
 func DrawRRectBackground(gtx layout.Context, rect image.Rectangle, radius int, c color.NRGBA) {
-	if c.A == 0 {
+	if c.A == 0 || rect.Dx() <= 0 || rect.Dy() <= 0 {
 		return
 	}
 	rr := clip.UniformRRect(rect, radius)

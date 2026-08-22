@@ -11,8 +11,8 @@ import (
 	"image/color"
 
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
@@ -46,7 +46,7 @@ func New(config Config) *Badge {
 	}
 }
 
-// Layout renders the badge with background painted before text using exact tight bounding size and proper clip popping.
+// Layout renders the badge using live layout.Stack matching button.go layout.
 func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -66,53 +66,59 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	// Unconstrain BOTH Min and Max so text measures its exact natural dimensions
-	gtxText := gtx
-	gtxText.Constraints = layout.Constraints{
+	// Measure content dimensions with unconstrained max bounds
+	gtxContent := gtx
+	gtxContent.Constraints = layout.Constraints{
 		Min: image.Pt(0, 0),
 		Max: image.Pt(1e6, 1e6),
 	}
 
-	// 1. Record text content operations into a macro
-	macro := op.Record(gtx.Ops)
 	mTheme := th.MaterialTheme
 	if mTheme == nil {
 		mTheme = material.NewTheme()
 	}
-	lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
-	lbl.Color = fgColor
-	lbl.Alignment = text.Start
-	lblDims := lbl.Layout(gtxText)
-	callOp := macro.Stop()
 
-	// Calculate exact badge bounds from text dimensions + padding
-	padLeft := gtx.Dp(padding.Left)
-	padRight := gtx.Dp(padding.Right)
-	padTop := gtx.Dp(padding.Top)
-	padBottom := gtx.Dp(padding.Bottom)
+	contentDims := padding.Layout(gtxContent, func(gtx layout.Context) layout.Dimensions {
+		lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
+		lbl.Color = fgColor
+		lbl.Alignment = text.Start
+		return lbl.Layout(gtx)
+	})
 
-	badgeSize := image.Pt(
-		lblDims.Size.X+padLeft+padRight,
-		lblDims.Size.Y+padTop+padBottom,
+	badgeSize := contentDims.Size
+	gtx.Constraints = layout.Exact(badgeSize)
+
+	dims := layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: badgeSize}
+			radiusPx := gtx.Dp(th.Radius.RadiusFull)
+
+			bgClip := clip.Rect{Max: badgeSize}.Push(gtx.Ops)
+			theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
+
+			if borderWidth > 0 {
+				rr := clip.UniformRRect(rect, radiusPx)
+				theme.DrawStroke(gtx, rr.Path(gtx.Ops), borderWidth, borderColor)
+			}
+			bgClip.Pop()
+
+			return layout.Dimensions{Size: badgeSize}
+		}),
+
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
+				lbl.Color = fgColor
+				lbl.Alignment = text.Start
+				return lbl.Layout(gtx)
+			})
+		}),
 	)
 
-	// 2. Draw background first using push/pop clip stack
-	rect := image.Rectangle{Max: badgeSize}
-	radius := gtx.Dp(th.Radius.RadiusFull)
+	// Reset active GPU paint color state back to theme background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
-	theme.DrawRRectBackground(gtx, rect, radius, bgColor)
-
-	if borderWidth > 0 {
-		rr := clip.UniformRRect(rect, radius)
-		theme.DrawStroke(gtx, rr.Path(gtx.Ops), borderWidth, borderColor)
-	}
-
-	// 3. Offset and play recorded text operation on top
-	offStack := op.Offset(image.Pt(padLeft, padTop)).Push(gtx.Ops)
-	callOp.Add(gtx.Ops)
-	offStack.Pop()
-
-	return layout.Dimensions{Size: badgeSize}
+	return dims
 }
 
 func (b *Badge) getVariantColors(cs *theme.ColorScheme) (bg, fg, border color.NRGBA, borderWidth float32) {
