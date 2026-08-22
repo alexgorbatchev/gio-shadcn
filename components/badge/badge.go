@@ -11,6 +11,7 @@ import (
 	"image/color"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
@@ -46,7 +47,7 @@ func New(config Config) *Badge {
 	}
 }
 
-// Layout renders the badge with background painted before text.
+// Layout renders the badge with background painted before text using exact bounding size.
 func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -66,36 +67,39 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	return layout.Stack{}.Layout(gtx,
-		// Background (drawn first)
-		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			rect := image.Rectangle{Max: gtx.Constraints.Min}
-			radius := gtx.Dp(th.Radius.RadiusFull)
-			rr := clip.UniformRRect(rect, radius)
+	// 1. Record text content operations into a macro
+	macro := op.Record(gtx.Ops)
+	dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		mTheme := th.MaterialTheme
+		if mTheme == nil {
+			mTheme = material.NewTheme()
+		}
+		lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
+		lbl.Color = fgColor
+		lbl.Alignment = text.Middle
+		return lbl.Layout(gtx)
+	})
+	callOp := macro.Stop()
 
-			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	// 2. Draw background first using exact measured bounds
+	rect := image.Rectangle{Max: dims.Size}
+	radius := gtx.Dp(th.Radius.RadiusFull)
+	rr := clip.UniformRRect(rect, radius)
 
-			if borderWidth > 0 {
-				stroke := clip.Stroke{
-					Path:  rr.Path(gtx.Ops),
-					Width: borderWidth,
-				}
-				paint.FillShape(gtx.Ops, borderColor, stroke.Op())
-			}
+	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 
-			return layout.Dimensions{Size: gtx.Constraints.Min}
-		}),
+	if borderWidth > 0 {
+		stroke := clip.Stroke{
+			Path:  rr.Path(gtx.Ops),
+			Width: borderWidth,
+		}
+		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+	}
 
-		// Text Content (drawn on top)
-		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Label(material.NewTheme(), th.Typography.FontSizeXS, b.Text)
-				lbl.Color = fgColor
-				lbl.Alignment = text.Middle
-				return lbl.Layout(gtx)
-			})
-		}),
-	)
+	// 3. Play recorded text operation on top
+	callOp.Add(gtx.Ops)
+
+	return dims
 }
 
 func (b *Badge) getVariantColors(cs *theme.ColorScheme) (bg, fg, border color.NRGBA, borderWidth float32) {

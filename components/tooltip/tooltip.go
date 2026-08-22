@@ -10,6 +10,7 @@ import (
 	"image"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
@@ -38,7 +39,7 @@ func New(config Config) *Tooltip {
 	}
 }
 
-// Layout renders the tooltip popover box with background drawn before text.
+// Layout renders the tooltip popover box.
 func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -59,27 +60,27 @@ func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		Right:  th.Spacing.Space3,
 	}
 
-	return layout.Stack{}.Layout(gtx,
-		// Background (drawn first)
-		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			rect := image.Rectangle{Max: gtx.Constraints.Min}
-			radius := gtx.Dp(th.Radius.RadiusSM)
-			rr := clip.UniformRRect(rect, radius)
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
-			paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	macro := op.Record(gtx.Ops)
+	dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Text)
+		lbl.Color = fgColor
+		lbl.Alignment = text.Middle
+		return lbl.Layout(gtx)
+	})
+	callOp := macro.Stop()
 
-			return layout.Dimensions{Size: gtx.Constraints.Min}
-		}),
+	rect := image.Rectangle{Max: dims.Size}
+	radius := gtx.Dp(th.Radius.RadiusSM)
+	rr := clip.UniformRRect(rect, radius)
 
-		// Text Content (drawn on top)
-		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				mTheme := material.NewTheme()
-				lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Text)
-				lbl.Color = fgColor
-				lbl.Alignment = text.Middle
-				return lbl.Layout(gtx)
-			})
-		}),
-	)
+	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+
+	callOp.Add(gtx.Ops)
+
+	return dims
 }
