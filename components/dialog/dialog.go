@@ -14,6 +14,7 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
@@ -28,12 +29,14 @@ type Dialog struct {
 	ConfirmText string
 	CancelText  string
 	Classes     string
+	Content     layout.Widget
 
 	OnConfirm func()
 	OnCancel  func()
 
-	cancelBtn  *button.Button
-	confirmBtn *button.Button
+	cancelBtn     *button.Button
+	confirmBtn    *button.Button
+	backdropClick widget.Clickable
 }
 
 // Config represents configuration for creating a Dialog.
@@ -44,6 +47,7 @@ type Config struct {
 	ConfirmText string
 	CancelText  string
 	Classes     string
+	Content     layout.Widget
 
 	OnConfirm func()
 	OnCancel  func()
@@ -67,6 +71,7 @@ func New(config Config) *Dialog {
 		ConfirmText: confText,
 		CancelText:  cancText,
 		Classes:     config.Classes,
+		Content:     config.Content,
 		OnConfirm:   config.OnConfirm,
 		OnCancel:    config.OnCancel,
 	}
@@ -106,11 +111,14 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		th = theme.New()
 	}
 
-	// Backdrop dark overlay
-	backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
-	paint.FillShape(gtx.Ops, backdropColor, clip.Rect{Max: gtx.Constraints.Max}.Op())
+	// Process backdrop click to close when clicking outside
+	if d.backdropClick.Clicked(gtx) {
+		d.Open = false
+		if d.OnCancel != nil {
+			d.OnCancel()
+		}
+	}
 
-	// Centered dialog card
 	bgColor := th.Colors.Card
 	borderColor := th.Colors.Border
 
@@ -119,66 +127,112 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
-	return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		padding := layout.Inset{
-			Top:    th.Spacing.Space6,
-			Bottom: th.Spacing.Space6,
-			Left:   th.Spacing.Space6,
-			Right:  th.Spacing.Space6,
-		}
+	return layout.Stack{}.Layout(gtx,
+		// Dark backdrop overlay across full window that intercepts outside clicks
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			return d.backdropClick.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				rect := image.Rectangle{Max: gtx.Constraints.Max}
+				backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
+				theme.DrawRRectBackground(gtx, rect, 0, backdropColor)
+				return layout.Dimensions{Size: gtx.Constraints.Max}
+			})
+		}),
 
-		cardDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				// Header Title
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSize2XL, d.Title)
-					lbl.Color = th.Colors.Foreground
-					lbl.Font.Weight = font.Bold
-					return lbl.Layout(gtx)
-				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-				}),
-				// Description Body
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeSM, d.Description)
-					lbl.Color = th.Colors.MutedFg
-					return lbl.Layout(gtx)
-				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx)
-				}),
-				// Action Buttons Row
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+		// Centered Dialog card
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				padding := layout.Inset{
+					Top:    th.Spacing.Space6,
+					Bottom: th.Spacing.Space6,
+					Left:   th.Spacing.Space6,
+					Right:  th.Spacing.Space6,
+				}
+
+				// Measure content dimensions
+				gtxContent := gtx
+				gtxContent.Constraints.Min = image.Pt(0, 0)
+
+				renderBody := func(gtx layout.Context) layout.Dimensions {
+					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+						// Header Title
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return d.cancelBtn.Layout(gtx, th)
+							lbl := material.Label(mTheme, th.Typography.FontSize2XL, d.Title)
+							lbl.Color = th.Colors.Foreground
+							lbl.Font.Weight = font.Bold
+							return lbl.Layout(gtx)
 						}),
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return layout.Spacer{Width: th.Spacing.Space3}.Layout(gtx)
+							return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+						}),
+						// Description Body
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							lbl := material.Label(mTheme, th.Typography.FontSizeSM, d.Description)
+							lbl.Color = th.Colors.MutedFg
+							return lbl.Layout(gtx)
 						}),
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return d.confirmBtn.Layout(gtx, th)
+							return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
+						}),
+						// Custom or Illustrated Content Body
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							if d.Content != nil {
+								return d.Content(gtx)
+							}
+							return layout.Dimensions{}
+						}),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx)
+						}),
+						// Action Buttons Row
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return d.cancelBtn.Layout(gtx, th)
+								}),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return layout.Spacer{Width: th.Spacing.Space3}.Layout(gtx)
+								}),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return d.confirmBtn.Layout(gtx, th)
+								}),
+							)
 						}),
 					)
-				}),
-			)
-		})
+				}
 
-		rect := image.Rectangle{Max: cardDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusLG)
-		rr := clip.UniformRRect(rect, radius)
+				contentDims := padding.Layout(gtxContent, renderBody)
+				cardSize := contentDims.Size
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+				return layout.Stack{}.Layout(gtx,
+					// Dialog card background drawn FIRST
+					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+						rect := image.Rectangle{Max: cardSize}
+						radiusPx := gtx.Dp(th.Radius.RadiusLG)
 
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+						theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
 
-		return cardDims
-	})
+						rr := clip.UniformRRect(rect, radiusPx)
+						theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+						return layout.Dimensions{Size: cardSize}
+					}),
+
+					// Dialog content drawn ON TOP of background
+					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						return padding.Layout(gtx, renderBody)
+					}),
+				)
+			})
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return layout.Dimensions{}
 }

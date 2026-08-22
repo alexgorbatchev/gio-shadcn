@@ -12,9 +12,9 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
+	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
@@ -28,9 +28,11 @@ type Sheet struct {
 	Open        bool
 	Width       unit.Dp
 	Classes     string
+	Content     layout.Widget
 
-	OnClose  func()
-	closeBtn *button.Button
+	OnClose       func()
+	closeBtn      *button.Button
+	backdropClick widget.Clickable
 }
 
 // Config represents configuration for creating a Sheet.
@@ -40,6 +42,7 @@ type Config struct {
 	Open        bool
 	Width       unit.Dp
 	Classes     string
+	Content     layout.Widget
 	OnClose     func()
 }
 
@@ -47,7 +50,7 @@ type Config struct {
 func New(config Config) *Sheet {
 	w := config.Width
 	if w <= 0 {
-		w = unit.Dp(300)
+		w = unit.Dp(320)
 	}
 
 	s := &Sheet{
@@ -56,6 +59,7 @@ func New(config Config) *Sheet {
 		Open:        config.Open,
 		Width:       w,
 		Classes:     config.Classes,
+		Content:     config.Content,
 		OnClose:     config.OnClose,
 	}
 
@@ -84,9 +88,13 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		th = theme.New()
 	}
 
-	// Dark backdrop overlay
-	backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
-	paint.FillShape(gtx.Ops, backdropColor, clip.Rect{Max: gtx.Constraints.Max}.Op())
+	// Process backdrop click to close when clicking outside
+	if s.backdropClick.Clicked(gtx) {
+		s.Open = false
+		if s.OnClose != nil {
+			s.OnClose()
+		}
+	}
 
 	bgColor := th.Colors.Card
 	borderColor := th.Colors.Border
@@ -96,57 +104,115 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+
 	sheetWidthPx := gtx.Dp(s.Width)
 
-	// Position side drawer on the right edge
-	return layout.E.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		gtx.Constraints.Min.X = sheetWidthPx
-		gtx.Constraints.Max.X = sheetWidthPx
-		gtx.Constraints.Min.Y = gtx.Constraints.Max.Y
+	return layout.Stack{}.Layout(gtx,
+		// Dark backdrop overlay across full window that intercepts outside clicks
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			return s.backdropClick.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				rect := image.Rectangle{Max: gtx.Constraints.Max}
+				backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
+				theme.DrawRRectBackground(gtx, rect, 0, backdropColor)
+				return layout.Dimensions{Size: gtx.Constraints.Max}
+			})
+		}),
 
-		padding := layout.Inset{
-			Top:    th.Spacing.Space6,
-			Bottom: th.Spacing.Space6,
-			Left:   th.Spacing.Space6,
-			Right:  th.Spacing.Space6,
-		}
+		// Side Sheet panel positioned on the right edge
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return layout.E.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				gtx.Constraints.Min.X = sheetWidthPx
+				gtx.Constraints.Max.X = sheetWidthPx
+				gtx.Constraints.Min.Y = gtx.Constraints.Max.Y
 
-		sheetDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				// Header Row with Title and Close Button
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-							lbl := material.Label(mTheme, th.Typography.FontSizeXL, s.Title)
-							lbl.Color = th.Colors.Foreground
-							lbl.Font.Weight = font.Bold
-							return lbl.Layout(gtx)
-						}),
-						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return s.closeBtn.Layout(gtx, th)
-						}),
-					)
-				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-				}),
-				// Description
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeSM, s.Description)
-					lbl.Color = th.Colors.MutedFg
-					return lbl.Layout(gtx)
-				}),
-			)
-		})
+				padding := layout.Inset{
+					Top:    th.Spacing.Space6,
+					Bottom: th.Spacing.Space6,
+					Left:   th.Spacing.Space6,
+					Right:  th.Spacing.Space6,
+				}
 
-		rect := image.Rectangle{Max: sheetDims.Size}
-		paint.FillShape(gtx.Ops, bgColor, clip.Rect(rect).Op())
+				sheetSize := image.Pt(sheetWidthPx, gtx.Constraints.Max.Y)
 
-		// Left border line
-		borderRect := image.Rectangle{Max: image.Pt(1, sheetDims.Size.Y)}
-		paint.FillShape(gtx.Ops, borderColor, clip.Rect(borderRect).Op())
+				return layout.Stack{}.Layout(gtx,
+					// Sheet background drawn FIRST
+					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+						rect := image.Rectangle{Max: sheetSize}
+						theme.DrawRRectBackground(gtx, rect, 0, bgColor)
 
-		return sheetDims
-	})
+						// Left border line
+						borderRect := image.Rectangle{Max: image.Pt(1, sheetSize.Y)}
+						theme.DrawRRectBackground(gtx, borderRect, 0, borderColor)
+
+						return layout.Dimensions{Size: sheetSize}
+					}),
+
+					// Sheet content drawn ON TOP of background
+					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+								// Header Row with Title and Close Button
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+										layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+											lbl := material.Label(mTheme, th.Typography.FontSizeXL, s.Title)
+											lbl.Color = th.Colors.Foreground
+											lbl.Font.Weight = font.Bold
+											return lbl.Layout(gtx)
+										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											return s.closeBtn.Layout(gtx, th)
+										}),
+									)
+								}),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+								}),
+								// Description Body
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									lbl := material.Label(mTheme, th.Typography.FontSizeSM, s.Description)
+									lbl.Color = th.Colors.MutedFg
+									return lbl.Layout(gtx)
+								}),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
+								}),
+								// Custom or Illustrated Content Body
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									if s.Content != nil {
+										return s.Content(gtx)
+									}
+									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											lbl := material.Label(mTheme, th.Typography.FontSizeBase, "Track Audio Metadata & Details")
+											lbl.Color = th.Colors.Foreground
+											lbl.Font.Weight = font.SemiBold
+											return lbl.Layout(gtx)
+										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
+										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											lbl := material.Label(mTheme, th.Typography.FontSizeSM, "Format: FLAC 24-bit / 96kHz\nBPM: 128.00\nHarmonic Key: 8A\nChannels: Stereo\nDuration: 06:42")
+											lbl.Color = th.Colors.MutedFg
+											return lbl.Layout(gtx)
+										}),
+									)
+								}),
+							)
+						})
+					}),
+				)
+			})
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return layout.Dimensions{}
 }
