@@ -72,9 +72,15 @@ func (l *Label) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	styles := utils.ParseClasses(l.Classes)
 
-	textStyle := l.TextStyle
-	if textStyle == (theme.TextStyle{}) {
-		textStyle = l.getDefaultTextStyle(th)
+	textStyle := l.getDefaultTextStyle(th)
+	if l.TextStyle.Size > 0 {
+		textStyle.Size = l.TextStyle.Size
+	}
+	if l.TextStyle.Color != nil {
+		textStyle.Color = l.TextStyle.Color
+	}
+	if l.TextStyle.Weight > 0 {
+		textStyle.Weight = l.TextStyle.Weight
 	}
 
 	if l.Size != "" {
@@ -196,8 +202,18 @@ func (t *Typography) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 	styles := utils.ParseClasses(t.Classes)
 	textStyle := t.getTextStyleForElement(th)
 
-	if t.TextStyle != (theme.TextStyle{}) {
-		textStyle = t.TextStyle
+	// Merge individual properties instead of wiping out size with zero-value fields
+	if t.TextStyle.Size > 0 {
+		textStyle.Size = t.TextStyle.Size
+	}
+	if t.TextStyle.Color != nil {
+		textStyle.Color = t.TextStyle.Color
+	}
+	if t.TextStyle.Weight > 0 {
+		textStyle.Weight = t.TextStyle.Weight
+	}
+	if t.TextStyle.Alignment != 0 {
+		textStyle.Alignment = t.TextStyle.Alignment
 	}
 
 	mTheme := th.MaterialTheme
@@ -211,8 +227,8 @@ func (t *Typography) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 	label.Color = t.getColorForElement(th)
 
 	// If explicit color set in TextStyle, respect it
-	if t.TextStyle.Color != nil {
-		label.Color = t.TextStyle.Color.Foreground
+	if textStyle.Color != nil {
+		label.Color = textStyle.Color.Foreground
 	}
 
 	label.Alignment = textStyle.Alignment
