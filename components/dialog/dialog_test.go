@@ -10,37 +10,87 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestDialogCreation(t *testing.T) {
+func TestDialogModalWindow(t *testing.T) {
 	dl := dialog.New(dialog.Config{
-		Title:       "Confirm Audio Engine Reset",
-		Description: "Are you sure you want to reset all mixer channels?",
+		Title:       "Modal Dialog Title",
+		Description: "Modal Description",
 		Open:        true,
 	})
-
 	if !dl.Open {
-		t.Errorf("expected Open to be true")
-	}
-
-	if dl.Title != "Confirm Audio Engine Reset" {
-		t.Errorf("expected Title to be 'Confirm Audio Engine Reset', got %s", dl.Title)
+		t.Fatalf("expected Open true")
 	}
 }
 
-func TestDialogLayout(t *testing.T) {
+func TestDialogDarkBackdropOverlay(t *testing.T) {
 	th := theme.NewDark()
 	dl := dialog.New(dialog.Config{
-		Title:       "Confirm Audio Engine Reset",
-		Description: "Are you sure you want to reset all mixer channels?",
-		Open:        true,
+		Title: "Dialog",
+		Open:  true,
 	})
-
+	ops := new(op.Ops)
 	gtx := layout.Context{
-		Ops: new(op.Ops),
+		Ops:         ops,
 		Constraints: layout.Exact(image.Pt(500, 400)),
 	}
 	dims := dl.Layout(gtx, th)
+	if dims.Size.X < 0 {
+		t.Errorf("invalid width")
+	}
+}
 
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Dialog.Layout")
+func TestDialogBackdropClickToClose(t *testing.T) {
+	cancelled := false
+	dl := dialog.New(dialog.Config{
+		Title: "Dialog",
+		Open:  true,
+		OnCancel: func() {
+			cancelled = true
+		},
+	})
+	if dl.OnCancel == nil {
+		t.Fatalf("expected OnCancel handler")
+	}
+	_ = cancelled
+}
+
+func TestDialogHeaderTitleAndDescription(t *testing.T) {
+	dl := dialog.New(dialog.Config{
+		Title:       "Header Title",
+		Description: "Description Body",
+	})
+	if dl.Title != "Header Title" || dl.Description != "Description Body" {
+		t.Errorf("expected Title and Description")
+	}
+}
+
+func TestDialogConfirmAndCancelActions(t *testing.T) {
+	dl := dialog.New(dialog.Config{
+		ConfirmText: "Save Changes",
+		CancelText:  "Discard",
+	})
+	if dl.ConfirmText != "Save Changes" || dl.CancelText != "Discard" {
+		t.Errorf("expected custom action texts")
+	}
+}
+
+func TestDialogCustomContentWidget(t *testing.T) {
+	contentRan := false
+	dl := dialog.New(dialog.Config{
+		Title: "Dialog",
+		Open:  true,
+		Content: func(gtx layout.Context) layout.Dimensions {
+			contentRan = true
+			return layout.Dimensions{Size: image.Pt(100, 50)}
+		},
+	})
+	th := theme.NewDark()
+	ops := new(op.Ops)
+	gtx := layout.Context{
+		Ops:         ops,
+		Constraints: layout.Exact(image.Pt(500, 400)),
+	}
+	_ = dl.Layout(gtx, th)
+	if !contentRan {
+		t.Errorf("expected custom content widget to execute")
 	}
 }

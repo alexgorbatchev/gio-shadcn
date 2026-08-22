@@ -22,26 +22,26 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
 ### Variants
 - [x] **Anchored Popover Card**
   - implementation:
-    - popover.go:2
+    - popover.go:36
   - tests:
     - popover_test.go:13
 
 ### Capabilities & Features
 - [x] **Popover Trigger Button**
   - implementation:
-    - popover.go:2
-  - tests:
-    - popover_test.go:1
-- [x] **Card Content Container**
-  - implementation:
-    - popover.go:2
-  - tests:
-    - popover_test.go:13
-- [x] **Open/Close State**
-  - implementation:
     - popover.go:49
   - tests:
     - popover_test.go:13
+- [x] **Card Content Container**
+  - implementation:
+    - popover.go:81
+  - tests:
+    - popover_test.go:33
+- [x] **Open/Close State**
+  - implementation:
+    - popover.go:50
+  - tests:
+    - popover_test.go:20
 
 ---
 

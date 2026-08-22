@@ -22,36 +22,36 @@ Whenever adding, modifying, or refactoring the `dialog` component implementation
 ### Variants
 - [x] **Modal Dialog Window**
   - implementation:
-    - dialog.go:2
+    - dialog.go:61
   - tests:
     - dialog_test.go:13
 
 ### Capabilities & Features
 - [x] **Dark Backdrop Overlay**
   - implementation:
-    - dialog.go:136
+    - dialog.go:138
   - tests:
-    - dialog_test.go:30
+    - dialog_test.go:24
 - [x] **Backdrop Click-To-Close**
   - implementation:
-    - dialog.go:39
+    - dialog.go:117
   - tests:
-    - dialog_test.go:13
+    - dialog_test.go:40
 - [x] **Header Title & Description**
   - implementation:
-    - dialog.go:162
+    - dialog.go:158
   - tests:
-    - dialog_test.go:13
+    - dialog_test.go:54
 - [x] **Confirm & Cancel Actions**
   - implementation:
-    - dialog.go:4
+    - dialog.go:183
   - tests:
-    - dialog_test.go:15
+    - dialog_test.go:64
 - [x] **Custom Content Widget**
   - implementation:
-    - dialog.go:181
+    - dialog.go:173
   - tests:
-    - dialog_test.go:13
+    - dialog_test.go:74
 
 ---
 

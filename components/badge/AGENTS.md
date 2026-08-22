@@ -22,41 +22,41 @@ Whenever adding, modifying, or refactoring the `badge` component implementation 
 ### Variants
 - [x] **Default / Primary Badge**
   - implementation:
-    - badge.go:40
+    - badge.go:135
   - tests:
     - badge_test.go:12
 - [x] **Secondary Badge**
   - implementation:
     - badge.go:129
   - tests:
-    - badge_test.go:15
+    - badge_test.go:22
 - [x] **Outline Badge**
   - implementation:
     - badge.go:131
   - tests:
-    - badge_test.go:12
+    - badge_test.go:32
 - [x] **Destructive Badge**
   - implementation:
     - badge.go:133
   - tests:
-    - badge_test.go:12
+    - badge_test.go:42
 
 ### Capabilities & Features
 - [x] **Full Rounded Radius**
   - implementation:
-    - badge.go:50
+    - badge.go:94
   - tests:
-    - badge_test.go:12
+    - badge_test.go:52
 - [x] **XS Typography Label**
   - implementation:
-    - badge.go:82
+    - badge.go:78
   - tests:
-    - badge_test.go:12
+    - badge_test.go:66
 - [x] **Compact Padding**
   - implementation:
-    - badge.go:50
+    - badge.go:58
   - tests:
-    - badge_test.go:12
+    - badge_test.go:80
 
 ---
 

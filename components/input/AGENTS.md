@@ -22,36 +22,36 @@ Whenever adding, modifying, or refactoring the `input` component implementation 
 ### Variants
 - [x] **Standard Text Input**
   - implementation:
-    - input.go:25
+    - input.go:26
   - tests:
-    - input_test.go:13
+    - input_test.go:2
 - [x] **Prefilled Text Input**
   - implementation:
-    - input.go:267
+    - input.go:4
   - tests:
-    - input_test.go:13
+    - input_test.go:3
 - [x] **Disabled Text Input**
   - implementation:
     - input.go:147
   - tests:
-    - input_test.go:13
+    - input_test.go:4
 
 ### Capabilities & Features
 - [x] **Single-Line Text Editing**
   - implementation:
-    - input.go:267
+    - input.go:3
   - tests:
-    - input_test.go:13
+    - input_test.go:20
 - [x] **Placeholder Text**
   - implementation:
-    - input.go:5
+    - input.go:7
   - tests:
-    - input_test.go:13
+    - input_test.go:16
 - [x] **Focus Ring Stroke**
   - implementation:
-    - input.go:52
+    - input.go:33
   - tests:
-    - input_test.go:13
+    - input_test.go:14
 
 ---
 

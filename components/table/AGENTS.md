@@ -29,24 +29,24 @@ Whenever adding, modifying, or refactoring the `table` component implementation 
 ### Capabilities & Features
 - [x] **Header Row Columns**
   - implementation:
-    - table.go:36
+    - table.go:106
   - tests:
-    - table_test.go:15
+    - table_test.go:21
 - [x] **Selectable Data Rows**
   - implementation:
-    - table.go:58
+    - table.go:78
   - tests:
-    - table_test.go:13
+    - table_test.go:25
 - [x] **Row Hover / Selected State**
   - implementation:
-    - table.go:4
+    - table.go:146
   - tests:
-    - table_test.go:16
+    - table_test.go:30
 - [x] **Bottom Divider Strokes**
   - implementation:
-    - table.go:119
+    - table.go:175
   - tests:
-    - table_test.go:13
+    - table_test.go:30
 
 ---
 

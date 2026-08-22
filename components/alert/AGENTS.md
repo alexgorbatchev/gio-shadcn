@@ -22,36 +22,36 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
 ### Variants
 - [x] **Default / Info Alert**
   - implementation:
-    - alert.go:43
+    - alert.go:40
   - tests:
     - alert_test.go:13
 - [x] **Destructive / Warning Alert**
   - implementation:
     - alert.go:63
   - tests:
-    - alert_test.go:13
+    - alert_test.go:23
 
 ### Capabilities & Features
 - [x] **Title Header**
   - implementation:
-    - alert.go:25
+    - alert.go:96
   - tests:
-    - alert_test.go:15
+    - alert_test.go:33
 - [x] **Description Body**
   - implementation:
-    - alert.go:26
+    - alert.go:111
   - tests:
-    - alert_test.go:16
+    - alert_test.go:43
 - [x] **Variant Background Styling**
   - implementation:
-    - alert.go:27
+    - alert.go:64
   - tests:
-    - alert_test.go:13
+    - alert_test.go:53
 - [x] **Border Stroke**
   - implementation:
-    - alert.go:61
+    - alert.go:127
   - tests:
-    - alert_test.go:13
+    - alert_test.go:68
 
 ---
 

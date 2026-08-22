@@ -22,21 +22,21 @@ Whenever adding, modifying, or refactoring the `spinner` component implementatio
 ### Variants
 - [x] **Activity Loading Spinner**
   - implementation:
-    - spinner.go:2
+    - spinner.go:34
   - tests:
     - spinner_test.go:13
 
 ### Capabilities & Features
 - [x] **Circular Arc Stroke**
   - implementation:
-    - spinner.go:22
+    - spinner.go:68
   - tests:
-    - spinner_test.go:13
+    - spinner_test.go:31
 - [x] **Spin Animation Indicator**
   - implementation:
-    - spinner.go:2
+    - spinner.go:88
   - tests:
-    - spinner_test.go:1
+    - spinner_test.go:33
 
 ---
 

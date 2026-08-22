@@ -22,36 +22,36 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
 ### Variants
 - [x] **Range Slider Fader**
   - implementation:
-    - slider.go:2
+    - slider.go:44
   - tests:
     - slider_test.go:13
 
 ### Capabilities & Features
 - [x] **Interactive Pointer Drag**
   - implementation:
-    - slider.go:2
+    - slider.go:88
   - tests:
-    - slider_test.go:13
+    - slider_test.go:25
 - [x] **Min / Max Value Range**
   - implementation:
-    - slider.go:25
+    - slider.go:45
   - tests:
     - slider_test.go:16
 - [x] **Track Fill Portion**
   - implementation:
-    - slider.go:68
+    - slider.go:151
   - tests:
-    - slider_test.go:13
+    - slider_test.go:33
 - [x] **Circular Thumb Knob**
   - implementation:
-    - slider.go:69
+    - slider.go:160
   - tests:
-    - slider_test.go:13
+    - slider_test.go:33
 - [x] **Clamped Radius Half-Height**
   - implementation:
-    - slider.go:69
+    - slider.go:142
   - tests:
-    - slider_test.go:13
+    - slider_test.go:33
 
 ---
 

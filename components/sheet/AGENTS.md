@@ -22,41 +22,41 @@ Whenever adding, modifying, or refactoring the `sheet` component implementation 
 ### Variants
 - [x] **Side Sheet Slide-Over Panel**
   - implementation:
-    - sheet.go:2
+    - sheet.go:48
   - tests:
     - sheet_test.go:13
 
 ### Capabilities & Features
 - [x] **Dark Backdrop Overlay**
   - implementation:
-    - sheet.go:81
+    - sheet.go:115
   - tests:
-    - sheet_test.go:26
+    - sheet_test.go:25
 - [x] **Backdrop Click-To-Close**
   - implementation:
-    - sheet.go:35
+    - sheet.go:90
   - tests:
-    - sheet_test.go:13
+    - sheet_test.go:19
 - [x] **Right Viewport Edge Alignment**
   - implementation:
-    - sheet.go:125
+    - sheet.go:124
   - tests:
-    - sheet_test.go:13
+    - sheet_test.go:33
 - [x] **Header Title & Description**
   - implementation:
-    - sheet.go:158
+    - sheet.go:156
   - tests:
-    - sheet_test.go:13
+    - sheet_test.go:14
 - [x] **Close Button**
   - implementation:
-    - sheet.go:33
+    - sheet.go:68
   - tests:
-    - sheet_test.go:13
+    - sheet_test.go:25
 - [x] **Custom Content Widget**
   - implementation:
-    - sheet.go:184
+    - sheet.go:179
   - tests:
-    - sheet_test.go:13
+    - sheet_test.go:25
 
 ---
 

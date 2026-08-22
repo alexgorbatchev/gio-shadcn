@@ -22,31 +22,31 @@ Whenever adding, modifying, or refactoring the `dropdownmenu` component implemen
 ### Variants
 - [x] **Action Dropdown Menu**
   - implementation:
-    - dropdownmenu.go:2
+    - dropdownmenu.go:53
   - tests:
     - dropdownmenu_test.go:13
 
 ### Capabilities & Features
 - [x] **Menu Trigger Button**
   - implementation:
-    - dropdownmenu.go:2
+    - dropdownmenu.go:65
   - tests:
-    - dropdownmenu_test.go:1
+    - dropdownmenu_test.go:25
 - [x] **Menu Items**
   - implementation:
-    - dropdownmenu.go:2
+    - dropdownmenu.go:28
   - tests:
-    - dropdownmenu_test.go:1
+    - dropdownmenu_test.go:34
 - [x] **Keyboard Shortcut Badges**
   - implementation:
-    - dropdownmenu.go:65
+    - dropdownmenu.go:138
   - tests:
-    - dropdownmenu_test.go:13
+    - dropdownmenu_test.go:41
 - [x] **Open/Close State**
   - implementation:
-    - dropdownmenu.go:65
+    - dropdownmenu.go:66
   - tests:
-    - dropdownmenu_test.go:13
+    - dropdownmenu_test.go:48
 
 ---
 

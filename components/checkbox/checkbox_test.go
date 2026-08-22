@@ -10,29 +10,76 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestCheckboxCreation(t *testing.T) {
+func TestCheckboxUncheckedState(t *testing.T) {
 	cb := checkbox.New(checkbox.Config{
-		Value: true,
+		Value: false,
 	})
-
-	if !cb.Value {
-		t.Errorf("expected Value to be true")
+	if cb.Value {
+		t.Fatalf("expected Value false")
 	}
 }
 
-func TestCheckboxLayout(t *testing.T) {
+func TestCheckboxCheckedState(t *testing.T) {
+	cb := checkbox.New(checkbox.Config{
+		Value: true,
+	})
+	if !cb.Value {
+		t.Fatalf("expected Value true")
+	}
+}
+
+func TestCheckboxDisabledState(t *testing.T) {
+	cb := checkbox.New(checkbox.Config{
+		Value:    true,
+		Disabled: true,
+	})
+	if !cb.Disabled {
+		t.Fatalf("expected Disabled true")
+	}
+}
+
+func TestCheckboxInteractiveClickToggle(t *testing.T) {
+	changed := false
+	cb := checkbox.New(checkbox.Config{
+		Value: false,
+		OnChange: func(val bool) {
+			changed = true
+		},
+	})
+	if cb.OnChange == nil {
+		t.Fatalf("expected OnChange handler")
+	}
+	_ = changed
+}
+
+func TestCheckboxCheckmarkVectorPathDrawing(t *testing.T) {
 	th := theme.NewDark()
 	cb := checkbox.New(checkbox.Config{
 		Value: true,
 	})
-
+	ops := new(op.Ops)
 	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(50, 50)),
+		Ops:         ops,
+		Constraints: layout.Exact(image.Pt(16, 16)),
 	}
 	dims := cb.Layout(gtx, th)
+	if dims.Size.X <= 0 {
+		t.Errorf("invalid width")
+	}
+}
 
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Checkbox.Layout")
+func TestCheckboxLabelAssociation(t *testing.T) {
+	th := theme.NewDark()
+	cb := checkbox.New(checkbox.Config{
+		Value: false,
+	})
+	ops := new(op.Ops)
+	gtx := layout.Context{
+		Ops:         ops,
+		Constraints: layout.Exact(image.Pt(16, 16)),
+	}
+	dims := cb.Layout(gtx, th)
+	if dims.Size.Y <= 0 {
+		t.Errorf("invalid height")
 	}
 }

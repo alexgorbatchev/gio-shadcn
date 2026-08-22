@@ -22,31 +22,31 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
 ### Variants
 - [x] **Number Stepper**
   - implementation:
-    - numberinput.go:2
+    - numberinput.go:42
   - tests:
-    - numberinput_test.go:1
+    - numberinput_test.go:13
 
 ### Capabilities & Features
 - [x] **Increment / Decrement Buttons**
   - implementation:
-    - numberinput.go:4
+    - numberinput.go:102
   - tests:
-    - numberinput_test.go:13
+    - numberinput_test.go:25
 - [x] **Min / Max Range Bounds**
   - implementation:
-    - numberinput.go:27
+    - numberinput.go:46
   - tests:
-    - numberinput_test.go:17
+    - numberinput_test.go:14
 - [x] **Step Size Configuration**
   - implementation:
-    - numberinput.go:2
+    - numberinput.go:43
   - tests:
-    - numberinput_test.go:16
+    - numberinput_test.go:15
 - [x] **Direct Number Formatting**
   - implementation:
-    - numberinput.go:75
+    - numberinput.go:121
   - tests:
-    - numberinput_test.go:13
+    - numberinput_test.go:21
 
 ---
 

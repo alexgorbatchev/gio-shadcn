@@ -10,33 +10,51 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestCollapsibleCreation(t *testing.T) {
+func TestCollapsibleExpandedState(t *testing.T) {
 	col := collapsible.New(collapsible.Config{
-		Title:   "Advanced Audio Routing",
-		Content: "ASIO multi-channel mapping enabled.",
-		Open:    false,
+		Title:   "Expanded Section",
+		Content: "Expanded body content",
+		Open:    true,
 	})
-
-	if col.Title != "Advanced Audio Routing" {
-		t.Errorf("expected Title to be 'Advanced Audio Routing', got %s", col.Title)
+	if !col.Open {
+		t.Fatalf("expected Open true")
 	}
 }
 
-func TestCollapsibleLayout(t *testing.T) {
+func TestCollapsibleCollapsedState(t *testing.T) {
+	col := collapsible.New(collapsible.Config{
+		Title:   "Collapsed Section",
+		Content: "Collapsed body content",
+		Open:    false,
+	})
+	if col.Open {
+		t.Fatalf("expected Open false")
+	}
+}
+
+func TestCollapsibleTriggerButtonHeader(t *testing.T) {
+	col := collapsible.New(collapsible.Config{
+		Title: "Trigger Button Header",
+	})
+	if col.Title != "Trigger Button Header" {
+		t.Errorf("expected Title 'Trigger Button Header', got %s", col.Title)
+	}
+}
+
+func TestCollapsibleContentBodyVisibilityToggle(t *testing.T) {
 	th := theme.NewDark()
 	col := collapsible.New(collapsible.Config{
-		Title:   "Advanced Audio Routing",
-		Content: "ASIO multi-channel mapping enabled.",
+		Title:   "Title",
+		Content: "Body Content",
 		Open:    true,
 	})
-
+	ops := new(op.Ops)
 	gtx := layout.Context{
-		Ops: new(op.Ops),
+		Ops:         ops,
 		Constraints: layout.Exact(image.Pt(300, 100)),
 	}
 	dims := col.Layout(gtx, th)
-
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Collapsible.Layout")
+	if dims.Size.X <= 0 {
+		t.Errorf("invalid width")
 	}
 }

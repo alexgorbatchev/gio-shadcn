@@ -22,36 +22,36 @@ Whenever adding, modifying, or refactoring the `checkbox` component implementati
 ### Variants
 - [x] **Unchecked State**
   - implementation:
-    - checkbox.go:52
+    - checkbox.go:42
   - tests:
     - checkbox_test.go:13
 - [x] **Checked State**
   - implementation:
-    - checkbox.go:102
+    - checkbox.go:73
   - tests:
-    - checkbox_test.go:13
+    - checkbox_test.go:22
 - [x] **Disabled State**
   - implementation:
-    - checkbox.go:27
+    - checkbox.go:78
   - tests:
-    - checkbox_test.go:13
+    - checkbox_test.go:31
 
 ### Capabilities & Features
 - [x] **Interactive Click Toggle**
   - implementation:
-    - checkbox.go:2
+    - checkbox.go:60
   - tests:
-    - checkbox_test.go:13
+    - checkbox_test.go:41
 - [x] **Checkmark Vector Path Drawing**
   - implementation:
-    - checkbox.go:102
+    - checkbox.go:104
   - tests:
-    - checkbox_test.go:13
+    - checkbox_test.go:54
 - [x] **Label Association**
   - implementation:
-    - checkbox.go:52
+    - checkbox.go:88
   - tests:
-    - checkbox_test.go:13
+    - checkbox_test.go:69
 
 ---
 

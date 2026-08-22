@@ -22,66 +22,66 @@ Whenever adding, modifying, or refactoring the `label` component implementation 
 ### Variants
 - [x] **H1**
   - implementation:
-    - label.go:178
+    - label.go:69
   - tests:
-    - label_test.go:16
+    - label_test.go:14
 - [x] **H2**
   - implementation:
-    - label.go:179
+    - label.go:70
   - tests:
-    - label_test.go:13
+    - label_test.go:15
 - [x] **H3**
   - implementation:
-    - label.go:180
+    - label.go:68
   - tests:
-    - label_test.go:13
+    - label_test.go:16
 - [x] **H4**
   - implementation:
-    - label.go:181
+    - label.go:69
   - tests:
-    - label_test.go:13
+    - label_test.go:17
 - [x] **Body Paragraph**
   - implementation:
-    - label.go:132
+    - label.go:134
   - tests:
     - label_test.go:17
 - [x] **Lead**
   - implementation:
     - label.go:184
   - tests:
-    - label_test.go:13
+    - label_test.go:14
 - [x] **Large**
   - implementation:
-    - label.go:185
+    - label.go:21
   - tests:
-    - label_test.go:13
+    - label_test.go:15
 - [x] **Muted**
   - implementation:
-    - label.go:186
+    - label.go:188
   - tests:
-    - label_test.go:13
+    - label_test.go:16
 - [x] **Small**
   - implementation:
-    - label.go:183
+    - label.go:20
   - tests:
-    - label_test.go:13
+    - label_test.go:17
 
 ### Capabilities & Features
 - [x] **Typography Font Scale**
   - implementation:
-    - label.go:2
+    - label.go:3
   - tests:
     - label_test.go:13
 - [x] **Font Weight Configuration**
   - implementation:
-    - label.go:103
+    - label.go:105
   - tests:
-    - label_test.go:13
+    - label_test.go:14
 - [x] **Theme Color Integration**
   - implementation:
     - label.go:11
   - tests:
-    - label_test.go:10
+    - label_test.go:12
 
 ---
 

@@ -22,31 +22,31 @@ Whenever adding, modifying, or refactoring the `pagination` component implementa
 ### Variants
 - [x] **Pagination Bar**
   - implementation:
-    - pagination.go:2
+    - pagination.go:38
   - tests:
-    - pagination_test.go:1
+    - pagination_test.go:13
 
 ### Capabilities & Features
 - [x] **Previous Page Button**
   - implementation:
-    - pagination.go:59
+    - pagination.go:64
   - tests:
     - pagination_test.go:13
 - [x] **Next Page Button**
   - implementation:
-    - pagination.go:29
+    - pagination.go:71
   - tests:
     - pagination_test.go:13
 - [x] **Page Number Buttons**
   - implementation:
-    - pagination.go:2
+    - pagination.go:94
   - tests:
-    - pagination_test.go:15
+    - pagination_test.go:23
 - [x] **Active Page Highlight**
   - implementation:
-    - pagination.go:91
+    - pagination.go:124
   - tests:
-    - pagination_test.go:13
+    - pagination_test.go:18
 
 ---
 

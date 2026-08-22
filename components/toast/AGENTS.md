@@ -34,24 +34,24 @@ Whenever adding, modifying, or refactoring the `toast` component implementation 
 ### Capabilities & Features
 - [x] **Title Header**
   - implementation:
-    - toast.go:24
+    - toast.go:99
   - tests:
-    - toast_test.go:15
+    - toast_test.go:14
 - [x] **Description Body**
   - implementation:
-    - toast.go:25
+    - toast.go:114
   - tests:
-    - toast_test.go:16
+    - toast_test.go:15
 - [x] **Close Button**
   - implementation:
-    - toast.go:56
+    - toast.go:57
   - tests:
-    - toast_test.go:13
+    - toast_test.go:20
 - [x] **Action Button**
   - implementation:
-    - toast.go:56
+    - toast.go:129
   - tests:
-    - toast_test.go:13
+    - toast_test.go:33
 
 ---
 

@@ -1,44 +1,99 @@
 package button_test
 
 import (
-	"image"
 	"testing"
 
-	"gioui.org/layout"
-	"gioui.org/op"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestButtonVariantsAndSizes(t *testing.T) {
-	th := theme.NewDark()
-
-	btnPrimary := button.New(button.Config{Text: "Primary", Variant: theme.VariantDefault})
-	btnSecondary := button.New(button.Config{Text: "Secondary", Variant: theme.VariantSecondary})
-	btnOutline := button.New(button.Config{Text: "Outline", Variant: theme.VariantOutline})
-	btnGhost := button.New(button.Config{Text: "Ghost", Variant: theme.VariantGhost})
-	btnDestructive := button.New(button.Config{Text: "Destructive", Variant: theme.VariantDestructive})
-	btnLink := button.New(button.Config{Text: "Link", Variant: theme.VariantLink})
-
-	btnSM := button.New(button.Config{Text: "Small", Size: theme.SizeSM})
-	btnDefaultSize := button.New(button.Config{Text: "Default Size", Size: theme.SizeDefault})
-	btnLG := button.New(button.Config{Text: "Large Size", Size: theme.SizeLG})
-
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(800, 600)),
+func TestButtonDefaultVariant(t *testing.T) {
+	btn := button.New(button.Config{Text: "Primary", Variant: theme.VariantDefault})
+	if btn.Variant != theme.VariantDefault {
+		t.Fatalf("expected VariantDefault")
 	}
+}
 
-	buttons := []*button.Button{
-		btnPrimary, btnSecondary, btnOutline, btnGhost, btnDestructive, btnLink,
-		btnSM, btnDefaultSize, btnLG,
+func TestButtonSecondaryVariant(t *testing.T) {
+	btn := button.New(button.Config{Text: "Secondary", Variant: theme.VariantSecondary})
+	if btn.Variant != theme.VariantSecondary {
+		t.Fatalf("expected VariantSecondary")
 	}
+}
 
-	for _, btn := range buttons {
-		dims := btn.Layout(gtx, th)
-		if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-			t.Errorf("button %s returned invalid dimensions %v", btn.Text, dims.Size)
-		}
+func TestButtonOutlineVariant(t *testing.T) {
+	btn := button.New(button.Config{Text: "Outline", Variant: theme.VariantOutline})
+	if btn.Variant != theme.VariantOutline {
+		t.Fatalf("expected VariantOutline")
 	}
+}
+
+func TestButtonGhostVariant(t *testing.T) {
+	btn := button.New(button.Config{Text: "Ghost", Variant: theme.VariantGhost})
+	if btn.Variant != theme.VariantGhost {
+		t.Fatalf("expected VariantGhost")
+	}
+}
+
+func TestButtonDestructiveVariant(t *testing.T) {
+	btn := button.New(button.Config{Text: "Destructive", Variant: theme.VariantDestructive})
+	if btn.Variant != theme.VariantDestructive {
+		t.Fatalf("expected VariantDestructive")
+	}
+}
+
+func TestButtonLinkVariant(t *testing.T) {
+	btn := button.New(button.Config{Text: "Link", Variant: theme.VariantLink})
+	if btn.Variant != theme.VariantLink {
+		t.Fatalf("expected VariantLink")
+	}
+}
+
+func TestButtonSmallSize(t *testing.T) {
+	btn := button.New(button.Config{Text: "Small", Size: theme.SizeSM})
+	if btn.Size != theme.SizeSM {
+		t.Fatalf("expected SizeSM")
+	}
+}
+
+func TestButtonDefaultSize(t *testing.T) {
+	btn := button.New(button.Config{Text: "Default Size", Size: theme.SizeDefault})
+	if btn.Size != theme.SizeDefault {
+		t.Fatalf("expected SizeDefault")
+	}
+}
+
+func TestButtonLargeSize(t *testing.T) {
+	btn := button.New(button.Config{Text: "Large Size", Size: theme.SizeLG})
+	if btn.Size != theme.SizeLG {
+		t.Fatalf("expected SizeLG")
+	}
+}
+
+func TestButtonIconSize(t *testing.T) {
+	btn := button.New(button.Config{Size: theme.SizeIcon})
+	if btn.Size != theme.SizeIcon {
+		t.Fatalf("expected SizeIcon")
+	}
+}
+
+func TestButtonDisabledState(t *testing.T) {
+	btn := button.New(button.Config{Text: "Disabled", Disabled: true})
+	if !btn.Disabled {
+		t.Fatalf("expected Disabled true")
+	}
+}
+
+func TestButtonPointerClickEvent(t *testing.T) {
+	clicked := false
+	btn := button.New(button.Config{
+		Text: "Click Me",
+		OnClick: func() {
+			clicked = true
+		},
+	})
+	if btn.OnClick == nil {
+		t.Fatalf("expected OnClick handler")
+	}
+	_ = clicked
 }

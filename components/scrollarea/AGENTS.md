@@ -22,21 +22,21 @@ Whenever adding, modifying, or refactoring the `scrollarea` component implementa
 ### Variants
 - [x] **Custom Scrollable Container**
   - implementation:
-    - scrollarea.go:2
+    - scrollarea.go:31
   - tests:
     - scrollarea_test.go:13
 
 ### Capabilities & Features
 - [x] **Vertical / Horizontal Scroll Tracks**
   - implementation:
-    - scrollarea.go:37
+    - scrollarea.go:34
   - tests:
-    - scrollarea_test.go:13
+    - scrollarea_test.go:19
 - [x] **Custom Scroll Thumb Bar**
   - implementation:
-    - scrollarea.go:2
+    - scrollarea.go:68
   - tests:
-    - scrollarea_test.go:13
+    - scrollarea_test.go:33
 
 ---
 

@@ -22,66 +22,66 @@ Whenever adding, modifying, or refactoring the `button` component implementation
 ### Variants
 - [x] **Default / Primary**
   - implementation:
-    - button.go:84
+    - button.go:107
   - tests:
-    - button_test.go:16
+    - button_test.go:13
 - [x] **Secondary**
   - implementation:
-    - button.go:111
-  - tests:
-    - button_test.go:17
-- [x] **Outline**
-  - implementation:
-    - button.go:111
-  - tests:
-    - button_test.go:18
-- [x] **Ghost**
-  - implementation:
-    - button.go:111
-  - tests:
-    - button_test.go:19
-- [x] **Destructive**
-  - implementation:
-    - button.go:111
-  - tests:
-    - button_test.go:20
-- [x] **Link**
-  - implementation:
-    - button.go:111
+    - button.go:28
   - tests:
     - button_test.go:21
+- [x] **Outline**
+  - implementation:
+    - button.go:28
+  - tests:
+    - button_test.go:29
+- [x] **Ghost**
+  - implementation:
+    - button.go:28
+  - tests:
+    - button_test.go:37
+- [x] **Destructive**
+  - implementation:
+    - button.go:28
+  - tests:
+    - button_test.go:45
+- [x] **Link**
+  - implementation:
+    - button.go:28
+  - tests:
+    - button_test.go:53
 
 ### Capabilities & Features
 - [x] **Small (SM) Size**
   - implementation:
-    - button.go:111
+    - button.go:296
   - tests:
-    - button_test.go:23
+    - button_test.go:61
 - [x] **Default Size**
   - implementation:
-    - button.go:84
+    - button.go:318
   - tests:
-    - button_test.go:16
+    - button_test.go:68
 - [x] **Large (LG) Size**
   - implementation:
-    - button.go:111
+    - button.go:304
   - tests:
-    - button_test.go:25
+    - button_test.go:75
 - [x] **Icon Size**
   - implementation:
-    - button.go:27
+    - button.go:311
   - tests:
-    - button_test.go:13
+    - button_test.go:82
 - [x] **Disabled State**
   - implementation:
-    - button.go:28
+    - button.go:170
   - tests:
-    - button_test.go:13
+    - button_test.go:89
 - [x] **Pointer Click Event**
   - implementation:
-    - button.go:111
+    - button.go:151
   - tests:
-    - button_test.go:13
+    - button_test.go:96
 
 ---
 

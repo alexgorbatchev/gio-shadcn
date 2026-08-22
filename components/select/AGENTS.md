@@ -22,26 +22,26 @@ Whenever adding, modifying, or refactoring the `select` component implementation
 ### Variants
 - [x] **Select Dropdown Field**
   - implementation:
-    - select.go:2
+    - select.go:57
   - tests:
-    - select_test.go:1
+    - select_test.go:13
 
 ### Capabilities & Features
 - [x] **Option Items List**
   - implementation:
-    - select.go:4
+    - select.go:153
   - tests:
     - select_test.go:15
 - [x] **Active Selected Value**
   - implementation:
-    - select.go:74
+    - select.go:183
   - tests:
-    - select_test.go:13
+    - select_test.go:21
 - [x] **Open/Close Overlay Dropdown**
   - implementation:
-    - select.go:74
+    - select.go:79
   - tests:
-    - select_test.go:13
+    - select_test.go:34
 
 ---
 

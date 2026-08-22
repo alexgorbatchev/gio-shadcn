@@ -22,26 +22,26 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
 ### Variants
 - [x] **Linear Progress Bar**
   - implementation:
-    - progress.go:19
+    - progress.go:34
   - tests:
     - progress_test.go:13
 
 ### Capabilities & Features
 - [x] **Background Track**
   - implementation:
-    - progress.go:67
+    - progress.go:83
   - tests:
-    - progress_test.go:13
+    - progress_test.go:33
 - [x] **Filled Progress Portion**
   - implementation:
-    - progress.go:86
+    - progress.go:89
   - tests:
-    - progress_test.go:13
+    - progress_test.go:25
 - [x] **Clamped Radius Half-Height**
   - implementation:
-    - progress.go:53
+    - progress.go:76
   - tests:
-    - progress_test.go:13
+    - progress_test.go:33
 
 ---
 

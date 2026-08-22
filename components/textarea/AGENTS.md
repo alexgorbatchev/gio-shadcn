@@ -1,4 +1,4 @@
-# Textarea Component Specification (`gio-shadcn`)
+# Text Area Component Specification (`gio-shadcn`)
 
 **Official shadcn Reference:** [https://ui.shadcn.com/docs/components/textarea](https://ui.shadcn.com/docs/components/textarea)
 
@@ -22,36 +22,36 @@ Whenever adding, modifying, or refactoring the `textarea` component implementati
 ### Variants
 - [x] **Standard Text Area**
   - implementation:
-    - textarea.go:66
+    - textarea.go:42
   - tests:
     - textarea_test.go:13
 - [x] **Prefilled Text Area**
   - implementation:
-    - textarea.go:66
+    - textarea.go:45
   - tests:
-    - textarea_test.go:13
+    - textarea_test.go:14
 - [x] **Disabled Text Area**
   - implementation:
-    - textarea.go:66
+    - textarea.go:73
   - tests:
-    - textarea_test.go:13
+    - textarea_test.go:24
 
 ### Capabilities & Features
 - [x] **Multi-Line Text Editing**
   - implementation:
-    - textarea.go:66
+    - textarea.go:44
   - tests:
     - textarea_test.go:13
 - [x] **Placeholder Text**
   - implementation:
-    - textarea.go:27
+    - textarea.go:107
   - tests:
     - textarea_test.go:16
 - [x] **Focus Ring Stroke**
   - implementation:
-    - textarea.go:66
+    - textarea.go:124
   - tests:
-    - textarea_test.go:13
+    - textarea_test.go:33
 
 ---
 

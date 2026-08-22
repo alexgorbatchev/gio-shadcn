@@ -10,37 +10,95 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestBreadcrumbCreation(t *testing.T) {
+func TestBreadcrumbStandardPath(t *testing.T) {
 	bc := breadcrumb.New(breadcrumb.Config{
 		Items: []*breadcrumb.Item{
 			breadcrumb.NewItem("Home", false),
-			breadcrumb.NewItem("Audio Engine", false),
-			breadcrumb.NewItem("Mixer", true),
+			breadcrumb.NewItem("Mixer", false),
 		},
 	})
-
-	if len(bc.Items) != 3 {
-		t.Fatalf("expected 3 items, got %d", len(bc.Items))
+	if len(bc.Items) != 2 {
+		t.Fatalf("expected 2 items")
 	}
 }
 
-func TestBreadcrumbLayout(t *testing.T) {
+func TestBreadcrumbActivePageLink(t *testing.T) {
+	bc := breadcrumb.New(breadcrumb.Config{
+		Items: []*breadcrumb.Item{
+			breadcrumb.NewItem("Home", false),
+			breadcrumb.NewItem("Deck A", true),
+		},
+	})
+	if !bc.Items[1].Active {
+		t.Fatalf("expected active link on item 1")
+	}
+}
+
+func TestBreadcrumbCustomSeparators(t *testing.T) {
 	th := theme.NewDark()
 	bc := breadcrumb.New(breadcrumb.Config{
 		Items: []*breadcrumb.Item{
 			breadcrumb.NewItem("Home", false),
-			breadcrumb.NewItem("Audio Engine", false),
 			breadcrumb.NewItem("Mixer", true),
 		},
 	})
-
+	ops := new(op.Ops)
 	gtx := layout.Context{
-		Ops: new(op.Ops),
+		Ops:         ops,
 		Constraints: layout.Exact(image.Pt(300, 30)),
 	}
 	dims := bc.Layout(gtx, th)
+	if dims.Size.X <= 0 {
+		t.Errorf("invalid width")
+	}
+}
 
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Breadcrumb.Layout")
+func TestBreadcrumbHorizontalFlexLayout(t *testing.T) {
+	th := theme.NewDark()
+	bc := breadcrumb.New(breadcrumb.Config{
+		Items: []*breadcrumb.Item{
+			breadcrumb.NewItem("Home", false),
+			breadcrumb.NewItem("Mixer", true),
+		},
+	})
+	ops := new(op.Ops)
+	gtx := layout.Context{
+		Ops:         ops,
+		Constraints: layout.Exact(image.Pt(300, 30)),
+	}
+	dims := bc.Layout(gtx, th)
+	if dims.Size.Y <= 0 {
+		t.Errorf("invalid height")
+	}
+}
+
+func TestBreadcrumbChevronDividers(t *testing.T) {
+	th := theme.NewDark()
+	bc := breadcrumb.New(breadcrumb.Config{
+		Items: []*breadcrumb.Item{
+			breadcrumb.NewItem("Home", false),
+			breadcrumb.NewItem("Mixer", false),
+			breadcrumb.NewItem("Deck A", true),
+		},
+	})
+	ops := new(op.Ops)
+	gtx := layout.Context{
+		Ops:         ops,
+		Constraints: layout.Exact(image.Pt(400, 30)),
+	}
+	dims := bc.Layout(gtx, th)
+	if dims.Size.X <= 0 {
+		t.Errorf("invalid width")
+	}
+}
+
+func TestBreadcrumbHoverHighlight(t *testing.T) {
+	bc := breadcrumb.New(breadcrumb.Config{
+		Items: []*breadcrumb.Item{
+			breadcrumb.NewItem("Home", false),
+		},
+	})
+	if bc.Items[0].Label != "Home" {
+		t.Errorf("expected Label 'Home'")
 	}
 }

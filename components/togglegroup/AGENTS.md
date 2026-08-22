@@ -22,26 +22,26 @@ Whenever adding, modifying, or refactoring the `togglegroup` component implement
 ### Variants
 - [x] **Toggle Group Segmented Buttons**
   - implementation:
-    - togglegroup.go:2
+    - togglegroup.go:69
   - tests:
-    - togglegroup_test.go:1
+    - togglegroup_test.go:13
 
 ### Capabilities & Features
 - [x] **Single Key Selection**
   - implementation:
-    - togglegroup.go:22
+    - togglegroup.go:78
   - tests:
-    - togglegroup_test.go:13
+    - togglegroup_test.go:21
 - [x] **Segmented Button Styling**
   - implementation:
-    - togglegroup.go:69
+    - togglegroup.go:121
   - tests:
-    - togglegroup_test.go:13
+    - togglegroup_test.go:30
 - [x] **Active Highlight**
   - implementation:
-    - togglegroup.go:69
+    - togglegroup.go:126
   - tests:
-    - togglegroup_test.go:13
+    - togglegroup_test.go:21
 
 ---
 
