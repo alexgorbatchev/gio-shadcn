@@ -48,26 +48,19 @@ Whenever adding, modifying, or refactoring the `radio` component implementation 
   - tests:
     - radio_test.go:34
 
-### Demos
-- [x] **Default Radio Group**
-  - implementation:
-    - radio.go:37
-  - tests:
-    - radio_test.go:13
-- [x] **Selected Radio Option**
-  - implementation:
-    - radio.go:98
-  - tests:
-    - radio_test.go:13
-- [x] **Unselected Radio Option**
-  - implementation:
-    - radio.go:37
-  - tests:
-    - radio_test.go:20
-
 ---
+
+
+### Demos
+- [x] **1. Radio Button Group**
+  - implementation:
+    - component: radio.go:50
+    - demo: demo.md:13
+  - tests:
+    - radio_test.go:15
 
 ## Code Structure & Entry Points
 - `radio.go`: Primary component widget layout and state logic.
 - `radio_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/radio/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

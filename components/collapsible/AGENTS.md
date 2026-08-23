@@ -20,64 +20,47 @@ Whenever adding, modifying, or refactoring the `collapsible` component implement
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Expanded State (`Open == true`)**
+- [x] **Expanded State**
   - implementation:
-    - collapsible.go:27
+    - collapsible.go:53
   - tests:
     - collapsible_test.go:13
-- [x] **Collapsed State (`Open == false`)**
+- [x] **Collapsed State**
   - implementation:
-    - collapsible.go:27
+    - collapsible.go:108
   - tests:
     - collapsible_test.go:23
 
 ### Capabilities & Features
 - [x] **Trigger Button Header**
   - implementation:
-    - collapsible.go:87
+    - collapsible.go:90
   - tests:
     - collapsible_test.go:33
-- [x] **Expand / Collapse Toggle**
+- [x] **Content Body Visibility Toggle**
   - implementation:
     - collapsible.go:58
   - tests:
     - collapsible_test.go:42
-- [x] **Indicator Symbol (`▼` / `▶`)**
-  - implementation:
-    - collapsible.go:92
-  - tests:
-    - collapsible_test.go:42
-- [x] **Content Body Panel**
-  - implementation:
-    - collapsible.go:109
-  - tests:
-    - collapsible_test.go:42
-- [x] **Card Background & Border Stroke**
-  - implementation:
-    - collapsible.go:123
-  - tests:
-    - collapsible_test.go:42
 
-### Demos (Official shadcn Demos)
+### Demos
 - [x] **1. Simple Collapsible**
   - implementation:
-    - collapsible.go:53
+    - component: collapsible.go:53
+    - demo: demo.go:10
   - tests:
     - collapsible_test.go:13
-- [x] **2. With Trigger Button**
+- [x] **2. Collapsed State Container**
   - implementation:
-    - collapsible.go:87
+    - component: collapsible.go:108
+    - demo: demo.go:15
   - tests:
-    - collapsible_test.go:33
-- [x] **3. Nested Content Panel**
-  - implementation:
-    - collapsible.go:109
-  - tests:
-    - collapsible_test.go:42
+    - collapsible_test.go:23
 
 ---
 
 ## Code Structure & Entry Points
 - `collapsible.go`: Primary component widget layout and state logic.
 - `collapsible_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Exported interactive demo widget (`Demo`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

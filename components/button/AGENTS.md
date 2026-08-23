@@ -83,41 +83,25 @@ Whenever adding, modifying, or refactoring the `button` component implementation
   - tests:
     - button_test.go:88
 
-### Demos (Official shadcn Demos)
-- [x] **1. Default Primary**
-  - implementation:
-    - button.go:132
-  - tests:
-    - button_test.go:11
-- [x] **2. Secondary**
-  - implementation:
-    - button.go:153
-  - tests:
-    - button_test.go:18
-- [x] **3. Outline**
-  - implementation:
-    - button.go:153
-  - tests:
-    - button_test.go:25
-- [x] **4. Ghost**
-  - implementation:
-    - button.go:153
-  - tests:
-    - button_test.go:32
-- [x] **5. Destructive**
-  - implementation:
-    - button.go:153
-  - tests:
-    - button_test.go:39
-- [x] **6. Link**
-  - implementation:
-    - button.go:153
-  - tests:
-    - button_test.go:46
-
 ---
+
+
+### Demos
+- [x] **1. Button Variants**
+  - implementation:
+    - component: button.go:50
+    - demo: demo.md:13
+  - tests:
+    - button_test.go:15
+- [x] **2. Button Sizes**
+  - implementation:
+    - component: button.go:50
+    - demo: demo.md:20
+  - tests:
+    - button_test.go:15
 
 ## Code Structure & Entry Points
 - `button.go`: Primary component widget layout and state logic.
 - `button_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/button/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

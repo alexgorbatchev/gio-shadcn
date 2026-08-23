@@ -48,31 +48,19 @@ Whenever adding, modifying, or refactoring the `dropdownmenu` component implemen
   - tests:
     - dropdownmenu_test.go:48
 
-### Demos (Official shadcn Demos)
-- [x] **1. Action Dropdown Menu**
-  - implementation:
-    - dropdownmenu.go:58
-  - tests:
-    - dropdownmenu_test.go:13
-- [x] **2. Menu Trigger Button**
-  - implementation:
-    - dropdownmenu.go:70
-  - tests:
-    - dropdownmenu_test.go:25
-- [x] **3. Menu Items List**
-  - implementation:
-    - dropdownmenu.go:128
-  - tests:
-    - dropdownmenu_test.go:34
-- [x] **4. Keyboard Shortcuts**
-  - implementation:
-    - dropdownmenu.go:136
-  - tests:
-    - dropdownmenu_test.go:41
-
 ---
+
+
+### Demos
+- [x] **1. Dropdown Action Menu**
+  - implementation:
+    - component: dropdownmenu.go:50
+    - demo: demo.md:13
+  - tests:
+    - dropdownmenu_test.go:15
 
 ## Code Structure & Entry Points
 - `dropdownmenu.go`: Primary component widget layout and state logic.
 - `dropdownmenu_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/dropdownmenu/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

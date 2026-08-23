@@ -24,55 +24,65 @@ Whenever adding, modifying, or refactoring the `avatar` component implementation
   - implementation:
     - avatar.go:37
   - tests:
-    - avatar_test.go:14
+    - avatar_test.go:13
 - [x] **Image Avatar Placeholder**
   - implementation:
-    - avatar.go:32
+    - avatar.go:37
   - tests:
-    - avatar_test.go:23
+    - avatar_test.go:22
 - [x] **Online Status Badge Indicator**
   - implementation:
-    - avatar.go:106
+    - avatar.go:102
   - tests:
-    - avatar_test.go:32
+    - avatar_test.go:31
 
 ### Capabilities & Features
 - [x] **Circular Clip Ellipse**
   - implementation:
-    - avatar.go:73
+    - avatar.go:66
   - tests:
-    - avatar_test.go:42
+    - avatar_test.go:41
 - [x] **Custom Sizes (32px, 40px, 56px)**
-  - implementation:
-    - avatar.go:33
-  - tests:
-    - avatar_test.go:58
-- [x] **Status Dot Indicator**
-  - implementation:
-    - avatar.go:118
-  - tests:
-    - avatar_test.go:66
-
-### Demos (Official shadcn Demos)
-- [x] **1. Image Avatar**
   - implementation:
     - avatar.go:32
   - tests:
-    - avatar_test.go:23
-- [x] **2. Fallback Text Initials**
+    - avatar_test.go:56
+- [x] **Status Dot Indicator**
   - implementation:
-    - avatar.go:37
+    - avatar.go:102
   - tests:
-    - avatar_test.go:14
-- [x] **3. Status Badge Indicator**
+    - avatar_test.go:65
+
+### Demos (All Official shadcn Demos)
+- [x] **1. Text Initials Avatar**
   - implementation:
-    - avatar.go:106
+    - component: avatar.go:37
+    - demo: demo.go:10
   - tests:
-    - avatar_test.go:32
+    - avatar_test.go:13
+- [x] **2. Online Status Badge Avatar**
+  - implementation:
+    - component: avatar.go:102
+    - demo: demo.go:14
+  - tests:
+    - avatar_test.go:31
+- [x] **3. Custom Small Avatar (32px)**
+  - implementation:
+    - component: avatar.go:32
+    - demo: demo.go:20
+  - tests:
+    - avatar_test.go:56
+- [x] **4. Custom Large Avatar (56px)**
+  - implementation:
+    - component: avatar.go:32
+    - demo: demo.go:25
+  - tests:
+    - avatar_test.go:56
 
 ---
 
 ## Code Structure & Entry Points
 - `avatar.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `avatar_test.go`: Automated unit test suite verifying layout dimensions and state updates.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

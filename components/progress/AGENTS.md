@@ -20,58 +20,52 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **0% Fill Level**
+- [x] **Linear Progress Bar Variant**
   - implementation:
-    - progress.go:34
+    - progress.go:37
   - tests:
     - progress_test.go:13
-- [x] **65% Fill Level**
+
+### Capabilities & Features
+- [x] **Background Track Drawing**
+  - implementation:
+    - progress.go:82
+  - tests:
+    - progress_test.go:50
+- [x] **Filled Progress Portion (0% to 100%)**
   - implementation:
     - progress.go:88
   - tests:
     - progress_test.go:20
-- [x] **100% Fill Level**
+- [x] **Clamped Radius Half-Height Safety**
   - implementation:
-    - progress.go:88
-  - tests:
-    - progress_test.go:27
-
-### Capabilities & Features
-- [x] **Clamped Corner Radius (`heightPx / 2`)**
-  - implementation:
-    - progress.go:78
-  - tests:
-    - progress_test.go:34
-- [x] **Background Track & Filled Bar Layout**
-  - implementation:
-    - progress.go:85
-  - tests:
-    - progress_test.go:48
-- [x] **GPU Color State Reset**
-  - implementation:
-    - progress.go:96
+    - progress.go:76
   - tests:
     - progress_test.go:34
 
 ### Demos
-- [x] **Progress Bar (0%)**
+- [x] **1. Progress Bar (0%)**
   - implementation:
-    - progress.go:34
+    - component: progress.go:54
+    - demo: demo.go:9
   - tests:
     - progress_test.go:13
-- [x] **Progress Bar (35%)**
+- [x] **2. Progress Bar (35%)**
   - implementation:
-    - progress.go:88
+    - component: progress.go:54
+    - demo: demo.go:9
   - tests:
     - progress_test.go:20
-- [x] **Progress Bar (65%)**
+- [x] **3. Progress Bar (65%)**
   - implementation:
-    - progress.go:88
+    - component: progress.go:54
+    - demo: demo.go:9
   - tests:
     - progress_test.go:20
-- [x] **Progress Bar (100%)**
+- [x] **4. Progress Bar (100%)**
   - implementation:
-    - progress.go:88
+    - component: progress.go:54
+    - demo: demo.go:9
   - tests:
     - progress_test.go:27
 
@@ -80,4 +74,5 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
 ## Code Structure & Entry Points
 - `progress.go`: Primary component widget layout and state logic.
 - `progress_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Modular component interactive demo layout (`components/progress/demo.go`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

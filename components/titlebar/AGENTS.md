@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `titlebar` component implementati
 
 ---
 
+
+
 ### Demos
-- [x] **Window Title Bar**
+- [x] **1. Window Title Bar**
   - implementation:
-    - titlebar.go:3
-  - tests:
-    - titlebar_test.go:14
-- [x] **Control Buttons (Close/Min/Max)**
-  - implementation:
-    - titlebar.go:33
+    - component: titlebar.go:50
+    - demo: demo.md:13
   - tests:
     - titlebar_test.go:15
-- [x] **Window Drag Region**
-  - implementation:
-    - titlebar.go:2
-  - tests:
-    - titlebar_test.go:16
 
 ## Code Structure & Entry Points
-- `titlebar.go`: Primary component widget layout and state logic.
-- `titlebar_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `titlebar.go`: Primary component implementation.
+- `titlebar_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

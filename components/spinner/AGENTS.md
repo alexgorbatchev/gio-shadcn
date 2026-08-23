@@ -20,54 +20,48 @@ Whenever adding, modifying, or refactoring the `spinner` component implementatio
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Small Spinner (16dp)**
+- [x] **Activity Loading Spinner**
   - implementation:
     - spinner.go:32
   - tests:
-    - spinner_test.go:13
-- [x] **Default Activity Spinner (24dp)**
-  - implementation:
-    - spinner.go:32
-  - tests:
-    - spinner_test.go:22
-- [x] **Large Loader Spinner (48dp)**
-  - implementation:
-    - spinner.go:32
-  - tests:
-    - spinner_test.go:31
+    - spinner_test.go:23
 
 ### Capabilities & Features
-- [x] **Circular Arc Stroke Path**
+- [x] **Circular Arc Stroke**
   - implementation:
-    - spinner.go:75
+    - spinner.go:66
   - tests:
-    - spinner_test.go:40
+    - spinner_test.go:43
 - [x] **Spin Animation Indicator**
   - implementation:
-    - spinner.go:47
+    - spinner.go:85
   - tests:
-    - spinner_test.go:40
+    - spinner_test.go:43
 
-### Demos
-- [x] **Small Spinner Demo**
+### Demos (All Official shadcn Demos)
+- [x] **1. Small Spinner (16dp)**
   - implementation:
-    - spinner.go:32
+    - component: spinner.go:47
+    - demo: demo.go:28
   - tests:
     - spinner_test.go:13
-- [x] **Default Activity Spinner Demo**
+- [x] **2. Default Activity Spinner (24dp)**
   - implementation:
-    - spinner.go:32
+    - component: spinner.go:47
+    - demo: demo.go:40
   - tests:
-    - spinner_test.go:22
-- [x] **Large Loader Spinner Demo**
+    - spinner_test.go:23
+- [x] **3. Large Loader Spinner (48dp)**
   - implementation:
-    - spinner.go:32
+    - component: spinner.go:47
+    - demo: demo.go:52
   - tests:
-    - spinner_test.go:31
+    - spinner_test.go:33
 
 ---
 
 ## Code Structure & Entry Points
 - `spinner.go`: Primary component widget layout and state logic.
 - `spinner_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

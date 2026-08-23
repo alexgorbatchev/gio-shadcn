@@ -22,67 +22,72 @@ Whenever adding, modifying, or refactoring the `drawer` component implementation
 ### Variants
 - [x] **Bottom Sheet Drawer Panel**
   - implementation:
-    - drawer.go:21
+    - drawer.go:83
   - tests:
     - drawer_test.go:13
 
 ### Capabilities & Features
 - [x] **Dark Backdrop Overlay**
   - implementation:
-    - drawer.go:121
+    - drawer.go:118
   - tests:
     - drawer_test.go:23
 - [x] **Backdrop Click-To-Close**
   - implementation:
-    - drawer.go:101
+    - drawer.go:98
   - tests:
-    - drawer_test.go:39
-- [x] **South Viewport Edge Alignment (`layout.S`)**
+    - drawer_test.go:38
+- [x] **South Viewport Edge Alignment**
   - implementation:
-    - drawer.go:126
+    - drawer.go:129
   - tests:
-    - drawer_test.go:53
-- [x] **Drag Handle Indicator Bar**
+    - drawer_test.go:52
+- [x] **Drag Handle Indicator**
   - implementation:
-    - drawer.go:172
+    - drawer.go:161
   - tests:
-    - drawer_test.go:68
-- [x] **Close Button (`closeBtn`)**
+    - drawer_test.go:66
+- [x] **Close Button**
   - implementation:
-    - drawer.go:181
+    - drawer.go:173
   - tests:
-    - drawer_test.go:77
-- [x] **Custom / Illustrated Content Body**
+    - drawer_test.go:75
+- [x] **Custom Content Widget**
   - implementation:
-    - drawer.go:202
+    - drawer.go:193
   - tests:
-    - drawer_test.go:86
+    - drawer_test.go:84
 
-### Demos (Official shadcn Demos)
+### Demos
 - [x] **1. Bottom Sheet Drawer**
   - implementation:
-    - drawer.go:92
+    - component: drawer.go:83
+    - demo: demo.go:11
   - tests:
     - drawer_test.go:13
 - [x] **2. Drag Handle Bar**
   - implementation:
-    - drawer.go:172
+    - component: drawer.go:161
+    - demo: demo.go:11
   - tests:
-    - drawer_test.go:68
+    - drawer_test.go:66
 - [x] **3. Telemetry Metrics Content**
   - implementation:
-    - drawer.go:202
+    - component: drawer.go:193
+    - demo: demo.go:12
   - tests:
-    - drawer_test.go:86
+    - drawer_test.go:84
 - [x] **4. Backdrop Click-To-Close**
   - implementation:
-    - drawer.go:101
+    - component: drawer.go:98
+    - demo: demo.go:27
   - tests:
-    - drawer_test.go:39
+    - drawer_test.go:38
 
 ---
 
 ## Code Structure & Entry Points
 - `drawer.go`: Primary component widget layout and state logic.
 - `drawer_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Exported interactive demo widget (`Demo`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

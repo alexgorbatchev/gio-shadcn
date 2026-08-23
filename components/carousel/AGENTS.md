@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `carousel` component implementati
 
 ---
 
+
+
 ### Demos
-- [x] **Standard Horizontal Slider**
+- [x] **1. Horizontal Carousel Slider**
   - implementation:
-    - carousel.go:51
+    - component: carousel.go:50
+    - demo: demo.md:13
   - tests:
-    - carousel_test.go:27
-- [x] **Autoplay Slide**
-  - implementation:
-    - carousel.go:52
-  - tests:
-    - carousel_test.go:41
-- [x] **Slide Navigation Buttons**
-  - implementation:
-    - carousel.go:2
-  - tests:
-    - carousel_test.go:14
+    - carousel_test.go:15
 
 ## Code Structure & Entry Points
-- `carousel.go`: Primary component widget layout and state logic.
-- `carousel_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `carousel.go`: Primary component implementation.
+- `carousel_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

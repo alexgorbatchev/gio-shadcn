@@ -50,29 +50,18 @@ Whenever adding, modifying, or refactoring the `table` component implementation 
 
 ---
 
+
+
 ### Demos
-- [x] **Data Grid Table**
+- [x] **1. Master Data Grid Table**
   - implementation:
-    - table.go:3
-  - tests:
-    - table_test.go:32
-- [x] **Header Columns**
-  - implementation:
-    - table.go:38
+    - component: table.go:50
+    - demo: demo.md:13
   - tests:
     - table_test.go:15
-- [x] **Selectable Data Rows**
-  - implementation:
-    - table.go:61
-  - tests:
-    - table_test.go:34
-- [x] **Row Selected State**
-  - implementation:
-    - table.go:5
-  - tests:
-    - table_test.go:16
 
 ## Code Structure & Entry Points
-- `table.go`: Primary component widget layout and state logic.
-- `table_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `table.go`: Primary component implementation.
+- `table_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

@@ -55,29 +55,18 @@ Whenever adding, modifying, or refactoring the `checkbox` component implementati
 
 ---
 
+
+
 ### Demos
-- [x] **Default Checkbox**
+- [x] **1. Interactive Checkbox**
   - implementation:
-    - checkbox.go:53
+    - component: checkbox.go:50
+    - demo: demo.md:13
   - tests:
-    - checkbox_test.go:23
-- [x] **With Label**
-  - implementation:
-    - checkbox.go:42
-  - tests:
-    - checkbox_test.go:33
-- [x] **Disabled Checkbox**
-  - implementation:
-    - checkbox.go:27
-  - tests:
-    - checkbox_test.go:32
-- [x] **Form Control Checkbox**
-  - implementation:
-    - checkbox.go:93
-  - tests:
-    - checkbox_test.go:55
+    - checkbox_test.go:15
 
 ## Code Structure & Entry Points
-- `checkbox.go`: Primary component widget layout and state logic.
-- `checkbox_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `checkbox.go`: Primary component implementation.
+- `checkbox_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

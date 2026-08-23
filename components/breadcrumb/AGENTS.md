@@ -48,26 +48,19 @@ Whenever adding, modifying, or refactoring the `breadcrumb` component implementa
   - tests:
     - breadcrumb_test.go:94
 
-### Demos (Official shadcn Demos)
-- [x] **1. Standard Path**
-  - implementation:
-    - breadcrumb.go:21
-  - tests:
-    - breadcrumb_test.go:13
-- [x] **2. Active Link Highlight**
-  - implementation:
-    - breadcrumb.go:73
-  - tests:
-    - breadcrumb_test.go:25
-- [x] **3. Custom Separator**
-  - implementation:
-    - breadcrumb.go:81
-  - tests:
-    - breadcrumb_test.go:37
-
 ---
+
+
+### Demos
+- [x] **1. Standard Breadcrumb Navigation**
+  - implementation:
+    - component: breadcrumb.go:50
+    - demo: demo.md:13
+  - tests:
+    - breadcrumb_test.go:15
 
 ## Code Structure & Entry Points
 - `breadcrumb.go`: Primary component widget layout and state logic.
 - `breadcrumb_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/breadcrumb/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

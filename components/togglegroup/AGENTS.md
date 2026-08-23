@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `togglegroup` component implement
 
 ---
 
+
+
 ### Demos
-- [x] **Single Selection Toggle Group**
+- [x] **1. Toggle Group Segmented Buttons**
   - implementation:
-    - togglegroup.go:23
-  - tests:
-    - togglegroup_test.go:32
-- [x] **Multiple Selection Group**
-  - implementation:
-    - togglegroup.go:71
+    - component: togglegroup.go:50
+    - demo: demo.md:13
   - tests:
     - togglegroup_test.go:15
-- [x] **Segmented Option Buttons**
-  - implementation:
-    - togglegroup.go:72
-  - tests:
-    - togglegroup_test.go:34
 
 ## Code Structure & Entry Points
-- `togglegroup.go`: Primary component widget layout and state logic.
-- `togglegroup_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `togglegroup.go`: Primary component implementation.
+- `togglegroup_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

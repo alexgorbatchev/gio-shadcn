@@ -20,44 +20,53 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Anchored Popover Card (Open)**
+- [x] **Anchored Card Popover Variant**
   - implementation:
     - popover.go:37
   - tests:
     - popover_test.go:13
-- [x] **Closed Popover State**
-  - implementation:
-    - popover.go:48
-  - tests:
-    - popover_test.go:23
 
 ### Capabilities & Features
+- [x] **Open / Closed Visibility State**
+  - implementation:
+    - popover.go:50
+  - tests:
+    - popover_test.go:24
 - [x] **Title & Description Layout**
   - implementation:
-    - popover.go:76
+    - popover.go:81
   - tests:
     - popover_test.go:39
-- [x] **Popover Card Background & Border**
+- [x] **Border & Background Card Drawing**
   - implementation:
-    - popover.go:102
+    - popover.go:111
   - tests:
     - popover_test.go:39
 
 ### Demos
-- [x] **Anchored Popover Card**
+- [x] **1. Anchored Card Popover**
   - implementation:
-    - popover.go:37
+    - component: popover.go:49
+    - demo: demo.go:9
   - tests:
     - popover_test.go:13
-- [x] **Filter Form Popover**
+- [x] **2. Filter Form Popover**
   - implementation:
-    - popover.go:76
+    - component: popover.go:49
+    - demo: demo.go:9
   - tests:
     - popover_test.go:39
+- [x] **3. Popover Trigger Button**
+  - implementation:
+    - component: popover.go:50
+    - demo: demo.go:9
+  - tests:
+    - popover_test.go:24
 
 ---
 
 ## Code Structure & Entry Points
 - `popover.go`: Primary component widget layout and state logic.
 - `popover_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Modular component interactive demo layout (`components/popover/demo.go`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

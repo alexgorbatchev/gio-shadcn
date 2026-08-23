@@ -20,23 +20,18 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
 ## Component Variants & Features Checklist
 
 ### Variants
-- [x] **Single Thumb Range Slider**
+- [x] **Range Slider Fader**
   - implementation:
     - slider.go:44
   - tests:
     - slider_test.go:13
-- [x] **Disabled Slider State**
-  - implementation:
-    - slider.go:128
-  - tests:
-    - slider_test.go:25
 
 ### Capabilities & Features
 - [x] **Interactive Pointer Drag**
   - implementation:
     - slider.go:88
   - tests:
-    - slider_test.go:37
+    - slider_test.go:36
 - [x] **Min / Max Value Range**
   - implementation:
     - slider.go:45
@@ -46,37 +41,35 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
   - implementation:
     - slider.go:151
   - tests:
-    - slider_test.go:50
+    - slider_test.go:51
 - [x] **Circular Thumb Knob**
   - implementation:
-    - slider.go:161
+    - slider.go:160
   - tests:
-    - slider_test.go:50
+    - slider_test.go:51
 - [x] **Clamped Radius Half-Height**
   - implementation:
-    - slider.go:142
+    - slider.go:145
   - tests:
-    - slider_test.go:50
+    - slider_test.go:51
 
-### Demos
-- [x] **Single Thumb Range Slider Demo**
+### Demos (All Official shadcn Demos)
+- [x] **1. Single Thumb Range Slider (Volume 65%)**
   - implementation:
-    - slider.go:44
+    - component: slider.go:69
+    - demo: demo.go:28
   - tests:
     - slider_test.go:13
-- [x] **Volume Fader (65%) Demo**
+- [x] **2. Pitch Bend Slider (-10 to +10)**
   - implementation:
-    - slider.go:44
+    - component: slider.go:69
+    - demo: demo.go:40
   - tests:
     - slider_test.go:13
-- [x] **Pitch Bend Slider Demo**
+- [x] **3. Disabled Slider State**
   - implementation:
-    - slider.go:44
-  - tests:
-    - slider_test.go:13
-- [x] **Disabled Slider Demo**
-  - implementation:
-    - slider.go:128
+    - component: slider.go:69
+    - demo: demo.go:52
   - tests:
     - slider_test.go:25
 
@@ -85,4 +78,5 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
 ## Code Structure & Entry Points
 - `slider.go`: Primary component widget layout and state logic.
 - `slider_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

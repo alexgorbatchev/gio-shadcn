@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `inputotp` component implementati
 
 ---
 
+
+
 ### Demos
-- [x] **4-Digit PIN Box**
+- [x] **1. 6-Digit OTP PIN Input**
   - implementation:
-    - inputotp.go:62
+    - component: inputotp.go:50
+    - demo: demo.md:13
   - tests:
-    - inputotp_test.go:23
-- [x] **6-Digit PIN Box**
-  - implementation:
-    - inputotp.go:63
-  - tests:
-    - inputotp_test.go:33
-- [x] **Digit Active Highlight**
-  - implementation:
-    - inputotp.go:4
-  - tests:
-    - inputotp_test.go:14
+    - inputotp_test.go:15
 
 ## Code Structure & Entry Points
-- `inputotp.go`: Primary component widget layout and state logic.
-- `inputotp_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `inputotp.go`: Primary component implementation.
+- `inputotp_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

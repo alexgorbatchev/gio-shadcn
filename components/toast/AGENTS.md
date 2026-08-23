@@ -55,24 +55,18 @@ Whenever adding, modifying, or refactoring the `toast` component implementation 
 
 ---
 
+
+
 ### Demos
-- [x] **Info Toast Banner**
+- [x] **1. Toast Notification Banner**
   - implementation:
-    - toast.go:57
-  - tests:
-    - toast_test.go:26
-- [x] **Destructive Toast Banner**
-  - implementation:
-    - toast.go:71
+    - component: toast.go:50
+    - demo: demo.md:13
   - tests:
     - toast_test.go:15
-- [x] **Toast Action Button**
-  - implementation:
-    - toast.go:2
-  - tests:
-    - toast_test.go:2
 
 ## Code Structure & Entry Points
-- `toast.go`: Primary component widget layout and state logic.
-- `toast_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `toast.go`: Primary component implementation.
+- `toast_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

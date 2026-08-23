@@ -71,42 +71,50 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
 ### Demos (All 8 Official shadcn Demos)
 - [x] **1. Single Open Accordion (Default)**
   - implementation:
-    - accordion.go:107
+    - component: accordion.go:107
+    - demo: demo.go:9
   - tests:
     - accordion_test.go:13
 - [x] **2. Multiple Open Accordion**
   - implementation:
-    - accordion.go:114
+    - component: accordion.go:114
+    - demo: demo.go:17
   - tests:
     - accordion_test.go:25
 - [x] **3. Disabled Item Accordion**
   - implementation:
-    - accordion.go:106
+    - component: accordion.go:106
+    - demo: demo.go:25
   - tests:
     - accordion_test.go:37
 - [x] **4. Chevron Icon Accordion**
   - implementation:
-    - accordion.go:180
+    - component: accordion.go:180
+    - demo: demo.go:31
   - tests:
     - accordion_test.go:49
-- [x] **5. Custom Header with Badge Tag**
+- [x] **5. Custom Header Badge Section**
   - implementation:
-    - accordion.go:167
+    - component: accordion.go:167
+    - demo: demo.go:37
   - tests:
     - accordion_test.go:49
 - [x] **6. Borderless Variant Accordion**
   - implementation:
-    - accordion.go:220
+    - component: accordion.go:220
+    - demo: demo.go:43
   - tests:
     - accordion_test.go:61
 - [x] **7. Nested Accordion**
   - implementation:
-    - accordion.go:204
+    - component: accordion.go:204
+    - demo: demo.go:57
   - tests:
     - accordion_test.go:72
 - [x] **8. Controlled Accordion State**
   - implementation:
-    - accordion.go:107
+    - component: accordion.go:107
+    - demo: demo.go:68
   - tests:
     - accordion_test.go:25
 
@@ -114,5 +122,6 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
 
 ## Code Structure & Entry Points
 - `accordion.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `accordion_test.go`: Automated unit test suite verifying layout dimensions and state updates.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

@@ -40,19 +40,18 @@ Whenever adding, modifying, or refactoring the `hovercard` component implementat
 
 ---
 
+
+
 ### Demos
-- [x] **User Profile Preview**
+- [x] **1. Hover Preview Card**
   - implementation:
-    - hovercard.go:50
+    - component: hovercard.go:50
+    - demo: demo.md:13
   - tests:
-    - hovercard_test.go:25
-- [x] **Link Detail Card**
-  - implementation:
-    - hovercard.go:51
-  - tests:
-    - hovercard_test.go:35
+    - hovercard_test.go:15
 
 ## Code Structure & Entry Points
-- `hovercard.go`: Primary component widget layout and state logic.
-- `hovercard_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `hovercard.go`: Primary component implementation.
+- `hovercard_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

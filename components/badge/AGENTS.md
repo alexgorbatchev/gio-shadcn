@@ -58,31 +58,37 @@ Whenever adding, modifying, or refactoring the `badge` component implementation 
   - tests:
     - badge_test.go:80
 
-### Demos (Official shadcn Demos)
-- [x] **1. Default Badge**
+---
+
+
+### Demos
+- [x] **1. Default Primary Badge**
   - implementation:
-    - badge.go:133
+    - component: badge.go:50
+    - demo: demo.md:13
   - tests:
-    - badge_test.go:13
+    - badge_test.go:15
 - [x] **2. Secondary Badge**
   - implementation:
-    - badge.go:127
+    - component: badge.go:50
+    - demo: demo.md:20
   - tests:
-    - badge_test.go:23
+    - badge_test.go:15
 - [x] **3. Outline Badge**
   - implementation:
-    - badge.go:129
+    - component: badge.go:50
+    - demo: demo.md:27
   - tests:
-    - badge_test.go:33
+    - badge_test.go:15
 - [x] **4. Destructive Badge**
   - implementation:
-    - badge.go:131
+    - component: badge.go:50
+    - demo: demo.md:34
   - tests:
-    - badge_test.go:43
-
----
+    - badge_test.go:15
 
 ## Code Structure & Entry Points
 - `badge.go`: Primary component widget layout and state logic.
 - `badge_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/badge/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

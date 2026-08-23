@@ -53,26 +53,19 @@ Whenever adding, modifying, or refactoring the `switch` component implementation
   - tests:
     - switch_test.go:43
 
-### Demos
-- [x] **Off State Switch Demo**
-  - implementation:
-    - switch.go:36
-  - tests:
-    - switch_test.go:13
-- [x] **On State Switch Demo**
-  - implementation:
-    - switch.go:36
-  - tests:
-    - switch_test.go:23
-- [x] **Disabled Switch Demo**
-  - implementation:
-    - switch.go:75
-  - tests:
-    - switch_test.go:33
-
 ---
+
+
+### Demos
+- [x] **1. Switch Toggle Button**
+  - implementation:
+    - component: switch.go:50
+    - demo: demo.md:13
+  - tests:
+    - switch_test.go:15
 
 ## Code Structure & Entry Points
 - `switch.go`: Primary component widget layout and state logic.
 - `switch_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/switch/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

@@ -22,46 +22,49 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
 ### Variants
 - [x] **Text Line Skeleton**
   - implementation:
-    - skeleton.go:34
+    - skeleton.go:31
   - tests:
     - skeleton_test.go:13
 - [x] **Circular Avatar Skeleton**
   - implementation:
-    - skeleton.go:34
+    - skeleton.go:31
   - tests:
     - skeleton_test.go:24
-- [x] **Card Container Skeleton**
+- [x] **Card Skeleton Container**
   - implementation:
-    - skeleton.go:34
+    - skeleton.go:31
   - tests:
     - skeleton_test.go:35
 
 ### Capabilities & Features
-- [x] **Muted Background Shimmer**
+- [x] **Muted Shimmer Background**
   - implementation:
-    - skeleton.go:62
+    - skeleton.go:56
   - tests:
     - skeleton_test.go:46
 - [x] **Custom Width & Height Dimensions**
   - implementation:
-    - skeleton.go:58
+    - skeleton.go:51
   - tests:
     - skeleton_test.go:13
 
-### Demos
-- [x] **Text Line Skeleton Demo**
+### Demos (All Official shadcn Demos)
+- [x] **1. Text Line Skeleton**
   - implementation:
-    - skeleton.go:34
+    - component: skeleton.go:47
+    - demo: demo.go:29
   - tests:
     - skeleton_test.go:13
-- [x] **Circular Avatar Skeleton Demo**
+- [x] **2. Circular Avatar Skeleton**
   - implementation:
-    - skeleton.go:34
+    - component: skeleton.go:47
+    - demo: demo.go:41
   - tests:
     - skeleton_test.go:24
-- [x] **Card Container Skeleton Demo**
+- [x] **3. Card Container Skeleton**
   - implementation:
-    - skeleton.go:34
+    - component: skeleton.go:47
+    - demo: demo.go:53
   - tests:
     - skeleton_test.go:35
 
@@ -70,4 +73,5 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
 ## Code Structure & Entry Points
 - `skeleton.go`: Primary component widget layout and state logic.
 - `skeleton_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

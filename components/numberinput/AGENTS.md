@@ -54,19 +54,22 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
     - numberinput_test.go:76
 
 ### Demos
-- [x] **BPM Stepper (128)**
+- [x] **1. BPM Stepper (128)**
   - implementation:
-    - numberinput.go:41
+    - component: numberinput.go:70
+    - demo: demo.go:10
   - tests:
     - numberinput_test.go:13
-- [x] **Gain Range Input (-12 to +12)**
+- [x] **2. Gain Range Input (-12 to +12)**
   - implementation:
-    - numberinput.go:46
+    - component: numberinput.go:70
+    - demo: demo.go:10
   - tests:
     - numberinput_test.go:24
-- [x] **Min/Max Bounded Stepper**
+- [x] **3. Min/Max Bounded Stepper**
   - implementation:
-    - numberinput.go:52
+    - component: numberinput.go:70
+    - demo: demo.go:10
   - tests:
     - numberinput_test.go:35
 
@@ -75,4 +78,5 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
 ## Code Structure & Entry Points
 - `numberinput.go`: Primary component widget layout and state logic.
 - `numberinput_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Modular component interactive demo layout (`components/numberinput/demo.go`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

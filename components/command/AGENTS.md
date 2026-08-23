@@ -22,57 +22,51 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
 ### Variants
 - [x] **Command Palette Search Box**
   - implementation:
-    - command.go:35
+    - command.go:76
   - tests:
     - command_test.go:13
 
 ### Capabilities & Features
-- [x] **Search Input Filter (`searchEditor`)**
+- [x] **Search Input Filter**
   - implementation:
-    - command.go:88
+    - command.go:107
   - tests:
-    - command_test.go:24
-- [x] **Filtered Results List**
+    - command_test.go:23
+- [x] **Command Item List**
   - implementation:
-    - command.go:102
+    - command.go:115
   - tests:
-    - command_test.go:42
-- [x] **Keyboard Shortcut Badges**
+    - command_test.go:40
+- [x] **Shortcut Badges**
   - implementation:
-    - command.go:151
+    - command.go:163
   - tests:
-    - command_test.go:52
-- [x] **Hover State Highlight**
-  - implementation:
-    - command.go:161
-  - tests:
-    - command_test.go:24
+    - command_test.go:50
 
-### Demos (Official shadcn Demos)
-- [x] **1. Command Dialog**
+### Demos
+- [x] **1. Command Palette Search Box**
   - implementation:
-    - command.go:76
+    - component: command.go:76
+    - demo: demo.go:10
   - tests:
     - command_test.go:13
-- [x] **2. Search Filter List**
+- [x] **2. Filtered Results List**
   - implementation:
-    - command.go:102
+    - component: command.go:107
+    - demo: demo.go:11
   - tests:
-    - command_test.go:24
+    - command_test.go:23
 - [x] **3. Keyboard Shortcuts**
   - implementation:
-    - command.go:151
+    - component: command.go:163
+    - demo: demo.go:12
   - tests:
-    - command_test.go:52
-- [x] **4. Action Items Selection**
-  - implementation:
-    - command.go:106
-  - tests:
-    - command_test.go:42
+    - command_test.go:50
 
 ---
 
 ## Code Structure & Entry Points
 - `command.go`: Primary component widget layout and state logic.
 - `command_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Exported interactive demo widget (`Demo`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `separator` component implementat
 
 ---
 
+
+
 ### Demos
-- [x] **Horizontal Separator**
+- [x] **1. Horizontal Separator Divider**
   - implementation:
-    - separator.go:23
-  - tests:
-    - separator_test.go:16
-- [x] **Vertical Separator**
-  - implementation:
-    - separator.go:50
+    - component: separator.go:50
+    - demo: demo.md:13
   - tests:
     - separator_test.go:15
-- [x] **Muted Stroke Line**
-  - implementation:
-    - separator.go:51
-  - tests:
-    - separator_test.go:26
 
 ## Code Structure & Entry Points
-- `separator.go`: Primary component widget layout and state logic.
-- `separator_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `separator.go`: Primary component implementation.
+- `separator_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

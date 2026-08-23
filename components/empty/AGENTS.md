@@ -43,26 +43,19 @@ Whenever adding, modifying, or refactoring the `empty` component implementation 
   - tests:
     - empty_test.go:40
 
-### Demos (Official shadcn Demos)
+---
+
+
+### Demos
 - [x] **1. Empty State Card**
   - implementation:
-    - empty.go:54
+    - component: empty.go:50
+    - demo: demo.md:13
   - tests:
-    - empty_test.go:13
-- [x] **2. Default Fallback State**
-  - implementation:
-    - empty.go:34
-  - tests:
-    - empty_test.go:23
-- [x] **3. Custom Title & Description**
-  - implementation:
-    - empty.go:75
-  - tests:
-    - empty_test.go:30
-
----
+    - empty_test.go:15
 
 ## Code Structure & Entry Points
 - `empty.go`: Primary component widget layout and state logic.
 - `empty_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/empty/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

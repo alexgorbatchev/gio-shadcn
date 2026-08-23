@@ -55,29 +55,18 @@ Whenever adding, modifying, or refactoring the `input` component implementation 
 
 ---
 
+
+
 ### Demos
-- [x] **Standard Text Input**
+- [x] **1. Text Input Field**
   - implementation:
-    - input.go:26
+    - component: input.go:50
+    - demo: demo.md:13
   - tests:
-    - input_test.go:14
-- [x] **With Placeholder**
-  - implementation:
-    - input.go:8
-  - tests:
-    - input_test.go:30
-- [x] **Prefilled Value**
-  - implementation:
-    - input.go:270
-  - tests:
-    - input_test.go:21
-- [x] **Disabled Input**
-  - implementation:
-    - input.go:148
-  - tests:
-    - input_test.go:28
+    - input_test.go:15
 
 ## Code Structure & Entry Points
-- `input.go`: Primary component widget layout and state logic.
-- `input_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `input.go`: Primary component implementation.
+- `input_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

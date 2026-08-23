@@ -58,31 +58,19 @@ Whenever adding, modifying, or refactoring the `card` component implementation o
   - tests:
     - card_test.go:70
 
-### Demos (Official shadcn Demos)
-- [x] **1. Simple Card**
-  - implementation:
-    - card.go:68
-  - tests:
-    - card_test.go:13
-- [x] **2. With Header & Footer**
-  - implementation:
-    - card.go:74
-  - tests:
-    - card_test.go:20
-- [x] **3. Form Input Card**
-  - implementation:
-    - card.go:256
-  - tests:
-    - card_test.go:56
-- [x] **4. Notification Card**
-  - implementation:
-    - card.go:238
-  - tests:
-    - card_test.go:49
-
 ---
+
+
+### Demos
+- [x] **1. Standard Card Container**
+  - implementation:
+    - component: card.go:50
+    - demo: demo.md:13
+  - tests:
+    - card_test.go:15
 
 ## Code Structure & Entry Points
 - `card.go`: Primary component widget layout and state logic.
 - `card_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.md`: Component interactive demo snippets and layout specs (`components/card/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

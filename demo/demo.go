@@ -46,6 +46,7 @@ import (
 	"github.com/bnema/gio-shadcn/components/progress"
 	"github.com/bnema/gio-shadcn/components/radio"
 	"github.com/bnema/gio-shadcn/components/resizable"
+	"github.com/bnema/gio-shadcn/components/scrollarea"
 	selectcomp "github.com/bnema/gio-shadcn/components/select"
 	"github.com/bnema/gio-shadcn/components/separator"
 	"github.com/bnema/gio-shadcn/components/sheet"
@@ -92,22 +93,6 @@ func Run() {
 		os.Exit(0)
 	}()
 	app.Main()
-}
-
-func layoutButtonRow(gtx layout.Context, th *theme.Theme, buttons ...*button.Button) layout.Dimensions {
-	children := make([]layout.FlexChild, 0, len(buttons)*2)
-	for i, btn := range buttons {
-		btn := btn
-		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return btn.Layout(gtx, th)
-		}))
-		if i < len(buttons)-1 {
-			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
-			}))
-		}
-	}
-	return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
 }
 
 func runWindow(w *app.Window) error {
@@ -197,244 +182,6 @@ func runWindow(w *app.Window) error {
 		},
 	})
 
-	// Initialize gallery components
-	btnPrimary := button.New(button.Config{Text: "Primary", Variant: theme.VariantDefault})
-	btnSecondary := button.New(button.Config{Text: "Secondary", Variant: theme.VariantSecondary})
-	btnOutline := button.New(button.Config{Text: "Outline", Variant: theme.VariantOutline})
-	btnGhost := button.New(button.Config{Text: "Ghost", Variant: theme.VariantGhost})
-	btnDestructive := button.New(button.Config{Text: "Destructive", Variant: theme.VariantDestructive})
-	btnLink := button.New(button.Config{Text: "Link Button", Variant: theme.VariantLink})
-
-	btnSM := button.New(button.Config{Text: "Small", Size: theme.SizeSM})
-	btnDefaultSize := button.New(button.Config{Text: "Default Size", Size: theme.SizeDefault})
-	btnLG := button.New(button.Config{Text: "Large Size", Size: theme.SizeLG})
-
-	badgeDef := badge.New(badge.Config{Text: "Default Badge", Variant: theme.VariantDefault})
-	badgeSec := badge.New(badge.Config{Text: "Secondary Badge", Variant: theme.VariantSecondary})
-	badgeOut := badge.New(badge.Config{Text: "Outline Badge", Variant: theme.VariantOutline})
-	badgeDest := badge.New(badge.Config{Text: "Destructive Badge", Variant: theme.VariantDestructive})
-
-	avDJ := avatar.New(avatar.Config{Initials: "DJ", ShowBadge: true})
-	avAG := avatar.New(avatar.Config{Initials: "AG", ShowBadge: false})
-
-	txtInput := input.Text("Enter track title...")
-	txtArea := textarea.New(textarea.Config{Placeholder: "Enter track descriptions and metadata notes..."})
-
-	numStepper := numberinput.New(numberinput.Config{Value: 128.0, Step: 1.0, Min: 60.0, Max: 200.0})
-	otpPin := inputotp.New(inputotp.Config{Length: 6})
-
-	chkBox := checkbox.New(checkbox.Config{Value: true})
-	swToggle := switchcomp.New(switchcomp.Config{Value: true})
-	radioA := radio.New(radio.Config{Selected: true})
-	radioB := radio.New(radio.Config{Selected: false})
-
-	genreSel := selectcomp.New(selectcomp.Config{
-		Options: []*selectcomp.Item{
-			selectcomp.NewItem("house", "Progressive House"),
-			selectcomp.NewItem("techno", "Techno"),
-			selectcomp.NewItem("trance", "Trance"),
-		},
-		SelectedValue: "house",
-	})
-
-	tglGrp := togglegroup.New(togglegroup.Config{
-		Items: []*togglegroup.Item{
-			togglegroup.NewItem("mono", "Mono"),
-			togglegroup.NewItem("stereo", "Stereo"),
-			togglegroup.NewItem("5.1", "5.1 Surround"),
-		},
-		SelectedKey: "stereo",
-	})
-
-	rngSlider := slider.New(slider.Config{Value: 65.0, Min: 0.0, Max: 100.0})
-	progBar := progress.New(progress.Config{Value: 0.65})
-
-	shimmerSk := skeleton.New(skeleton.Config{Width: unit.Dp(180), Height: unit.Dp(24)})
-	spinLoad := spinner.New(spinner.Config{})
-
-	alertDefault := alert.New(alert.Config{Title: "Engine Status", Description: "CoreAudio buffer set to 64 samples."})
-	alertDestruct := alert.New(alert.Config{Title: "Audio Clip Warning", Description: "Output signal clipped +1.2dB on Deck A.", Variant: theme.VariantDestructive})
-	toastItem := toast.New(toast.Config{Title: "Track Exported", Description: "Exported to Starlight_Symphony.flac", Visible: false})
-
-	// Accordion Demos (All 8 Official shadcn Demos)
-	singleAcc := accordion.New(accordion.Config{
-		Type: accordion.TypeSingle,
-		Items: []*accordion.Item{
-			accordion.NewItem("Is it accessible?", "Yes. It adheres to the WAI-ARIA design pattern.", true),
-			accordion.NewItem("Is it styled?", "Yes. It comes with default styles.", false),
-		},
-	})
-	multiAcc := accordion.New(accordion.Config{
-		Type: accordion.TypeMultiple,
-		Items: []*accordion.Item{
-			accordion.NewItem("Audio Engine Specs", "Runs at 96kHz 24-bit precision.", true),
-			accordion.NewItem("GPU Vector Pipeline", "Gio immediate-mode engine.", true),
-		},
-	})
-	disabledAcc := accordion.New(accordion.Config{
-		Items: []*accordion.Item{
-			accordion.NewItemConfig(accordion.ItemConfig{Title: "Disabled Section (Locked)", Content: "Locked content panel.", Disabled: true}),
-		},
-	})
-	chevronAcc := accordion.New(accordion.Config{
-		Items: []*accordion.Item{
-			accordion.NewItemConfig(accordion.ItemConfig{Title: "Chevron Indicator Item", Content: "Uses custom chevron symbol.", Icon: "v", Expanded: true}),
-		},
-	})
-	customHeaderAcc := accordion.New(accordion.Config{
-		Items: []*accordion.Item{
-			accordion.NewItemConfig(accordion.ItemConfig{Title: "Custom Header Badge Section", Content: "Custom header badge.", Expanded: true}),
-		},
-	})
-	borderlessAcc := accordion.New(accordion.Config{
-		Borderless: true,
-		Items: []*accordion.Item{
-			accordion.NewItem("Borderless Item 1", "Flush borderless container style.", true),
-		},
-	})
-	nestedAcc := accordion.New(accordion.Config{
-		Items: []*accordion.Item{
-			accordion.NewItemConfig(accordion.ItemConfig{
-				Title:    "Parent Section (Contains Inner Accordion)",
-				Expanded: true,
-				ContentWidget: func(gtx layout.Context) layout.Dimensions {
-					return singleAcc.Layout(gtx, th)
-				},
-			}),
-		},
-	})
-	controlledAcc := accordion.New(accordion.Config{
-		Type: accordion.TypeMultiple,
-		Items: []*accordion.Item{
-			accordion.NewItem("Controlled Panel 1", "State toggled externally by buttons.", true),
-		},
-	})
-	btnExpandAll := button.New(button.Config{
-		Text:    "Expand All",
-		Variant: theme.VariantOutline,
-		Size:    theme.SizeSM,
-		OnClick: func() {
-			for _, item := range controlledAcc.Items {
-				item.Expanded = true
-			}
-			w.Invalidate()
-		},
-	})
-	colContainer := collapsible.New(collapsible.Config{Title: "Advanced Mixer Settings", Content: "ASIO Direct hardware routing enabled.", Open: true})
-
-	navTabs := tabs.New(tabs.Config{
-		Tabs: []*tabs.Tab{
-			tabs.NewTab("sink", "Kitchen Sink"),
-			tabs.NewTab("deck", "Audio Deck"),
-			tabs.NewTab("library", "Track Library"),
-		},
-		ActiveKey: "sink",
-	})
-	bCrumb := breadcrumb.New(breadcrumb.Config{
-		Items: []*breadcrumb.Item{
-			breadcrumb.NewItem("Home", false),
-			breadcrumb.NewItem("Mixer", false),
-			breadcrumb.NewItem("Deck A", true),
-		},
-	})
-	pageControls := pagination.New(pagination.Config{CurrentPage: 1, TotalPages: 5})
-
-	trackTable := table.New(table.Config{
-		Headers: []string{"TITLE", "ARTIST", "BPM", "KEY", "GENRE"},
-		Rows: []*table.Row{
-			table.NewRow("Starlight Symphony", "Aethelgard", "128", "8A", "Progressive House"),
-			table.NewRow("Quantum Drift", "Cyberpulse", "132", "11B", "Techno"),
-			table.NewRow("Solar Flare", "Helios", "126", "4A", "Melodic Techno"),
-		},
-	})
-
-	modalDialog := dialog.New(dialog.Config{
-		Title:       "Reset Audio Mixer",
-		Description: "Are you sure you want to reset all channel EQ gain levels?",
-		Open:        false,
-	})
-	btnTriggerDialog := button.New(button.Config{
-		Text:    "Open Modal Dialog",
-		Variant: theme.VariantOutline,
-		OnClick: func() {
-			modalDialog.Open = true
-			w.Invalidate()
-		},
-	})
-
-	sheetDrawer := sheet.New(sheet.Config{
-		Title:       "Track Inspector",
-		Description: "Detailed FLAC metadata and harmonic key analysis.",
-		Open:        false,
-	})
-	btnTriggerSheet := button.New(button.Config{
-		Text:    "Open Side Sheet",
-		Variant: theme.VariantOutline,
-		OnClick: func() {
-			sheetDrawer.Open = true
-			w.Invalidate()
-		},
-	})
-
-	bottomDrawer := drawer.New(drawer.Config{
-		Title:       "System Telemetry",
-		Description: "CPU: 2.1% | RAM: 189MB | Metal GPU 120 FPS",
-		Open:        false,
-	})
-	btnTriggerDrawer := button.New(button.Config{
-		Text:    "Open Bottom Drawer",
-		Variant: theme.VariantOutline,
-		OnClick: func() {
-			bottomDrawer.Open = true
-			w.Invalidate()
-		},
-	})
-
-	anchoredPop := popover.New(popover.Config{Title: "Popover Title", Description: "Anchored card popover content box.", Open: false})
-	dropdownMenu := dropdownmenu.New(dropdownmenu.Config{
-		Items: []*dropdownmenu.Item{
-			dropdownmenu.NewItem("Edit Track", "⌘E"),
-			dropdownmenu.NewItem("Export FLAC", "⌘S"),
-		},
-		Open: false,
-	})
-	tipCallout := tooltip.New(tooltip.Config{Text: "ASIO Low Latency Buffer"})
-	hoverCardItem := hovercard.New(hovercard.Config{Title: "Artist Profile", Description: "Aethelgard - Progressive House", Hovered: false})
-
-	sepDivider := separator.New(separator.Config{Horizontal: true})
-	cmdPalette := command.New(command.Config{
-		Placeholder: "Search command palette...",
-		Items: []*command.Item{
-			command.NewItem("Toggle Light/Dark Theme", "⌘T"),
-			command.NewItem("Reset Master Audio Mixer", "⌘R"),
-		},
-	})
-	emptyBox := empty.New(empty.Config{})
-
-	aspectWrapper := aspectratio.New(aspectratio.Config{
-		Ratio: 16.0 / 9.0,
-		Widget: func(gtx layout.Context) layout.Dimensions {
-			return trackTable.Layout(gtx, th)
-		},
-	})
-
-	resPanel := resizable.New(resizable.Config{
-		Ratio: 0.5,
-		LeftWidget: func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("Left Split Panel", label.P, "").Layout(gtx, th)
-		},
-		RightWidget: func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("Right Split Panel", label.P, "").Layout(gtx, th)
-		},
-	})
-
-	slideCarousel := carousel.New(carousel.Config{
-		Items: []layout.Widget{
-			func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Slide 1: Audio Spectrum", label.H4, "").Layout(gtx, th) },
-			func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Slide 2: Mixer Controls", label.H4, "").Layout(gtx, th) },
-		},
-	})
-
 	demoCard := card.New(card.Config{Variant: theme.VariantDefault})
 
 	var ops op.Ops
@@ -506,37 +253,13 @@ func runWindow(w *app.Window) error {
 								Bottom: th.Spacing.Space6,
 							}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 								return demoCard.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-									return renderComponentGalleryPage(
-										gtx, th, activeItemID,
-										btnPrimary, btnSecondary, btnOutline, btnGhost, btnDestructive, btnLink, btnSM, btnDefaultSize, btnLG,
-										badgeDef, badgeSec, badgeOut, badgeDest, avDJ, avAG,
-										txtInput, txtArea, numStepper, otpPin,
-										chkBox, swToggle, radioA, radioB, genreSel, tglGrp,
-										rngSlider, progBar, shimmerSk, spinLoad,
-										alertDefault, alertDestruct, toastItem,
-										singleAcc, multiAcc, disabledAcc, chevronAcc, customHeaderAcc, borderlessAcc, nestedAcc, controlledAcc, btnExpandAll, colContainer,
-										navTabs, bCrumb, pageControls,
-										trackTable, aspectWrapper, resPanel, slideCarousel,
-										modalDialog, btnTriggerDialog, sheetDrawer, btnTriggerSheet, bottomDrawer, btnTriggerDrawer,
-										anchoredPop, dropdownMenu, tipCallout, hoverCardItem,
-										sepDivider, cmdPalette, emptyBox,
-									)
+									return renderComponentGalleryPage(gtx, th, activeItemID)
 								})
 							})
 						}),
 					)
 				}),
 			)
-
-			if modalDialog.Open {
-				modalDialog.Layout(gtx, th)
-			}
-			if sheetDrawer.Open {
-				sheetDrawer.Layout(gtx, th)
-			}
-			if bottomDrawer.Open {
-				bottomDrawer.Layout(gtx, th)
-			}
 
 			// RESET GPU PAINT COLOR TO BACKGROUND AT THE END OF THE FRAME LOOP BEFORE SUBMISSION
 			paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
@@ -614,409 +337,90 @@ func renderSidebar(gtx layout.Context, th *theme.Theme, items []*GalleryItem, ac
 	})
 }
 
-func renderComponentGalleryPage(
-	gtx layout.Context, th *theme.Theme, activeID string,
-	btnPrimary, btnSecondary, btnOutline, btnGhost, btnDestructive, btnLink, btnSM, btnDefaultSize, btnLG *button.Button,
-	badgeDef, badgeSec, badgeOut, badgeDest *badge.Badge, avDJ, avAG *avatar.Avatar,
-	txtInput *input.Input, txtArea *textarea.TextArea, numStepper *numberinput.NumberInput, otpPin *inputotp.InputOTP,
-	chkBox *checkbox.Checkbox, swToggle *switchcomp.Switch, radioA, radioB *radio.Radio, genreSel *selectcomp.Select, tglGrp *togglegroup.ToggleGroup,
-	rngSlider *slider.Slider, progBar *progress.Progress, shimmerSk *skeleton.Skeleton, spinLoad *spinner.Spinner,
-	alertDefault, alertDestruct *alert.Alert, toastItem *toast.Toast,
-	singleAcc, multiAcc, disabledAcc, chevronAcc, customHeaderAcc, borderlessAcc, nestedAcc, controlledAcc *accordion.Accordion, btnExpandAll *button.Button, colContainer *collapsible.Collapsible,
-	navTabs *tabs.Tabs, bCrumb *breadcrumb.Breadcrumb, pageControls *pagination.Pagination,
-	trackTable *table.Table, aspectWrapper *aspectratio.AspectRatio, resPanel *resizable.Resizable, slideCarousel *carousel.Carousel,
-	modalDialog *dialog.Dialog, btnTriggerDialog *button.Button, sheetDrawer *sheet.Sheet, btnTriggerSheet *button.Button, bottomDrawer *drawer.Drawer, btnTriggerDrawer *button.Button,
-	anchoredPop *popover.Popover, dropdownMenu *dropdownmenu.DropdownMenu, tipCallout *tooltip.Tooltip, hoverCardItem *hovercard.HoverCard,
-	sepDivider *separator.Separator, cmdPalette *command.Command, emptyBox *empty.Empty,
-) layout.Dimensions {
-
+func renderComponentGalleryPage(gtx layout.Context, th *theme.Theme, activeID string) layout.Dimensions {
 	switch activeID {
-	// 1. Button
-	case "button":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Button Variants", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layoutButtonRow(gtx, th, btnPrimary, btnSecondary, btnOutline, btnGhost, btnDestructive, btnLink) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Button Sizes", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layoutButtonRow(gtx, th, btnSM, btnDefaultSize, btnLG) }),
-		)
-
-	// 2. Badge
-	case "badge":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Badge Variants", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return badgeDef.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return badgeSec.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return badgeOut.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return badgeDest.Layout(gtx, th) }),
-				)
-			}),
-		)
-
-	// 3. Avatar
-	case "avatar":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("User Avatars & Status Badges", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return avDJ.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return avAG.Layout(gtx, th) }),
-				)
-			}),
-		)
-
-	// 4. Label & Typography
-	case "label":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Typography Heading 1", label.H1, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Typography Heading 2", label.H2, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Typography Heading 3", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Typography Heading 4", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Body paragraph demonstrating standard typography scaling.", label.P, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Muted secondary text style.", label.Muted, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Small caption text for fine print.", label.Small, "").Layout(gtx, th) }),
-		)
-
-	// 5. Input
-	case "input":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Text Input", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				maxWidth := gtx.Metric.Dp(400)
-				gtx.Constraints.Max.X = maxWidth
-				gtx.Constraints.Min.X = maxWidth
-				return txtInput.Layout(gtx, th)
-			}),
-		)
-
-	// 6. Textarea
-	case "textarea":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Multi-line Text Area", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return txtArea.Layout(gtx, th) }),
-		)
-
-	// 7. Numberinput
-	case "numberinput":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Number Input Stepper", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return numStepper.Layout(gtx, th) }),
-		)
-
-	// 8. Inputotp
-	case "inputotp":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Input OTP PIN Code", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return otpPin.Layout(gtx, th) }),
-		)
-
-	// 9. Checkbox
-	case "checkbox":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Checkbox Controls", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return chkBox.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Enable GPU Vector Acceleration", label.P, "").Layout(gtx, th) }),
-				)
-			}),
-		)
-
-	// 10. Switch
-	case "switch":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Switch Toggle", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return swToggle.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space3}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("HQ Audio Engine", label.P, "").Layout(gtx, th) }),
-				)
-			}),
-		)
-
-	// 11. Radio
-	case "radio":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Radio Options", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return radioA.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Master Output", label.P, "").Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return radioB.Layout(gtx, th) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Headphones Cue", label.P, "").Layout(gtx, th) }),
-				)
-			}),
-		)
-
-	// 12. Select
-	case "select":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Select Dropdown Menu", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return genreSel.Layout(gtx, th) }),
-		)
-
-	// 13. Togglegroup
-	case "togglegroup":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Toggle Group Buttons", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return tglGrp.Layout(gtx, th) }),
-		)
-
-	// 14. Slider
-	case "slider":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Range Slider Fader", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return rngSlider.Layout(gtx, th) }),
-		)
-
-	// 15. Progress
-	case "progress":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Progress Bar Indicator", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return progBar.Layout(gtx, th) }),
-		)
-
-	// 16. Skeleton
-	case "skeleton":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Skeleton Loader Bar", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return shimmerSk.Layout(gtx, th) }),
-		)
-
-	// 17. Spinner
-	case "spinner":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Activity Loading Spinner", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return spinLoad.Layout(gtx, th) }),
-		)
-
-	// 18. Alert
-	case "alert":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Alert Callout Banners", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return alertDefault.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return alertDestruct.Layout(gtx, th) }),
-		)
-
-	// 19. Toast
-	case "toast":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Toast Notification Banner", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return toastItem.Layout(gtx, th) }),
-		)
-
-	// 20. Accordion
 	case "accordion":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Accordion Showcase (All 8 Official Demos)", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("1. Single Open Accordion (Default)", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return singleAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("2. Multiple Open Accordion", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return multiAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("3. Disabled Item Accordion", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return disabledAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("4. Chevron Icon Accordion", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return chevronAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("5. Custom Header Badge Section", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return customHeaderAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("6. Borderless Variant Accordion", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return borderlessAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("7. Nested Accordion", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return nestedAcc.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("8. Controlled Accordion State", label.H4, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return btnExpandAll.Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return controlledAcc.Layout(gtx, th) }),
-		)
-
-	// 21. Collapsible
-	case "collapsible":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Collapsible Container", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return colContainer.Layout(gtx, th) }),
-		)
-
-	// 22. Tabs
-	case "tabs":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Tabs Navigation Header", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return navTabs.Layout(gtx, th) }),
-		)
-
-	// 23. Breadcrumb
+		return accordion.Demo(gtx, th)
+	case "alert":
+		return alert.Demo(gtx, th)
+	case "aspectratio":
+		return aspectratio.Demo(gtx, th)
+	case "avatar":
+		return avatar.Demo(gtx, th)
+	case "badge":
+		return badge.Demo(gtx, th)
 	case "breadcrumb":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Breadcrumb Navigation Path", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return bCrumb.Layout(gtx, th) }),
-		)
-
-	// 24. Pagination
-	case "pagination":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Pagination Page Controls", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return pageControls.Layout(gtx, th) }),
-		)
-
-	// 25. Table
-	case "table":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Master Data Grid Table", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return trackTable.Layout(gtx, th) }),
-		)
-
-	// 26. Dialog
-	case "dialog":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Modal Dialog Window", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return btnTriggerDialog.Layout(gtx, th) }),
-		)
-
-	// 27. Sheet
-	case "sheet":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Side Sheet Drawer", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return btnTriggerSheet.Layout(gtx, th) }),
-		)
-
-	// 28. Drawer
-	case "drawer":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Bottom Drawer Panel", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return btnTriggerDrawer.Layout(gtx, th) }),
-		)
-
-	// 29. Popover
-	case "popover":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Anchored Popover Card", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return anchoredPop.Layout(gtx, th) }),
-		)
-
-	// 30. Dropdownmenu
-	case "dropdownmenu":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Dropdown Action Menu", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return dropdownMenu.Layout(gtx, th) }),
-		)
-
-	// 31. Tooltip
-	case "tooltip":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Tooltip Callout Text", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return tipCallout.Layout(gtx, th) }),
-		)
-
-	// 32. Hovercard
-	case "hovercard":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Hover Card User Profile", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return hoverCardItem.Layout(gtx, th) }),
-		)
-
-	// 33. Separator
-	case "separator":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Separator Divider Lines", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return sepDivider.Layout(gtx, th) }),
-		)
-
-	// 34. Resizable
-	case "resizable":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Resizable Split Panels", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return resPanel.Layout(gtx, th) }),
-		)
-
-	// 35. Carousel
+		return breadcrumb.Demo(gtx, th)
+	case "button":
+		return button.Demo(gtx, th)
+	case "card":
+		return card.Demo(gtx, th)
 	case "carousel":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Carousel Slide Viewer", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return slideCarousel.Layout(gtx, th) }),
-		)
-
-	// 36. Command
+		return carousel.Demo(gtx, th)
+	case "checkbox":
+		return checkbox.Demo(gtx, th)
+	case "collapsible":
+		return collapsible.Demo(gtx, th)
 	case "command":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Command Palette", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return cmdPalette.Layout(gtx, th) }),
-		)
-
-	// 37. Empty
+		return command.Demo(gtx, th)
+	case "dialog":
+		return dialog.Demo(gtx, th)
+	case "drawer":
+		return drawer.Demo(gtx, th)
+	case "dropdownmenu":
+		return dropdownmenu.Demo(gtx, th)
 	case "empty":
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Empty State Box", label.H3, "").Layout(gtx, th) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return emptyBox.Layout(gtx, th) }),
-		)
-
+		return empty.Demo(gtx, th)
+	case "hovercard":
+		return hovercard.Demo(gtx, th)
+	case "input":
+		return input.Demo(gtx, th)
+	case "inputotp":
+		return inputotp.Demo(gtx, th)
+	case "label":
+		return label.Demo(gtx, th)
+	case "numberinput":
+		return numberinput.Demo(gtx, th)
+	case "pagination":
+		return pagination.Demo(gtx, th)
+	case "popover":
+		return popover.Demo(gtx, th)
+	case "progress":
+		return progress.Demo(gtx, th)
+	case "radio":
+		return radio.Demo(gtx, th)
+	case "resizable":
+		return resizable.Demo(gtx, th)
+	case "scrollarea":
+		return scrollarea.Demo(gtx, th)
+	case "select":
+		return selectcomp.Demo(gtx, th)
+	case "separator":
+		return separator.Demo(gtx, th)
+	case "sheet":
+		return sheet.Demo(gtx, th)
+	case "skeleton":
+		return skeleton.Demo(gtx, th)
+	case "slider":
+		return slider.Demo(gtx, th)
+	case "spinner":
+		return spinner.Demo(gtx, th)
+	case "switch":
+		return switchcomp.Demo(gtx, th)
+	case "table":
+		return table.Demo(gtx, th)
+	case "tabs":
+		return tabs.Demo(gtx, th)
+	case "textarea":
+		return textarea.Demo(gtx, th)
+	case "titlebar":
+		return titlebar.Demo(gtx, th, nil)
+	case "toast":
+		return toast.Demo(gtx, th)
+	case "togglegroup":
+		return togglegroup.Demo(gtx, th)
+	case "tooltip":
+		return tooltip.Demo(gtx, th)
 	default:
 		return layout.Dimensions{}
 	}

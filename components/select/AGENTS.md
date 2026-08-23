@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `select` component implementation
 
 ---
 
+
+
 ### Demos
-- [x] **Select Dropdown Field**
+- [x] **1. Select Dropdown Menu**
   - implementation:
-    - select.go:3
-  - tests:
-    - select_test.go:2
-- [x] **Genre Selection List**
-  - implementation:
-    - select.go:76
+    - component: select.go:50
+    - demo: demo.md:13
   - tests:
     - select_test.go:15
-- [x] **Active Selected Option**
-  - implementation:
-    - select.go:77
-  - tests:
-    - select_test.go:30
 
 ## Code Structure & Entry Points
-- `select.go`: Primary component widget layout and state logic.
-- `select_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `select.go`: Primary component implementation.
+- `select_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

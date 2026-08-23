@@ -65,24 +65,18 @@ Whenever adding, modifying, or refactoring the `label` component implementation 
 
 ---
 
+
+
 ### Demos
-- [x] **Form Field Label**
+- [x] **1. Typography Scale**
   - implementation:
-    - label.go:69
+    - component: label.go:50
+    - demo: demo.md:13
   - tests:
-    - label_test.go:21
-- [x] **Typography Scale (H1-H4)**
-  - implementation:
-    - label.go:4
-  - tests:
-    - label_test.go:14
-- [x] **Body & Muted Text**
-  - implementation:
-    - label.go:132
-  - tests:
-    - label_test.go:42
+    - label_test.go:15
 
 ## Code Structure & Entry Points
-- `label.go`: Primary component widget layout and state logic.
-- `label_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `label.go`: Primary component implementation.
+- `label_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

@@ -40,19 +40,18 @@ Whenever adding, modifying, or refactoring the `tooltip` component implementatio
 
 ---
 
+
+
 ### Demos
-- [x] **Default Tooltip Callout**
+- [x] **1. Tooltip Callout Text**
   - implementation:
-    - tooltip.go:44
-  - tests:
-    - tooltip_test.go:24
-- [x] **Hover Detail Tooltip**
-  - implementation:
-    - tooltip.go:4
+    - component: tooltip.go:50
+    - demo: demo.md:13
   - tests:
     - tooltip_test.go:15
 
 ## Code Structure & Entry Points
-- `tooltip.go`: Primary component widget layout and state logic.
-- `tooltip_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `tooltip.go`: Primary component implementation.
+- `tooltip_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

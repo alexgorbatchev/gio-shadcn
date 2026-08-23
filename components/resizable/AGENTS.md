@@ -45,24 +45,18 @@ Whenever adding, modifying, or refactoring the `resizable` component implementat
 
 ---
 
+
+
 ### Demos
-- [x] **Horizontal Split Panels**
+- [x] **1. Resizable Split Panels**
   - implementation:
-    - resizable.go:58
-  - tests:
-    - resizable_test.go:24
-- [x] **Vertical Split Panels**
-  - implementation:
-    - resizable.go:49
+    - component: resizable.go:50
+    - demo: demo.md:13
   - tests:
     - resizable_test.go:15
-- [x] **Divider Handle Drag**
-  - implementation:
-    - resizable.go:4
-  - tests:
-    - resizable_test.go:26
 
 ## Code Structure & Entry Points
-- `resizable.go`: Primary component widget layout and state logic.
-- `resizable_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `resizable.go`: Primary component implementation.
+- `resizable_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

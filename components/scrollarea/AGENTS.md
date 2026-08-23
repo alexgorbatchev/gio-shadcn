@@ -40,24 +40,18 @@ Whenever adding, modifying, or refactoring the `scrollarea` component implementa
 
 ---
 
+
+
 ### Demos
-- [x] **Vertical Scroll Area**
+- [x] **1. Custom Scroll Area**
   - implementation:
-    - scrollarea.go:38
-  - tests:
-    - scrollarea_test.go:26
-- [x] **Horizontal Scroll Track**
-  - implementation:
-    - scrollarea.go:50
+    - component: scrollarea.go:50
+    - demo: demo.md:13
   - tests:
     - scrollarea_test.go:15
-- [x] **Both Axes Scroll**
-  - implementation:
-    - scrollarea.go:51
-  - tests:
-    - scrollarea_test.go:28
 
 ## Code Structure & Entry Points
-- `scrollarea.go`: Primary component widget layout and state logic.
-- `scrollarea_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `scrollarea.go`: Primary component implementation.
+- `scrollarea_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

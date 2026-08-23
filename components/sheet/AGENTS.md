@@ -60,24 +60,18 @@ Whenever adding, modifying, or refactoring the `sheet` component implementation 
 
 ---
 
+
+
 ### Demos
-- [x] **Side Sheet Panel (Right)**
+- [x] **1. Side Sheet Panel**
   - implementation:
-    - sheet.go:3
-  - tests:
-    - sheet_test.go:26
-- [x] **Track Metadata Sheet**
-  - implementation:
-    - sheet.go:193
+    - component: sheet.go:50
+    - demo: demo.md:13
   - tests:
     - sheet_test.go:15
-- [x] **Close Button & Backdrop Click**
-  - implementation:
-    - sheet.go:33
-  - tests:
-    - sheet_test.go:28
 
 ## Code Structure & Entry Points
-- `sheet.go`: Primary component widget layout and state logic.
-- `sheet_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
+- `sheet.go`: Primary component implementation.
+- `sheet_test.go`: Unit test suite.
+- `demo.md`: Component interactive demo snippets.
+- `AGENTS.md`: Component specification.

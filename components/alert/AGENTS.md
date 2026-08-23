@@ -25,21 +25,21 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
     - alert.go:42
   - tests:
     - alert_test.go:13
-- [x] **Destructive Warning Alert**
+- [x] **Destructive / Warning Alert**
   - implementation:
-    - alert.go:63
+    - alert.go:64
   - tests:
     - alert_test.go:23
 
 ### Capabilities & Features
 - [x] **Title Header**
   - implementation:
-    - alert.go:94
+    - alert.go:88
   - tests:
     - alert_test.go:33
 - [x] **Description Body**
   - implementation:
-    - alert.go:109
+    - alert.go:102
   - tests:
     - alert_test.go:42
 - [x] **Variant Background Styling**
@@ -53,31 +53,36 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
   - tests:
     - alert_test.go:66
 
-### Demos (Official shadcn Demos)
+### Demos (All Official shadcn Demos)
 - [x] **1. Default / Info Alert**
   - implementation:
-    - alert.go:42
+    - component: alert.go:42
+    - demo: demo.go:9
   - tests:
     - alert_test.go:13
 - [x] **2. Destructive Warning Alert**
   - implementation:
-    - alert.go:63
+    - component: alert.go:64
+    - demo: demo.go:15
   - tests:
     - alert_test.go:23
-- [x] **3. With Title & Description**
+- [x] **3. Title Only Alert**
   - implementation:
-    - alert.go:94
+    - component: alert.go:88
+    - demo: demo.go:21
   - tests:
     - alert_test.go:33
-- [x] **4. Custom Styling**
+- [x] **4. Description Only Alert**
   - implementation:
-    - alert.go:69
+    - component: alert.go:102
+    - demo: demo.go:26
   - tests:
-    - alert_test.go:51
+    - alert_test.go:42
 
 ---
 
 ## Code Structure & Entry Points
 - `alert.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `alert_test.go`: Automated unit test suite verifying layout dimensions and state updates.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

@@ -22,52 +22,56 @@ Whenever adding, modifying, or refactoring the `aspectratio` component implement
 ### Variants
 - [x] **16:9 Standard Ratio**
   - implementation:
-    - aspectratio.go:31
+    - aspectratio.go:30
   - tests:
     - aspectratio_test.go:13
 - [x] **4:3 Classic Ratio**
   - implementation:
     - aspectratio.go:30
   - tests:
-    - aspectratio_test.go:28
+    - aspectratio_test.go:27
 - [x] **1:1 Square Ratio**
   - implementation:
-    - aspectratio.go:34
+    - aspectratio.go:30
   - tests:
-    - aspectratio_test.go:43
+    - aspectratio_test.go:41
 
 ### Capabilities & Features
 - [x] **Proportional Constraint Layout**
   - implementation:
-    - aspectratio.go:47
+    - aspectratio.go:41
   - tests:
-    - aspectratio_test.go:58
+    - aspectratio_test.go:55
 - [x] **Wrapped Child Fitting**
   - implementation:
-    - aspectratio.go:51
+    - aspectratio.go:48
   - tests:
-    - aspectratio_test.go:72
+    - aspectratio_test.go:70
 
-### Demos (Official shadcn Demos)
-- [x] **1. 16:9 Landscape Image**
+### Demos (All Official shadcn Demos)
+- [x] **1. 16:9 Landscape Image Container**
   - implementation:
-    - aspectratio.go:31
+    - component: aspectratio.go:30
+    - demo: demo.go:11
   - tests:
     - aspectratio_test.go:13
-- [x] **2. 4:3 Classic Display**
+- [x] **2. 4:3 Classic Display Container**
   - implementation:
-    - aspectratio.go:30
+    - component: aspectratio.go:30
+    - demo: demo.go:20
   - tests:
-    - aspectratio_test.go:28
-- [x] **3. 1:1 Square Card**
+    - aspectratio_test.go:27
+- [x] **3. 1:1 Square Card Container**
   - implementation:
-    - aspectratio.go:34
+    - component: aspectratio.go:30
+    - demo: demo.go:29
   - tests:
-    - aspectratio_test.go:43
+    - aspectratio_test.go:41
 
 ---
 
 ## Code Structure & Entry Points
 - `aspectratio.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `aspectratio_test.go`: Automated unit test suite verifying layout dimensions and state updates.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
