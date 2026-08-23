@@ -84,7 +84,6 @@ func Run() {
 		w.Option(app.Title("guipoc - Gio (gio-shadcn Gallery)"))
 		w.Option(app.Size(1200, 800))
 		w.Option(app.Maximized.Option())
-		w.Option(app.Decorated(false))
 
 		err := runWindow(w)
 		if err != nil {
