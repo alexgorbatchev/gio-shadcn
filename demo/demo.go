@@ -256,10 +256,68 @@ func runWindow(w *app.Window) error {
 	alertDestruct := alert.New(alert.Config{Title: "Audio Clip Warning", Description: "Output signal clipped +1.2dB on Deck A.", Variant: theme.VariantDestructive})
 	toastItem := toast.New(toast.Config{Title: "Track Exported", Description: "Exported to Starlight_Symphony.flac", Visible: false})
 
-	infoAccordion := accordion.New(accordion.Config{
+	// Accordion Demos (All 8 Official shadcn Demos)
+	singleAcc := accordion.New(accordion.Config{
+		Type: accordion.TypeSingle,
 		Items: []*accordion.Item{
-			accordion.NewItem("Audio Engine Specs", "Runs at 96kHz 24-bit floating point precision.", false),
-			accordion.NewItem("GPU Vector Pipeline", "Gio immediate-mode engine renders vector paths directly on GPU.", true),
+			accordion.NewItem("Is it accessible?", "Yes. It adheres to the WAI-ARIA design pattern.", true),
+			accordion.NewItem("Is it styled?", "Yes. It comes with default styles.", false),
+		},
+	})
+	multiAcc := accordion.New(accordion.Config{
+		Type: accordion.TypeMultiple,
+		Items: []*accordion.Item{
+			accordion.NewItem("Audio Engine Specs", "Runs at 96kHz 24-bit precision.", true),
+			accordion.NewItem("GPU Vector Pipeline", "Gio immediate-mode engine.", true),
+		},
+	})
+	disabledAcc := accordion.New(accordion.Config{
+		Items: []*accordion.Item{
+			accordion.NewItemConfig(accordion.ItemConfig{Title: "Disabled Section (Locked)", Content: "Locked content panel.", Disabled: true}),
+		},
+	})
+	chevronAcc := accordion.New(accordion.Config{
+		Items: []*accordion.Item{
+			accordion.NewItemConfig(accordion.ItemConfig{Title: "Chevron Indicator Item", Content: "Uses custom chevron symbol.", Icon: "v", Expanded: true}),
+		},
+	})
+	customHeaderAcc := accordion.New(accordion.Config{
+		Items: []*accordion.Item{
+			accordion.NewItemConfig(accordion.ItemConfig{Title: "Custom Header Badge Section", Content: "Custom header badge.", Expanded: true}),
+		},
+	})
+	borderlessAcc := accordion.New(accordion.Config{
+		Borderless: true,
+		Items: []*accordion.Item{
+			accordion.NewItem("Borderless Item 1", "Flush borderless container style.", true),
+		},
+	})
+	nestedAcc := accordion.New(accordion.Config{
+		Items: []*accordion.Item{
+			accordion.NewItemConfig(accordion.ItemConfig{
+				Title:    "Parent Section (Contains Inner Accordion)",
+				Expanded: true,
+				ContentWidget: func(gtx layout.Context) layout.Dimensions {
+					return singleAcc.Layout(gtx, th)
+				},
+			}),
+		},
+	})
+	controlledAcc := accordion.New(accordion.Config{
+		Type: accordion.TypeMultiple,
+		Items: []*accordion.Item{
+			accordion.NewItem("Controlled Panel 1", "State toggled externally by buttons.", true),
+		},
+	})
+	btnExpandAll := button.New(button.Config{
+		Text:    "Expand All",
+		Variant: theme.VariantOutline,
+		Size:    theme.SizeSM,
+		OnClick: func() {
+			for _, item := range controlledAcc.Items {
+				item.Expanded = true
+			}
+			w.Invalidate()
 		},
 	})
 	colContainer := collapsible.New(collapsible.Config{Title: "Advanced Mixer Settings", Content: "ASIO Direct hardware routing enabled.", Open: true})
@@ -456,7 +514,7 @@ func runWindow(w *app.Window) error {
 										chkBox, swToggle, radioA, radioB, genreSel, tglGrp,
 										rngSlider, progBar, shimmerSk, spinLoad,
 										alertDefault, alertDestruct, toastItem,
-										infoAccordion, colContainer,
+										singleAcc, multiAcc, disabledAcc, chevronAcc, customHeaderAcc, borderlessAcc, nestedAcc, controlledAcc, btnExpandAll, colContainer,
 										navTabs, bCrumb, pageControls,
 										trackTable, aspectWrapper, resPanel, slideCarousel,
 										modalDialog, btnTriggerDialog, sheetDrawer, btnTriggerSheet, bottomDrawer, btnTriggerDrawer,
@@ -564,7 +622,7 @@ func renderComponentGalleryPage(
 	chkBox *checkbox.Checkbox, swToggle *switchcomp.Switch, radioA, radioB *radio.Radio, genreSel *selectcomp.Select, tglGrp *togglegroup.ToggleGroup,
 	rngSlider *slider.Slider, progBar *progress.Progress, shimmerSk *skeleton.Skeleton, spinLoad *spinner.Spinner,
 	alertDefault, alertDestruct *alert.Alert, toastItem *toast.Toast,
-	infoAccordion *accordion.Accordion, colContainer *collapsible.Collapsible,
+	singleAcc, multiAcc, disabledAcc, chevronAcc, customHeaderAcc, borderlessAcc, nestedAcc, controlledAcc *accordion.Accordion, btnExpandAll *button.Button, colContainer *collapsible.Collapsible,
 	navTabs *tabs.Tabs, bCrumb *breadcrumb.Breadcrumb, pageControls *pagination.Pagination,
 	trackTable *table.Table, aspectWrapper *aspectratio.AspectRatio, resPanel *resizable.Resizable, slideCarousel *carousel.Carousel,
 	modalDialog *dialog.Dialog, btnTriggerDialog *button.Button, sheetDrawer *sheet.Sheet, btnTriggerSheet *button.Button, bottomDrawer *drawer.Drawer, btnTriggerDrawer *button.Button,
@@ -787,9 +845,40 @@ func renderComponentGalleryPage(
 	// 20. Accordion
 	case "accordion":
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Accordion Expandable Panel", label.H3, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("Accordion Showcase (All 8 Official Demos)", label.H3, "").Layout(gtx, th) }),
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return infoAccordion.Layout(gtx, th) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("1. Single Open Accordion (Default)", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return singleAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("2. Multiple Open Accordion", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return multiAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("3. Disabled Item Accordion", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return disabledAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("4. Chevron Icon Accordion", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return chevronAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("5. Custom Header Badge Section", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return customHeaderAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("6. Borderless Variant Accordion", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return borderlessAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("7. Nested Accordion", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return nestedAcc.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return label.NewTypography("8. Controlled Accordion State", label.H4, "").Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return btnExpandAll.Layout(gtx, th) }),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions { return controlledAcc.Layout(gtx, th) }),
 		)
 
 	// 21. Collapsible
