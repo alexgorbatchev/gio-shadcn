@@ -85,21 +85,20 @@ func (c *Checkbox) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 		bgColor = styles.Background
 	}
 
-	return c.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		// Draw box background
+	dims := c.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		// Draw box background FIRST
 		rect := image.Rectangle{Max: size}
-		radius := gtx.Dp(th.Radius.RadiusSM)
-		rr := clip.UniformRRect(rect, radius)
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-		// Draw border
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
+		radius := boxSize / 2
+		if radius <= 0 {
+			radius = 1
 		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
 
-		// Draw checkmark vector path when checked
+		theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+		rr := clip.UniformRRect(rect, radius)
+		theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+		// Draw checkmark vector path ON TOP when checked
 		if c.Value {
 			var p clip.Path
 			p.Begin(gtx.Ops)
@@ -114,9 +113,17 @@ func (c *Checkbox) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 				Path:  p.End(),
 				Width: float32(gtx.Dp(unit.Dp(2))),
 			}
-			paint.FillShape(gtx.Ops, fgColor, checkStroke.Op())
+			cl := checkStroke.Op().Push(gtx.Ops)
+			paint.ColorOp{Color: fgColor}.Add(gtx.Ops)
+			paint.PaintOp{}.Add(gtx.Ops)
+			cl.Pop()
 		}
 
 		return layout.Dimensions{Size: size}
 	})
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }

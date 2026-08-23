@@ -10,7 +10,6 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"github.com/bnema/gio-shadcn/theme"
@@ -54,20 +53,25 @@ func (sa *ScrollArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 		th = theme.New()
 	}
 
-	return sa.List.Layout(gtx, 1, func(gtx layout.Context, index int) layout.Dimensions {
-		dims := sa.Widget(gtx)
+	dims := sa.List.Layout(gtx, 1, func(gtx layout.Context, index int) layout.Dimensions {
+		wDims := sa.Widget(gtx)
 
 		// Draw subtle scrollbar track indicator
 		trackWidth := gtx.Dp(th.Spacing.Space1)
-		trackY := dims.Size.Y
+		trackY := wDims.Size.Y
 		if trackY > 0 {
 			trackRect := image.Rectangle{
-				Min: image.Pt(dims.Size.X-trackWidth, 0),
-				Max: image.Pt(dims.Size.X, trackY),
+				Min: image.Pt(wDims.Size.X-trackWidth, 0),
+				Max: image.Pt(wDims.Size.X, trackY),
 			}
-			paint.FillShape(gtx.Ops, th.Colors.Border, clip.Rect(trackRect).Op())
+			theme.DrawRRectBackground(gtx, trackRect, 0, th.Colors.Border)
 		}
 
-		return dims
+		return wDims
 	})
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }

@@ -80,9 +80,12 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		s.Open = !s.Open
 	}
 
-	mTheme := material.NewTheme()
-	selectedLabel := s.SelectedValue
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
+	selectedLabel := s.SelectedValue
 	for _, opt := range s.Options {
 		if opt.Value == s.SelectedValue {
 			selectedLabel = opt.Label
@@ -98,15 +101,19 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	triggerDims := s.triggerBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		padding := layout.Inset{
-			Top:    th.Spacing.Space2,
-			Bottom: th.Spacing.Space2,
-			Left:   th.Spacing.Space3,
-			Right:  th.Spacing.Space3,
-		}
+	// 1. Render Trigger Button
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-		tDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+	padding := layout.Inset{
+		Top:    th.Spacing.Space2,
+		Bottom: th.Spacing.Space2,
+		Left:   th.Spacing.Space3,
+		Right:  th.Spacing.Space3,
+	}
+
+	renderTriggerContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 					lbl := material.Label(mTheme, th.Typography.FontSizeSM, selectedLabel)
@@ -127,31 +134,42 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 				}),
 			)
 		})
+	}
 
-		rect := image.Rectangle{Max: tDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusMD)
-		rr := clip.UniformRRect(rect, radius)
+	triggerDims := s.triggerBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		contentDims := renderTriggerContent(gtxContent)
+		tSize := contentDims.Size
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+		return layout.Stack{}.Layout(gtx,
+			// Trigger Background drawn FIRST
+			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+				rect := image.Rectangle{Max: tSize}
+				radius := gtx.Dp(th.Radius.RadiusMD)
+				theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+				rr := clip.UniformRRect(rect, radius)
+				theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
-		return tDims
+				return layout.Dimensions{Size: tSize}
+			}),
+
+			// Trigger Text Content drawn ON TOP
+			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+				return renderTriggerContent(gtx)
+			}),
+		)
 	})
 
 	if !s.Open {
+		paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 		return triggerDims
 	}
 
-	// Render Dropdown Options List
+	// 2. Render Dropdown Options List
 	optionChildren := make([]layout.FlexChild, 0, len(s.Options))
 
 	for _, opt := range s.Options {
-		opt := opt // capture loop variable
+		opt := opt
 
 		if opt.clickable.Clicked(gtx) {
 			s.SelectedValue = opt.Value
@@ -163,44 +181,63 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 		optionChildren = append(optionChildren, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return opt.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				padding := layout.Inset{
-					Top:    th.Spacing.Space2,
-					Bottom: th.Spacing.Space2,
-					Left:   th.Spacing.Space3,
-					Right:  th.Spacing.Space3,
-				}
-				itemDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeSM, opt.Label)
-					lbl.Color = th.Colors.PopoverFg
-					return lbl.Layout(gtx)
-				})
-
 				itemBg := th.Colors.Popover
 				if opt.Value == s.SelectedValue || opt.clickable.Hovered() {
 					itemBg = th.Colors.Secondary
 				}
 
-				rect := image.Rectangle{Max: itemDims.Size}
-				paint.FillShape(gtx.Ops, itemBg, clip.Rect(rect).Op())
+				renderItemContent := func(gtx layout.Context) layout.Dimensions {
+					return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, opt.Label)
+						lbl.Color = th.Colors.PopoverFg
+						return lbl.Layout(gtx)
+					})
+				}
 
-				return itemDims
+				itemContentDims := renderItemContent(gtxContent)
+				itemSize := itemContentDims.Size
+
+				return layout.Stack{}.Layout(gtx,
+					// Item background drawn FIRST
+					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+						rect := image.Rectangle{Max: itemSize}
+						theme.DrawRRectBackground(gtx, rect, 0, itemBg)
+						return layout.Dimensions{Size: itemSize}
+					}),
+
+					// Item text drawn ON TOP
+					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						return renderItemContent(gtx)
+					}),
+				)
 			})
 		}))
 	}
 
-	optsDims := layout.Flex{Axis: layout.Vertical}.Layout(gtx, optionChildren...)
+	optsContentDims := layout.Flex{Axis: layout.Vertical}.Layout(gtxContent, optionChildren...)
+	optsSize := optsContentDims.Size
 
-	rect := image.Rectangle{Max: optsDims.Size}
-	radius := gtx.Dp(th.Radius.RadiusMD)
-	rr := clip.UniformRRect(rect, radius)
+	optsDims := layout.Stack{}.Layout(gtx,
+		// Popover list background drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: optsSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+			theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Popover)
 
-	paint.FillShape(gtx.Ops, th.Colors.Popover, rr.Op(gtx.Ops))
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, th.Colors.Border)
 
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.0,
-	}
-	paint.FillShape(gtx.Ops, th.Colors.Border, stroke.Op())
+			return layout.Dimensions{Size: optsSize}
+		}),
+
+		// Options list drawn ON TOP
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Vertical}.Layout(gtx, optionChildren...)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return layout.Dimensions{
 		Size: image.Pt(triggerDims.Size.X, triggerDims.Size.Y+optsDims.Size.Y),

@@ -7,6 +7,7 @@ import (
 	"image/color"
 
 	"gioui.org/layout"
+	"gioui.org/op/paint"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
@@ -107,7 +108,12 @@ func (l *Label) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		label.Color = styles.Background
 	}
 
-	return label.Layout(gtx)
+	dims := label.Layout(gtx)
+
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (l *Label) Update(_ layout.Context) theme.ComponentState {
@@ -239,7 +245,12 @@ func (t *Typography) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 		label.Color = styles.Background
 	}
 
-	return label.Layout(gtx)
+	dims := label.Layout(gtx)
+
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (t *Typography) getTextStyleForElement(th *theme.Theme) theme.TextStyle {

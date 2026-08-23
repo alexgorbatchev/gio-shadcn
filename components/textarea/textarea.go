@@ -90,9 +90,12 @@ func (ta *TextArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
-	hPx := gtx.Dp(ta.Height)
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
+	hPx := gtx.Dp(ta.Height)
 	gtx.Constraints.Min.Y = hPx
 
 	padding := layout.Inset{
@@ -102,27 +105,45 @@ func (ta *TextArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		Right:  th.Spacing.Space3,
 	}
 
-	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		edDims := material.Editor(mTheme, ta.editor, ta.Placeholder).Layout(gtx)
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-		finalHeight := edDims.Size.Y
-		if finalHeight < hPx {
-			finalHeight = hPx
-		}
+	renderEditor := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return material.Editor(mTheme, ta.editor, ta.Placeholder).Layout(gtx)
+		})
+	}
 
-		size := image.Pt(edDims.Size.X, finalHeight)
-		rect := image.Rectangle{Max: size}
-		radius := gtx.Dp(th.Radius.RadiusMD)
-		rr := clip.UniformRRect(rect, radius)
+	contentDims := renderEditor(gtxContent)
+	finalHeight := contentDims.Size.Y
+	if finalHeight < hPx {
+		finalHeight = hPx
+	}
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	areaSize := image.Pt(contentDims.Size.X, finalHeight)
 
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+	dims := layout.Stack{}.Layout(gtx,
+		// Background & Border drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: areaSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
 
-		return layout.Dimensions{Size: size}
-	})
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+			return layout.Dimensions{Size: areaSize}
+		}),
+
+		// Text Editor drawn ON TOP of background
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderEditor(gtx)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }

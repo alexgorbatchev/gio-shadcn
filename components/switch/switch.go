@@ -87,19 +87,16 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		trackColor = styles.Background
 	}
 
-	return s.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		// Draw track (pill shape)
+	dims := s.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		// Draw track background FIRST
 		trackRect := image.Rectangle{Max: size}
-		rrTrack := clip.UniformRRect(trackRect, trackHeight/2)
-		paint.FillShape(gtx.Ops, trackColor, rrTrack.Op(gtx.Ops))
+		trackRadius := trackHeight / 2
+		theme.DrawRRectBackground(gtx, trackRect, trackRadius, trackColor)
 
 		// Draw border if unselected
 		if !s.Value {
-			stroke := clip.Stroke{
-				Path:  rrTrack.Path(gtx.Ops),
-				Width: 1.0,
-			}
-			paint.FillShape(gtx.Ops, th.Colors.Border, stroke.Op())
+			rrTrack := clip.UniformRRect(trackRect, trackRadius)
+			theme.DrawStroke(gtx, rrTrack.Path(gtx.Ops), 1.0, th.Colors.Border)
 		}
 
 		// Calculate thumb position
@@ -112,12 +109,18 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		thumbMin := image.Pt(thumbX, thumbY)
 		thumbMax := image.Pt(thumbX+thumbSize, thumbY+thumbSize)
 		thumbRect := image.Rectangle{Min: thumbMin, Max: thumbMax}
+		thumbRadius := thumbSize / 2
 
-		rrThumb := clip.UniformRRect(thumbRect, thumbSize/2)
-		paint.FillShape(gtx.Ops, thumbColor, rrThumb.Op(gtx.Ops))
+		// Draw thumb knob ON TOP of track
+		theme.DrawRRectBackground(gtx, thumbRect, thumbRadius, thumbColor)
 
 		return layout.Dimensions{Size: size}
 	})
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 // Clicked returns true if the switch was toggled in the current frame.

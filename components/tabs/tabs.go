@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -101,20 +100,26 @@ func (t *Tabs) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Right:  th.Spacing.Space1,
 	}
 
-	return layout.Stack{}.Layout(gtx,
+	dims := layout.Stack{}.Layout(gtx,
+		// Outer tab track background drawn FIRST
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			rect := image.Rectangle{Max: gtx.Constraints.Min}
 			radius := gtx.Dp(th.Radius.RadiusMD)
-			rr := clip.UniformRRect(rect, radius)
-			paint.FillShape(gtx.Ops, th.Colors.Muted, rr.Op(gtx.Ops))
+			theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Muted)
 			return layout.Dimensions{Size: gtx.Constraints.Min}
 		}),
+		// Tabs buttons drawn ON TOP
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
 			})
 		}),
 	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (t *Tabs) layoutTab(gtx layout.Context, th *theme.Theme, tab *Tab) layout.Dimensions {
@@ -133,7 +138,10 @@ func (t *Tabs) layoutTab(gtx layout.Context, th *theme.Theme, tab *Tab) layout.D
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	return tab.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		padding := layout.Inset{
@@ -144,13 +152,14 @@ func (t *Tabs) layoutTab(gtx layout.Context, th *theme.Theme, tab *Tab) layout.D
 		}
 
 		return layout.Stack{}.Layout(gtx,
+			// Tab item background drawn FIRST
 			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 				rect := image.Rectangle{Max: gtx.Constraints.Min}
 				radius := gtx.Dp(th.Radius.RadiusSM)
-				rr := clip.UniformRRect(rect, radius)
-				paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+				theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 				return layout.Dimensions{Size: gtx.Constraints.Min}
 			}),
+			// Tab item text label drawn ON TOP
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 				return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 					lbl := material.Label(mTheme, th.Typography.FontSizeSM, tab.Label)

@@ -1,7 +1,7 @@
 /*
 Package numberinput provides a numeric stepper input component for gio-shadcn applications.
 
-NumberInputs allow users to adjust numeric quantities with increment/decrement buttons following
+NumberInputs allow users to increment and decrement numeric values following
 shadcn/ui design principles.
 */
 package numberinput
@@ -20,58 +20,56 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-// NumberInput represents a numeric stepper input component.
+// NumberInput represents a numeric stepper input widget with increment and decrement buttons.
 type NumberInput struct {
 	Value    float32
 	Step     float32
 	Min      float32
 	Max      float32
+	Classes  string
 	OnChange func(float32)
 
 	decBtn *widget.Clickable
 	incBtn *widget.Clickable
 }
 
-// Config represents configuration for creating a NumberInput.
+// Config represents configuration for creating a NumberInput component.
 type Config struct {
 	Value    float32
 	Step     float32
 	Min      float32
 	Max      float32
+	Classes  string
 	OnChange func(float32)
 }
 
-// New creates a new NumberInput stepper component.
+// New creates a new NumberInput component.
 func New(config Config) *NumberInput {
-	step := config.Step
-	if step <= 0 {
-		step = 1.0
-	}
-	minVal := config.Min
-	maxVal := config.Max
-	if maxVal <= minVal {
-		maxVal = 100.0
-		minVal = 0.0
+	stepVal := config.Step
+	if stepVal <= 0 {
+		stepVal = 1.0
 	}
 	val := config.Value
-	if val < minVal {
-		val = minVal
-	} else if val > maxVal {
-		val = maxVal
+	if config.Max > config.Min {
+		if val < config.Min {
+			val = config.Min
+		} else if val > config.Max {
+			val = config.Max
+		}
 	}
-
 	return &NumberInput{
 		Value:    val,
-		Step:     step,
-		Min:      minVal,
-		Max:      maxVal,
+		Step:     stepVal,
+		Min:      config.Min,
+		Max:      config.Max,
+		Classes:  config.Classes,
 		OnChange: config.OnChange,
 		decBtn:   new(widget.Clickable),
 		incBtn:   new(widget.Clickable),
 	}
 }
 
-// Layout renders the stepper buttons and value display.
+// Layout renders the decrement button, numeric value display box, and increment button.
 func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -97,7 +95,10 @@ func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimens
 		}
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	containerDims := layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 		// Decrement Button
@@ -117,27 +118,39 @@ func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimens
 				Left:   th.Spacing.Space3,
 				Right:  th.Spacing.Space3,
 			}
-			valDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Label(mTheme, th.Typography.FontSizeSM, fmt.Sprintf("%.0f", ni.Value))
-				lbl.Color = th.Colors.Foreground
-				lbl.Font.Weight = font.Bold
-				lbl.Alignment = text.Middle
-				return lbl.Layout(gtx)
-			})
 
-			rect := image.Rectangle{Max: valDims.Size}
-			radius := gtx.Dp(th.Radius.RadiusSM)
-			rr := clip.UniformRRect(rect, radius)
+			gtxContent := gtx
+			gtxContent.Constraints.Min = image.Pt(0, 0)
 
-			paint.FillShape(gtx.Ops, th.Colors.Background, rr.Op(gtx.Ops))
-
-			stroke := clip.Stroke{
-				Path:  rr.Path(gtx.Ops),
-				Width: 1.0,
+			renderVal := func(gtx layout.Context) layout.Dimensions {
+				return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, fmt.Sprintf("%.0f", ni.Value))
+					lbl.Color = th.Colors.Foreground
+					lbl.Font.Weight = font.Bold
+					lbl.Alignment = text.Middle
+					return lbl.Layout(gtx)
+				})
 			}
-			paint.FillShape(gtx.Ops, th.Colors.Border, stroke.Op())
 
-			return valDims
+			valDims := renderVal(gtxContent)
+			valSize := valDims.Size
+
+			return layout.Stack{}.Layout(gtx,
+				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+					rect := image.Rectangle{Max: valSize}
+					radius := gtx.Dp(th.Radius.RadiusSM)
+
+					theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Background)
+
+					rr := clip.UniformRRect(rect, radius)
+					theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, th.Colors.Border)
+
+					return layout.Dimensions{Size: valSize}
+				}),
+				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+					return renderVal(gtx)
+				}),
+			)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
@@ -149,6 +162,9 @@ func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimens
 			})
 		}),
 	)
+
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return containerDims
 }
@@ -168,18 +184,32 @@ func (ni *NumberInput) layoutBtn(gtx layout.Context, th *theme.Theme, mTheme *ma
 		Right:  th.Spacing.Space3,
 	}
 
-	btnDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		lbl := material.Label(mTheme, th.Typography.FontSizeSM, label)
-		lbl.Color = fgColor
-		lbl.Font.Weight = font.Bold
-		return lbl.Layout(gtx)
-	})
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-	rect := image.Rectangle{Max: btnDims.Size}
-	radius := gtx.Dp(th.Radius.RadiusSM)
-	rr := clip.UniformRRect(rect, radius)
+	renderBtn := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			lbl := material.Label(mTheme, th.Typography.FontSizeSM, label)
+			lbl.Color = fgColor
+			lbl.Font.Weight = font.Bold
+			return lbl.Layout(gtx)
+		})
+	}
 
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	btnDims := renderBtn(gtxContent)
+	btnSize := btnDims.Size
 
-	return btnDims
+	return layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: btnSize}
+			radius := gtx.Dp(th.Radius.RadiusSM)
+
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+			return layout.Dimensions{Size: btnSize}
+		}),
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderBtn(gtx)
+		}),
+	)
 }

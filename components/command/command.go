@@ -72,55 +72,67 @@ func New(config Config) *Command {
 	}
 }
 
-// Layout renders the search bar and filterable command items.
+// Layout renders the search bar and filterable command items with background drawn first.
 func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	mTheme := material.NewTheme()
-	query := strings.ToLower(c.searchEditor.Text())
-
-	children := make([]layout.FlexChild, 0, len(c.Items)+2)
-
-	// Search Input Row
-	children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-		padding := layout.Inset{
-			Top:    th.Spacing.Space3,
-			Bottom: th.Spacing.Space3,
-			Left:   th.Spacing.Space4,
-			Right:  th.Spacing.Space4,
-		}
-		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return material.Editor(mTheme, c.searchEditor, c.Placeholder).Layout(gtx)
-		})
-	}))
-
-	// Bottom Separator Line
-	children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-		rect := image.Rectangle{Max: image.Pt(gtx.Constraints.Max.X, 1)}
-		paint.FillShape(gtx.Ops, th.Colors.Border, clip.Rect(rect).Op())
-		return layout.Dimensions{Size: image.Pt(gtx.Constraints.Max.X, 1)}
-	}))
-
-	// Command Items List
-	for idx, item := range c.Items {
-		idx, item := idx, item
-
-		if query != "" && !strings.Contains(strings.ToLower(item.Label), query) {
-			continue
-		}
-
-		if item.clickable.Clicked(gtx) && c.OnSelectItem != nil {
-			c.OnSelectItem(idx)
-		}
-
-		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return c.layoutItem(gtx, th, mTheme, item)
-		}))
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
 	}
 
-	cmdDims := layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
+	query := strings.ToLower(c.searchEditor.Text())
+
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
+
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		children := make([]layout.FlexChild, 0, len(c.Items)+2)
+
+		// Search Input Row
+		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			padding := layout.Inset{
+				Top:    th.Spacing.Space3,
+				Bottom: th.Spacing.Space3,
+				Left:   th.Spacing.Space4,
+				Right:  th.Spacing.Space4,
+			}
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return material.Editor(mTheme, c.searchEditor, c.Placeholder).Layout(gtx)
+			})
+		}))
+
+		// Bottom Separator Line
+		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: image.Pt(gtx.Constraints.Max.X, 1)}
+			theme.DrawRRectBackground(gtx, rect, 0, th.Colors.Border)
+			return layout.Dimensions{Size: image.Pt(gtx.Constraints.Max.X, 1)}
+		}))
+
+		// Command Items List
+		for idx, item := range c.Items {
+			idx, item := idx, item
+
+			if query != "" && !strings.Contains(strings.ToLower(item.Label), query) {
+				continue
+			}
+
+			if item.clickable.Clicked(gtx) && c.OnSelectItem != nil {
+				c.OnSelectItem(idx)
+			}
+
+			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return c.layoutItem(gtx, th, mTheme, item)
+			}))
+		}
+
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
+	}
+
+	contentDims := renderContent(gtxContent)
+	cmdSize := contentDims.Size
 
 	bgColor := th.Colors.Card
 	borderColor := th.Colors.Border
@@ -130,19 +142,26 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		bgColor = styles.Background
 	}
 
-	rect := image.Rectangle{Max: cmdDims.Size}
-	radius := gtx.Dp(th.Radius.RadiusMD)
-	rr := clip.UniformRRect(rect, radius)
+	dims := layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: cmdSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.0,
-	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+			return layout.Dimensions{Size: cmdSize}
+		}),
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
 
-	return cmdDims
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (c *Command) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, item *Item) layout.Dimensions {
@@ -154,30 +173,44 @@ func (c *Command) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *materi
 			Right:  th.Spacing.Space4,
 		}
 
-		itemDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeSM, item.Label)
-					lbl.Color = th.Colors.Foreground
-					return lbl.Layout(gtx)
-				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					if item.Shortcut == "" {
-						return layout.Dimensions{}
-					}
-					lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
-					lbl.Color = th.Colors.MutedFg
-					lbl.Font.Weight = font.Bold
-					return lbl.Layout(gtx)
-				}),
-			)
-		})
+		gtxContent := gtx
+		gtxContent.Constraints.Min = image.Pt(0, 0)
 
-		if item.clickable.Hovered() {
-			rect := image.Rectangle{Max: itemDims.Size}
-			paint.FillShape(gtx.Ops, th.Colors.Secondary, clip.Rect(rect).Op())
+		renderItem := func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, item.Label)
+						lbl.Color = th.Colors.Foreground
+						return lbl.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if item.Shortcut == "" {
+							return layout.Dimensions{}
+						}
+						lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
+						lbl.Color = th.Colors.MutedFg
+						lbl.Font.Weight = font.Bold
+						return lbl.Layout(gtx)
+					}),
+				)
+			})
 		}
 
-		return itemDims
+		itemDims := renderItem(gtxContent)
+		itemSize := itemDims.Size
+
+		return layout.Stack{}.Layout(gtx,
+			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+				if item.clickable.Hovered() {
+					rect := image.Rectangle{Max: itemSize}
+					theme.DrawRRectBackground(gtx, rect, 0, th.Colors.Secondary)
+				}
+				return layout.Dimensions{Size: itemSize}
+			}),
+			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+				return renderItem(gtx)
+			}),
+		)
 	})
 }

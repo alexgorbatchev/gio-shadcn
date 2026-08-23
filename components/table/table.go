@@ -11,8 +11,8 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
@@ -68,7 +68,6 @@ func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	macro := op.Record(gtx.Ops)
 	children := make([]layout.FlexChild, 0, len(t.Rows)+1)
 
 	children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -92,20 +91,41 @@ func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		}))
 	}
 
-	tableDims := layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
-	callOp := macro.Stop()
+	// Measure content dimensions with unconstrained Min
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-	rect := image.Rectangle{Max: tableDims.Size}
-	radius := gtx.Dp(th.Radius.RadiusMD)
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
+	}
 
-	theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+	contentDims := renderContent(gtxContent)
+	tableSize := contentDims.Size
 
-	rr := clip.UniformRRect(rect, radius)
-	theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+	dims := layout.Stack{}.Layout(gtx,
+		// Background & Border drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: tableSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
 
-	callOp.Add(gtx.Ops)
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-	return tableDims
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+			return layout.Dimensions{Size: tableSize}
+		}),
+
+		// Table Rows drawn ON TOP
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (t *Table) layoutHeader(gtx layout.Context, th *theme.Theme) layout.Dimensions {
@@ -155,32 +175,46 @@ func (t *Table) layoutRow(gtx layout.Context, th *theme.Theme, row *Row) layout.
 			Right:  th.Spacing.Space4,
 		}
 
-		macro := op.Record(gtx.Ops)
-		rowDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			colChildren := make([]layout.FlexChild, 0, len(row.Cells))
-			for _, cell := range row.Cells {
-				cell := cell
-				colChildren = append(colChildren, layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeSM, cell)
-					lbl.Color = th.Colors.Foreground
-					return lbl.Layout(gtx)
-				}))
-			}
-			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, colChildren...)
-		})
-		callOp := macro.Stop()
+		gtxContent := gtx
+		gtxContent.Constraints.Min = image.Pt(0, 0)
 
-		rect := image.Rectangle{Max: rowDims.Size}
-		theme.DrawRRectBackground(gtx, rect, 0, bgColor)
-
-		lineRect := image.Rectangle{
-			Min: image.Pt(0, rowDims.Size.Y-1),
-			Max: image.Pt(rowDims.Size.X, rowDims.Size.Y),
+		renderRowContent := func(gtx layout.Context) layout.Dimensions {
+			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				colChildren := make([]layout.FlexChild, 0, len(row.Cells))
+				for _, cell := range row.Cells {
+					cell := cell
+					colChildren = append(colChildren, layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, cell)
+						lbl.Color = th.Colors.Foreground
+						return lbl.Layout(gtx)
+					}))
+				}
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, colChildren...)
+			})
 		}
-		theme.DrawRRectBackground(gtx, lineRect, 0, th.Colors.Border)
 
-		callOp.Add(gtx.Ops)
+		rowDims := renderRowContent(gtxContent)
+		rowSize := rowDims.Size
 
-		return rowDims
+		return layout.Stack{}.Layout(gtx,
+			// Row Background drawn FIRST
+			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+				rect := image.Rectangle{Max: rowSize}
+				theme.DrawRRectBackground(gtx, rect, 0, bgColor)
+
+				lineRect := image.Rectangle{
+					Min: image.Pt(0, rowSize.Y-1),
+					Max: image.Pt(rowSize.X, rowSize.Y),
+				}
+				theme.DrawRRectBackground(gtx, lineRect, 0, th.Colors.Border)
+
+				return layout.Dimensions{Size: rowSize}
+			}),
+
+			// Row Text drawn ON TOP
+			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+				return renderRowContent(gtx)
+			}),
+		)
 	})
 }

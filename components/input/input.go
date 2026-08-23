@@ -328,22 +328,20 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Calculate the bounds for background/border
 	bounds := image.Rectangle{Max: image.Point{X: gtx.Constraints.Max.X, Y: minHeight}}
 
+	radiusPx := gtx.Dp(th.Radius.RadiusMD)
+
 	// Draw background FIRST (behind the text)
-	paint.FillShape(gtx.Ops, i.getBackgroundColor(th),
-		clip.UniformRRect(bounds, gtx.Metric.Dp(6)).Op(gtx.Ops))
+	theme.DrawRRectBackground(gtx, bounds, radiusPx, i.getBackgroundColor(th))
 
 	// Use thicker border when focused
-	borderWidth := unit.Dp(1)
+	borderWidth := float32(1.0)
 	if i.focused {
-		borderWidth = unit.Dp(2)
+		borderWidth = 2.0
 	}
 
 	// Draw border SECOND (behind the text)
-	paint.FillShape(gtx.Ops, i.getBorderColor(th),
-		clip.Stroke{
-			Path:  clip.UniformRRect(bounds, gtx.Metric.Dp(6)).Path(gtx.Ops),
-			Width: float32(gtx.Metric.Dp(borderWidth)),
-		}.Op())
+	rr := clip.UniformRRect(bounds, radiusPx)
+	theme.DrawStroke(gtx, rr.Path(gtx.Ops), borderWidth, i.getBorderColor(th))
 
 	// Layout the editor with padding LAST (in front of background)
 	dims := layout.UniformInset(padding).Layout(gtx, editor.Layout)
@@ -352,6 +350,9 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if dims.Size.Y < minHeight {
 		dims.Size.Y = minHeight
 	}
+
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
 }

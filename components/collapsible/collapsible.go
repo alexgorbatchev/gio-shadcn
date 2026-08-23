@@ -13,6 +13,7 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -131,6 +132,9 @@ func (c *Collapsible) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 		theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 		callOp.Add(gtx.Ops)
+
+		// Reset active GPU paint color state back to background
+		paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 		return dims
 	})

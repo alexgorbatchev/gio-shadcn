@@ -83,11 +83,10 @@ func (s *Spinner) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		}
 	}
 
-	stroke := clip.Stroke{
-		Path:  p.End(),
-		Width: strokeWidth,
-	}
-	paint.FillShape(gtx.Ops, spinColor, stroke.Op())
+	theme.DrawStroke(gtx, p.End(), strokeWidth, spinColor)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: size}
 }

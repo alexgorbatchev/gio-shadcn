@@ -50,7 +50,7 @@ func New(config Config) *Empty {
 	}
 }
 
-// Layout renders the empty state title and description.
+// Layout renders the empty state title and description with background drawn first.
 func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -64,7 +64,10 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
 
 	padding := layout.Inset{
 		Top:    th.Spacing.Space8,
@@ -73,38 +76,54 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Right:  th.Spacing.Space8,
 	}
 
-	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		contentDims := layout.Flex{Axis: layout.Vertical, Alignment: layout.Middle}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Label(mTheme, th.Typography.FontSizeBase, e.Title)
-				lbl.Color = th.Colors.Foreground
-				lbl.Font.Weight = font.Bold
-				lbl.Alignment = text.Middle
-				return lbl.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Label(mTheme, th.Typography.FontSizeSM, e.Description)
-				lbl.Color = th.Colors.MutedFg
-				lbl.Alignment = text.Middle
-				return lbl.Layout(gtx)
-			}),
-		)
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-		rect := image.Rectangle{Max: contentDims.Size}
-		radius := gtx.Dp(th.Radius.RadiusMD)
-		rr := clip.UniformRRect(rect, radius)
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Vertical, Alignment: layout.Middle}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeBase, e.Title)
+					lbl.Color = th.Colors.Foreground
+					lbl.Font.Weight = font.Bold
+					lbl.Alignment = text.Middle
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, e.Description)
+					lbl.Color = th.Colors.MutedFg
+					lbl.Alignment = text.Middle
+					return lbl.Layout(gtx)
+				}),
+			)
+		})
+	}
 
-		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	contentDims := renderContent(gtxContent)
+	emptySize := contentDims.Size
 
-		stroke := clip.Stroke{
-			Path:  rr.Path(gtx.Ops),
-			Width: 1.0,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+	dims := layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: emptySize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
 
-		return contentDims
-	})
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+			return layout.Dimensions{Size: emptySize}
+		}),
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
+
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }

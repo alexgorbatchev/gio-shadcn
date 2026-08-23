@@ -10,8 +10,6 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget/material"
@@ -65,22 +63,38 @@ func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		mTheme = material.NewTheme()
 	}
 
-	macro := op.Record(gtx.Ops)
-	dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Text)
-		lbl.Color = fgColor
-		lbl.Alignment = text.Middle
-		return lbl.Layout(gtx)
-	})
-	callOp := macro.Stop()
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-	rect := image.Rectangle{Max: dims.Size}
-	radius := gtx.Dp(th.Radius.RadiusSM)
-	rr := clip.UniformRRect(rect, radius)
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Text)
+			lbl.Color = fgColor
+			lbl.Alignment = text.Middle
+			return lbl.Layout(gtx)
+		})
+	}
 
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	contentDims := renderContent(gtxContent)
+	tipSize := contentDims.Size
 
-	callOp.Add(gtx.Ops)
+	dims := layout.Stack{}.Layout(gtx,
+		// Background drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: tipSize}
+			radius := gtx.Dp(th.Radius.RadiusSM)
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+			return layout.Dimensions{Size: tipSize}
+		}),
+
+		// Text label drawn ON TOP
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
 }

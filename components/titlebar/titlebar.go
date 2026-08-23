@@ -14,7 +14,6 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
-	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -101,7 +100,7 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, window *app.Wind
 
 	variantConfig := theme.GetTitleBarVariant(tb.variant, &th.Colors)
 
-	// Safely draw background and border with push/pop clips
+	// Safely draw background and border with push/pop clips FIRST
 	bgClip := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
 	paint.ColorOp{Color: variantConfig.Background}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
@@ -119,7 +118,7 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, window *app.Wind
 		bClip.Pop()
 	}
 
-	return layout.Stack{}.Layout(gtx,
+	dims := layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints.Min = gtx.Constraints.Max
 			return layout.Flex{
@@ -152,6 +151,11 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, window *app.Wind
 			)
 		}),
 	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (tb *TitleBar) handleWindowEvents(gtx layout.Context) {
@@ -179,13 +183,12 @@ func (tb *TitleBar) layoutWindowControls(gtx layout.Context, th *theme.Theme, va
 
 	btnConstraints := layout.Exact(image.Point{X: buttonWidth, Y: buttonHeight})
 
-	return layout.Flex{
-		Axis:      layout.Horizontal,
-		Alignment: layout.Middle,
-	}.Layout(gtx,
+	return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints = btnConstraints
-			return tb.layoutControlButton(gtx, th, &tb.minimizeBtn, "−", variantConfig, false)
+			return tb.layoutControlItem(gtx, &tb.minimizeBtn, "−", variantConfig.Foreground, func() {
+				_ = tb.window
+			})
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints = btnConstraints
@@ -193,55 +196,31 @@ func (tb *TitleBar) layoutWindowControls(gtx layout.Context, th *theme.Theme, va
 			if tb.maximized {
 				symbol = "❐"
 			}
-			return tb.layoutControlButton(gtx, th, &tb.maximizeBtn, symbol, variantConfig, false)
+			return tb.layoutControlItem(gtx, &tb.maximizeBtn, symbol, variantConfig.Foreground, func() {
+				tb.maximized = !tb.maximized
+				_ = tb.window
+			})
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints = btnConstraints
-			return tb.layoutControlButton(gtx, th, &tb.closeBtn, "✕", variantConfig, true)
+			return tb.layoutControlItem(gtx, &tb.closeBtn, "✕", variantConfig.Foreground, func() {
+				_ = tb.window
+			})
 		}),
 	)
 }
 
-func (tb *TitleBar) layoutControlButton(gtx layout.Context, th *theme.Theme, btn *widget.Clickable, symbol string, variantConfig theme.VariantConfig, isClose bool) layout.Dimensions {
-	return btn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		bgColor := color.NRGBA{A: 0}
-		fgColor := variantConfig.Foreground
+func (tb *TitleBar) layoutControlItem(gtx layout.Context, clickable *widget.Clickable, symbol string, fgColor color.NRGBA, onClick func()) layout.Dimensions {
+	for clickable.Clicked(gtx) {
+		onClick()
+	}
 
-		if btn.Hovered() {
-			if isClose {
-				bgColor = color.NRGBA{R: 232, G: 17, B: 35, A: 255}
-				fgColor = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
-			} else {
-				bgColor = variantConfig.HoverBg
-				fgColor = variantConfig.HoverFg
-			}
-		}
+	mTheme := material.NewTheme()
+	label := material.Label(mTheme, unit.Sp(12), symbol)
+	label.Color = fgColor
 
-		if btn.Pressed() {
-			if isClose {
-				bgColor = color.NRGBA{R: 241, G: 112, B: 122, A: 255}
-				fgColor = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
-			} else {
-				bgColor = variantConfig.ActiveBg
-				fgColor = variantConfig.ActiveFg
-			}
-		}
-
-		if bgColor.A > 0 {
-			bgClip := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
-			paint.ColorOp{Color: bgColor}.Add(gtx.Ops)
-			paint.PaintOp{}.Add(gtx.Ops)
-			bgClip.Pop()
-		}
-
+	return clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			mTheme := th.MaterialTheme
-			if mTheme == nil {
-				mTheme = material.NewTheme()
-			}
-			label := material.Label(mTheme, unit.Sp(12), symbol)
-			label.Color = fgColor
-			label.Alignment = text.Middle
 			return label.Layout(gtx)
 		})
 	})

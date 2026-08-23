@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"
@@ -89,52 +88,67 @@ func (t *Toast) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Right:  th.Spacing.Space4,
 	}
 
-	macro := op.Record(gtx.Ops)
-	dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if t.Title == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeSM, t.Title)
-				lbl.Color = fgColor
-				lbl.Font.Weight = font.Bold
-				return lbl.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if t.Title != "" && t.Description != "" {
-					return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
-				}
-				return layout.Dimensions{}
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if t.Description == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Description)
-				lbl.Color = th.Colors.MutedFg
-				if t.Variant == theme.VariantDestructive {
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
+
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if t.Title == "" {
+						return layout.Dimensions{}
+					}
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, t.Title)
 					lbl.Color = fgColor
-				}
-				return lbl.Layout(gtx)
-			}),
-		)
-	})
-	callOp := macro.Stop()
-
-	rect := image.Rectangle{Max: dims.Size}
-	radius := gtx.Dp(th.Radius.RadiusMD)
-	rr := clip.UniformRRect(rect, radius)
-
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.0,
+					lbl.Font.Weight = font.Bold
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if t.Title != "" && t.Description != "" {
+						return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
+					}
+					return layout.Dimensions{}
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if t.Description == "" {
+						return layout.Dimensions{}
+					}
+					lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Description)
+					lbl.Color = th.Colors.MutedFg
+					if t.Variant == theme.VariantDestructive {
+						lbl.Color = fgColor
+					}
+					return lbl.Layout(gtx)
+				}),
+			)
+		})
 	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
 
-	callOp.Add(gtx.Ops)
+	contentDims := renderContent(gtxContent)
+	toastSize := contentDims.Size
+
+	dims := layout.Stack{}.Layout(gtx,
+		// Background & Border drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: toastSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+			return layout.Dimensions{Size: toastSize}
+		}),
+
+		// Toast text content drawn ON TOP
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
 }

@@ -10,7 +10,6 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"github.com/bnema/gio-shadcn/theme"
@@ -67,9 +66,11 @@ func (s *Skeleton) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 
 	rect := image.Rectangle{Max: size}
 	radius := gtx.Dp(th.Radius.RadiusMD)
-	rr := clip.UniformRRect(rect, radius)
 
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: size}
 }

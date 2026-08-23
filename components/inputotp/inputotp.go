@@ -12,6 +12,7 @@ import (
 	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
@@ -102,7 +103,12 @@ func (otp *InputOTP) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 		}
 	}
 
-	return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+	dims := layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+
+	// Reset active GPU paint color state
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
 func (otp *InputOTP) layoutBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, ed *widget.Editor) layout.Dimensions {

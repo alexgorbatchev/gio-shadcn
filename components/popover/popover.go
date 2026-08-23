@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"
@@ -76,49 +75,63 @@ func (p *Popover) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		Right:  th.Spacing.Space4,
 	}
 
-	macro := op.Record(gtx.Ops)
-	dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if p.Title == "" {
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
+
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if p.Title == "" {
+						return layout.Dimensions{}
+					}
+					lbl := material.Label(mTheme, th.Typography.FontSizeBase, p.Title)
+					lbl.Color = fgColor
+					lbl.Font.Weight = font.Bold
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if p.Title != "" && p.Description != "" {
+						return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+					}
 					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeBase, p.Title)
-				lbl.Color = fgColor
-				lbl.Font.Weight = font.Bold
-				return lbl.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if p.Title != "" && p.Description != "" {
-					return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
-				}
-				return layout.Dimensions{}
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if p.Description == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeSM, p.Description)
-				lbl.Color = th.Colors.MutedFg
-				return lbl.Layout(gtx)
-			}),
-		)
-	})
-	callOp := macro.Stop()
-
-	rect := image.Rectangle{Max: dims.Size}
-	radius := gtx.Dp(th.Radius.RadiusMD)
-	rr := clip.UniformRRect(rect, radius)
-
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
-
-	stroke := clip.Stroke{
-		Path:  rr.Path(gtx.Ops),
-		Width: 1.0,
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if p.Description == "" {
+						return layout.Dimensions{}
+					}
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, p.Description)
+					lbl.Color = th.Colors.MutedFg
+					return lbl.Layout(gtx)
+				}),
+			)
+		})
 	}
-	paint.FillShape(gtx.Ops, borderColor, stroke.Op())
 
-	callOp.Add(gtx.Ops)
+	contentDims := renderContent(gtxContent)
+	popoverSize := contentDims.Size
+
+	dims := layout.Stack{}.Layout(gtx,
+		// Popover background drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: popoverSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+
+			rr := clip.UniformRRect(rect, radius)
+			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
+
+			return layout.Dimensions{Size: popoverSize}
+		}),
+
+		// Content drawn ON TOP of background
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
 }

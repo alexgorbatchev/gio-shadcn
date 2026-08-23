@@ -12,7 +12,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -75,7 +74,11 @@ func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 		}
 	}
 
-	mTheme := material.NewTheme()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+
 	children := make([]layout.FlexChild, 0, p.TotalPages+2)
 
 	// Prev Button
@@ -111,10 +114,15 @@ func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 		})
 	}))
 
-	return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+	dims := layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
 }
 
-func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, label string, active, disabled bool) layout.Dimensions {
+func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, labelText string, active, disabled bool) layout.Dimensions {
 	bgColor := th.Colors.Muted
 	fgColor := th.Colors.MutedFg
 
@@ -134,20 +142,35 @@ func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mThem
 		Right:  th.Spacing.Space3,
 	}
 
-	btnDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		lbl := material.Label(mTheme, th.Typography.FontSizeSM, label)
-		lbl.Color = fgColor
-		if active {
-			lbl.Font.Weight = font.Medium
-		}
-		return lbl.Layout(gtx)
-	})
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
 
-	rect := image.Rectangle{Max: btnDims.Size}
-	radius := gtx.Dp(th.Radius.RadiusSM)
-	rr := clip.UniformRRect(rect, radius)
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			lbl := material.Label(mTheme, th.Typography.FontSizeSM, labelText)
+			lbl.Color = fgColor
+			if active {
+				lbl.Font.Weight = font.Medium
+			}
+			return lbl.Layout(gtx)
+		})
+	}
 
-	paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
+	contentDims := renderContent(gtxContent)
+	btnSize := contentDims.Size
 
-	return btnDims
+	return layout.Stack{}.Layout(gtx,
+		// Background drawn FIRST
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: btnSize}
+			radius := gtx.Dp(th.Radius.RadiusSM)
+			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
+			return layout.Dimensions{Size: btnSize}
+		}),
+
+		// Label content drawn ON TOP of background
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
 }
