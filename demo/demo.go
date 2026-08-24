@@ -77,6 +77,12 @@ var sidebarList = &widget.List{
 	},
 }
 
+var contentList = &widget.List{
+	List: layout.List{
+		Axis: layout.Vertical,
+	},
+}
+
 // Run launches the full gio-shadcn component gallery window.
 func Run() {
 	go func() {
@@ -244,7 +250,7 @@ func runWindow(w *app.Window) error {
 							return renderSidebar(gtx, th, galleryItems, &activeItemID)
 						}),
 
-						// Right Component Gallery Viewport
+						// Right Component Gallery Viewport (Vertically Scrollable Auto)
 						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 							return layout.Inset{
 								Left:   th.Spacing.Space6,
@@ -252,7 +258,13 @@ func runWindow(w *app.Window) error {
 								Bottom: th.Spacing.Space6,
 							}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 								return demoCard.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-									return renderComponentGalleryPage(gtx, th, activeItemID)
+									mTheme := th.MaterialTheme
+									if mTheme == nil {
+										mTheme = material.NewTheme()
+									}
+									return material.List(mTheme, contentList).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+										return renderComponentGalleryPage(gtx, th, activeItemID)
+									})
 								})
 							})
 						}),
@@ -294,6 +306,9 @@ func renderSidebar(gtx layout.Context, th *theme.Theme, items []*GalleryItem, ac
 			isActive := item.ID == *activeID
 
 			if item.clickable.Clicked(gtx) {
+				if *activeID != item.ID {
+					contentList.Position = layout.Position{}
+				}
 				*activeID = item.ID
 			}
 
