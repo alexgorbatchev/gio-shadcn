@@ -28,6 +28,8 @@ go.work
 
 # IDE specific files
 .idea/
+.codegraph
+.tmp/
 .vscode/
 *.swp
 *.swo

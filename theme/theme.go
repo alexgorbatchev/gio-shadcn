@@ -26,6 +26,8 @@ type Theme struct {
 
 func New() *Theme {
 	mTheme := material.NewTheme()
+	mTheme.Shaper = NewGeistShaper()
+	mTheme.Face = TypefaceGeist
 	colors := LightColorScheme()
 	mTheme.Palette.Fg = colors.Foreground
 	mTheme.Palette.Bg = colors.Background
@@ -43,6 +45,8 @@ func New() *Theme {
 
 func NewDark() *Theme {
 	mTheme := material.NewTheme()
+	mTheme.Shaper = NewGeistShaper()
+	mTheme.Face = TypefaceGeist
 	colors := DarkColorScheme()
 	mTheme.Palette.Fg = colors.Foreground
 	mTheme.Palette.Bg = colors.Background

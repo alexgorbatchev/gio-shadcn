@@ -5,11 +5,26 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+type DemoState struct {
+	TxtArea *TextArea
+}
+
+var defaultDemo = NewDemoState()
+
+func NewDemoState() *DemoState {
+	return &DemoState{
+		TxtArea: New(Config{Placeholder: "Enter track descriptions and metadata notes..."}),
+	}
+}
+
+func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	txtArea := New(Config{Placeholder: "Enter track descriptions and metadata notes..."})
-	return txtArea.Layout(gtx, th)
+	return s.TxtArea.Layout(gtx, th)
+}
+
+func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	return defaultDemo.Layout(gtx, th)
 }

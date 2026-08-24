@@ -5,11 +5,26 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+type DemoState struct {
+	SepDivider *Separator
+}
+
+var defaultDemo = NewDemoState()
+
+func NewDemoState() *DemoState {
+	return &DemoState{
+		SepDivider: New(Config{Horizontal: true}),
+	}
+}
+
+func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	sepDivider := New(Config{Horizontal: true})
-	return sepDivider.Layout(gtx, th)
+	return s.SepDivider.Layout(gtx, th)
+}
+
+func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	return defaultDemo.Layout(gtx, th)
 }

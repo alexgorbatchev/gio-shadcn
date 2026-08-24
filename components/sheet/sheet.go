@@ -111,7 +111,7 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	sheetWidthPx := gtx.Dp(s.Width)
 
-	return layout.Stack{}.Layout(gtx,
+	dims := layout.Stack{}.Layout(gtx,
 		// Dark backdrop overlay across full window that intercepts outside clicks
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return s.backdropClick.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -214,5 +214,5 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Reset active GPU paint color state back to background
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
-	return layout.Dimensions{}
+	return dims
 }

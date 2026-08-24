@@ -6,17 +6,33 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+type DemoState struct {
+	ScrollAreaWidget *ScrollArea
+}
+
+var defaultDemo = NewDemoState()
+
+func NewDemoState() *DemoState {
+	return &DemoState{
+		ScrollAreaWidget: New(Config{
+			Widget: func(gtx layout.Context) layout.Dimensions {
+				th := theme.NewDark()
+				lbl := material.Label(th.MaterialTheme, th.Typography.FontSizeBase, "Scrollable Container Body Area")
+				lbl.Color = th.Colors.Foreground
+				return lbl.Layout(gtx)
+			},
+		}),
+	}
+}
+
+func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	sa := New(Config{
-		Widget: func(gtx layout.Context) layout.Dimensions {
-			lbl := material.Label(th.MaterialTheme, th.Typography.FontSizeBase, "Scrollable Container Body Area")
-			lbl.Color = th.Colors.Foreground
-			return lbl.Layout(gtx)
-		},
-	})
-	return sa.Layout(gtx, th)
+	return s.ScrollAreaWidget.Layout(gtx, th)
+}
+
+func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	return defaultDemo.Layout(gtx, th)
 }

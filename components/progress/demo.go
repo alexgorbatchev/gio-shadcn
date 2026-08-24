@@ -5,11 +5,26 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+type DemoState struct {
+	ProgBar *Progress
+}
+
+var defaultDemo = NewDemoState()
+
+func NewDemoState() *DemoState {
+	return &DemoState{
+		ProgBar: New(Config{Value: 0.65}),
+	}
+}
+
+func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	progBar := New(Config{Value: 0.65})
-	return progBar.Layout(gtx, th)
+	return s.ProgBar.Layout(gtx, th)
+}
+
+func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	return defaultDemo.Layout(gtx, th)
 }

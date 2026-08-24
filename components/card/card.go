@@ -103,32 +103,9 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 		radius = styles.Radius
 	}
 
-	// Measure content dimensions bounded by parent max constraints
-	gtxContent := gtx
-	gtxContent.Constraints.Min = image.Pt(0, 0)
-	gtxContent.Constraints.Max = gtx.Constraints.Max
-
-	contentDims := padding.Layout(gtxContent, content)
-	cardSize := contentDims.Size
-
-	if cardSize.X < gtx.Constraints.Min.X {
-		cardSize.X = gtx.Constraints.Min.X
-	}
-	if cardSize.Y < gtx.Constraints.Min.Y {
-		cardSize.Y = gtx.Constraints.Min.Y
-	}
-	if cardSize.X > gtx.Constraints.Max.X {
-		cardSize.X = gtx.Constraints.Max.X
-	}
-	if cardSize.Y > gtx.Constraints.Max.Y {
-		cardSize.Y = gtx.Constraints.Max.Y
-	}
-
-	gtx.Constraints = layout.Exact(cardSize)
-
 	dims := layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			rect := image.Rectangle{Max: cardSize}
+			rect := image.Rectangle{Max: gtx.Constraints.Min}
 			radiusPx := gtx.Dp(radius)
 
 			theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
@@ -138,7 +115,7 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 				theme.DrawStroke(gtx, rr.Path(gtx.Ops), float32(gtx.Dp(unit.Dp(variant.BorderWidth))), variant.Border)
 			}
 
-			return layout.Dimensions{Size: cardSize}
+			return layout.Dimensions{Size: gtx.Constraints.Min}
 		}),
 
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {

@@ -5,11 +5,26 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+type DemoState struct {
+	PageControls *Pagination
+}
+
+var defaultDemo = NewDemoState()
+
+func NewDemoState() *DemoState {
+	return &DemoState{
+		PageControls: New(Config{CurrentPage: 1, TotalPages: 5}),
+	}
+}
+
+func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	pageControls := New(Config{CurrentPage: 1, TotalPages: 5})
-	return pageControls.Layout(gtx, th)
+	return s.PageControls.Layout(gtx, th)
+}
+
+func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	return defaultDemo.Layout(gtx, th)
 }

@@ -5,19 +5,33 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+type DemoState struct {
+	NavTabs *Tabs
+}
+
+var defaultDemo = NewDemoState()
+
+func NewDemoState() *DemoState {
+	return &DemoState{
+		NavTabs: New(Config{
+			Tabs: []*Tab{
+				NewTab("sink", "Kitchen Sink"),
+				NewTab("deck", "Audio Deck"),
+				NewTab("library", "Track Library"),
+			},
+			ActiveKey: "sink",
+		}),
+	}
+}
+
+func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
 
-	navTabs := New(Config{
-		Tabs: []*Tab{
-			NewTab("sink", "Kitchen Sink"),
-			NewTab("deck", "Audio Deck"),
-			NewTab("library", "Track Library"),
-		},
-		ActiveKey: "sink",
-	})
+	return s.NavTabs.Layout(gtx, th)
+}
 
-	return navTabs.Layout(gtx, th)
+func Demo(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	return defaultDemo.Layout(gtx, th)
 }
