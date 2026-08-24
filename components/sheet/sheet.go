@@ -16,6 +16,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
@@ -64,9 +65,9 @@ func New(config Config) *Sheet {
 	}
 
 	s.closeBtn = button.New(button.Config{
-		Text:    "✕",
 		Variant: theme.VariantGhost,
-		Size:    theme.SizeSM,
+		Size:    theme.SizeIcon,
+		Icon:    lucide.X,
 		OnClick: func() {
 			s.Open = false
 			if s.OnClose != nil {

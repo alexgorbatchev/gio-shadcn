@@ -14,8 +14,10 @@ import (
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
+	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -186,16 +188,10 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 								return lbl.Layout(gtx)
 							}),
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								symbol := "+"
-								if item.Icon != "" {
-									symbol = item.Icon
-								} else if item.Expanded {
-									symbol = "−"
+								if item.Expanded {
+									return lucide.ChevronUp.LayoutSize(gtx, unit.Dp(16), mutedColor)
 								}
-								lbl := material.Label(mTheme, th.Typography.FontSizeBase, symbol)
-								lbl.Color = mutedColor
-								lbl.Font.Weight = font.Bold
-								return lbl.Layout(gtx)
+								return lucide.ChevronDown.LayoutSize(gtx, unit.Dp(16), mutedColor)
 							}),
 						)
 					}),

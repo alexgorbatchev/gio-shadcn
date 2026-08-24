@@ -16,6 +16,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -26,6 +27,7 @@ type Button struct {
 	Size      theme.Size
 	Disabled  bool
 	Classes   string
+	Icon      *lucide.Icon
 	OnClick   func()
 	clickable widget.Clickable
 
@@ -40,6 +42,7 @@ type Config struct {
 	Size     theme.Size
 	Disabled bool
 	Classes  string
+	Icon     *lucide.Icon
 	OnClick  func()
 }
 
@@ -58,6 +61,7 @@ func New(config Config) *Button {
 		Size:     s,
 		Disabled: config.Disabled,
 		Classes:  config.Classes,
+		Icon:     config.Icon,
 		OnClick:  config.OnClick,
 	}
 }
@@ -180,6 +184,34 @@ func (b *Button) layoutContent(gtx layout.Context, th *theme.Theme, fgColor colo
 	mTheme := th.MaterialTheme
 	if mTheme == nil {
 		mTheme = material.NewTheme()
+	}
+
+	iconSize := unit.Dp(16)
+	if b.Size == theme.SizeSM {
+		iconSize = unit.Dp(14)
+	} else if b.Size == theme.SizeLG {
+		iconSize = unit.Dp(20)
+	}
+
+	if b.Icon != nil && b.Text != "" {
+		return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return b.Icon.LayoutSize(gtx, iconSize, fgColor)
+			}),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
+			}),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				lbl := material.Label(mTheme, fontSize, b.Text)
+				lbl.Color = fgColor
+				lbl.Alignment = text.Start
+				return lbl.Layout(gtx)
+			}),
+		)
+	}
+
+	if b.Icon != nil {
+		return b.Icon.LayoutSize(gtx, iconSize, fgColor)
 	}
 
 	lbl := material.Label(mTheme, fontSize, b.Text)

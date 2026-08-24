@@ -14,8 +14,10 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -100,7 +102,16 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 				Right:  th.Spacing.Space4,
 			}
 			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return material.Editor(mTheme, c.searchEditor, c.Placeholder).Layout(gtx)
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return layout.Inset{Right: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							return lucide.Search.LayoutSize(gtx, unit.Dp(16), th.Colors.MutedFg)
+						})
+					}),
+					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						return material.Editor(mTheme, c.searchEditor, c.Placeholder).Layout(gtx)
+					}),
+				)
 			})
 		}))
 

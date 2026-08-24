@@ -12,8 +12,10 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -124,13 +126,10 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
 				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					arrow := "▼"
 					if s.Open {
-						arrow = "▲"
+						return lucide.ChevronUp.LayoutSize(gtx, unit.Dp(16), th.Colors.MutedFg)
 					}
-					lbl := material.Label(mTheme, th.Typography.FontSizeXS, arrow)
-					lbl.Color = th.Colors.MutedFg
-					return lbl.Layout(gtx)
+					return lucide.ChevronDown.LayoutSize(gtx, unit.Dp(16), th.Colors.MutedFg)
 				}),
 			)
 		})
@@ -188,9 +187,19 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 				renderItemContent := func(gtx layout.Context) layout.Dimensions {
 					return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						lbl := material.Label(mTheme, th.Typography.FontSizeSM, opt.Label)
-						lbl.Color = th.Colors.PopoverFg
-						return lbl.Layout(gtx)
+						return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+								lbl := material.Label(mTheme, th.Typography.FontSizeSM, opt.Label)
+								lbl.Color = th.Colors.PopoverFg
+								return lbl.Layout(gtx)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								if opt.Value == s.SelectedValue {
+									return lucide.Check.LayoutSize(gtx, unit.Dp(14), th.Colors.Primary)
+								}
+								return layout.Dimensions{}
+							}),
+						)
 					})
 				}
 

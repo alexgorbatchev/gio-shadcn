@@ -1,7 +1,7 @@
 /*
-Package pagination provides page navigation controls for gio-shadcn applications.
+Package pagination provides a pagination bar component for gio-shadcn applications.
 
-Pagination controls split large datasets into numbered pages following
+Paginations navigate through pages of data following
 shadcn/ui design principles.
 */
 package pagination
@@ -10,51 +10,50 @@ import (
 	"fmt"
 	"image"
 
-	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op/paint"
+	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-// Pagination represents page navigation controls.
+// Pagination represents a pagination navigation component.
 type Pagination struct {
 	CurrentPage  int
 	TotalPages   int
 	OnSelectPage func(page int)
 
-	prevBtn *widget.Clickable
-	nextBtn *widget.Clickable
+	prevBtn widget.Clickable
+	nextBtn widget.Clickable
 }
 
-// Config represents configuration for creating Pagination controls.
+// Config represents configuration for creating a Pagination component.
 type Config struct {
 	CurrentPage  int
 	TotalPages   int
 	OnSelectPage func(page int)
 }
 
-// New creates a new Pagination component.
+// New creates a new Pagination component with the given configuration.
 func New(config Config) *Pagination {
-	curr := config.CurrentPage
-	if curr < 1 {
-		curr = 1
+	cur := config.CurrentPage
+	if cur <= 0 {
+		cur = 1
 	}
 	tot := config.TotalPages
-	if tot < 1 {
+	if tot <= 0 {
 		tot = 1
 	}
 	return &Pagination{
-		CurrentPage:  curr,
+		CurrentPage:  cur,
 		TotalPages:   tot,
 		OnSelectPage: config.OnSelectPage,
-		prevBtn:      new(widget.Clickable),
-		nextBtn:      new(widget.Clickable),
 	}
 }
 
-// Layout renders page number buttons and prev/next controls.
+// Layout renders the pagination buttons bar.
 func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -84,7 +83,7 @@ func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 	// Prev Button
 	children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 		return p.prevBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return p.layoutPageButton(gtx, th, mTheme, "‹ Prev", false, p.CurrentPage <= 1)
+			return p.layoutNavButton(gtx, th, mTheme, lucide.ChevronLeft, "Previous", p.CurrentPage <= 1, true)
 		})
 	}))
 
@@ -110,7 +109,7 @@ func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 	// Next Button
 	children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 		return p.nextBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return p.layoutPageButton(gtx, th, mTheme, "Next ›", false, p.CurrentPage >= p.TotalPages)
+			return p.layoutNavButton(gtx, th, mTheme, lucide.ChevronRight, "Next", p.CurrentPage >= p.TotalPages, false)
 		})
 	}))
 
@@ -120,6 +119,75 @@ func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
+}
+
+func (p *Pagination) layoutNavButton(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, icon *lucide.Icon, labelText string, disabled, isPrev bool) layout.Dimensions {
+	fgColor := th.Colors.Foreground
+	if disabled {
+		fgColor = th.Colors.MutedFg
+		fgColor.A = 100
+	}
+
+	padding := layout.Inset{
+		Top:    th.Spacing.Space2,
+		Bottom: th.Spacing.Space2,
+		Left:   th.Spacing.Space3,
+		Right:  th.Spacing.Space3,
+	}
+
+	gtxContent := gtx
+	gtxContent.Constraints.Min = image.Pt(0, 0)
+
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			children := []layout.FlexChild{}
+			if isPrev {
+				children = append(children,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return icon.LayoutSize(gtx, unit.Dp(16), fgColor)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, labelText)
+						lbl.Color = fgColor
+						return lbl.Layout(gtx)
+					}),
+				)
+			} else {
+				children = append(children,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, labelText)
+						lbl.Color = fgColor
+						return lbl.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return icon.LayoutSize(gtx, unit.Dp(16), fgColor)
+					}),
+				)
+			}
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+		})
+	}
+
+	contentDims := renderContent(gtxContent)
+	btnSize := contentDims.Size
+
+	return layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			rect := image.Rectangle{Max: btnSize}
+			radius := gtx.Dp(th.Radius.RadiusMD)
+			theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Muted)
+			return layout.Dimensions{Size: btnSize}
+		}),
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			return renderContent(gtx)
+		}),
+	)
 }
 
 func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, labelText string, active, disabled bool) layout.Dimensions {
@@ -149,9 +217,6 @@ func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mThem
 		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			lbl := material.Label(mTheme, th.Typography.FontSizeSM, labelText)
 			lbl.Color = fgColor
-			if active {
-				lbl.Font.Weight = font.Medium
-			}
 			return lbl.Layout(gtx)
 		})
 	}
@@ -160,15 +225,12 @@ func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mThem
 	btnSize := contentDims.Size
 
 	return layout.Stack{}.Layout(gtx,
-		// Background drawn FIRST
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			rect := image.Rectangle{Max: btnSize}
-			radius := gtx.Dp(th.Radius.RadiusSM)
+			radius := gtx.Dp(th.Radius.RadiusMD)
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 			return layout.Dimensions{Size: btnSize}
 		}),
-
-		// Label content drawn ON TOP of background
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			return renderContent(gtx)
 		}),

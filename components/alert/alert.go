@@ -1,31 +1,33 @@
 /*
-Package alert provides a callout alert box component for gio-shadcn applications.
+Package alert provides an alert callout box component for gio-shadcn applications.
 
-Alerts display important messages or callouts following
+Alerts display important messages, notices, warnings, and error callouts following
 shadcn/ui design principles.
 */
 package alert
 
 import (
 	"image"
-	"image/color"
 
 	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/unit"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Alert represents a callout alert box component.
+// Alert represents a shadcn/ui alert callout box.
 type Alert struct {
 	Title       string
 	Description string
 	Variant     theme.Variant
 	Classes     string
+	Icon        *lucide.Icon
 }
 
 // Config represents configuration for creating an Alert.
@@ -34,6 +36,7 @@ type Config struct {
 	Description string
 	Variant     theme.Variant
 	Classes     string
+	Icon        *lucide.Icon
 }
 
 // New creates a new Alert component with the given configuration.
@@ -42,11 +45,20 @@ func New(config Config) *Alert {
 	if v == "" {
 		v = theme.VariantDefault
 	}
+	ic := config.Icon
+	if ic == nil {
+		if v == theme.VariantDestructive {
+			ic = lucide.TriangleAlert
+		} else {
+			ic = lucide.Info
+		}
+	}
 	return &Alert{
 		Title:       config.Title,
 		Description: config.Description,
 		Variant:     v,
 		Classes:     config.Classes,
+		Icon:        ic,
 	}
 }
 
@@ -56,8 +68,8 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		th = theme.New()
 	}
 
-	bgColor := th.Colors.Card
-	fgColor := th.Colors.CardFg
+	bgColor := th.Colors.Background
+	fgColor := th.Colors.Foreground
 	borderColor := th.Colors.Border
 
 	if a.Variant == theme.VariantDestructive {
@@ -85,32 +97,44 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	macro := op.Record(gtx.Ops)
 	dims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+		return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Start}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if a.Title == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeBase, a.Title)
-				lbl.Color = fgColor
-				lbl.Font.Weight = font.Bold
-				return lbl.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if a.Title != "" && a.Description != "" {
-					return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+				if a.Icon != nil {
+					return layout.Inset{Right: th.Spacing.Space3, Top: unit.Dp(2)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						return a.Icon.LayoutSize(gtx, unit.Dp(18), fgColor)
+					})
 				}
 				return layout.Dimensions{}
 			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if a.Description == "" {
-					return layout.Dimensions{}
-				}
-				lbl := material.Label(mTheme, th.Typography.FontSizeSM, a.Description)
-				lbl.Color = th.Colors.MutedFg
-				if a.Variant == theme.VariantDestructive {
-					lbl.Color = fgColor
-				}
-				return lbl.Layout(gtx)
+			layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if a.Title == "" {
+							return layout.Dimensions{}
+						}
+						lbl := material.Label(mTheme, th.Typography.FontSizeBase, a.Title)
+						lbl.Color = fgColor
+						lbl.Font.Weight = font.Bold
+						return lbl.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if a.Title != "" && a.Description != "" {
+							return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+						}
+						return layout.Dimensions{}
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						if a.Description == "" {
+							return layout.Dimensions{}
+						}
+						lbl := material.Label(mTheme, th.Typography.FontSizeSM, a.Description)
+						lbl.Color = th.Colors.MutedFg
+						if a.Variant == theme.VariantDestructive {
+							lbl.Color = fgColor
+						}
+						return lbl.Layout(gtx)
+					}),
+				)
 			}),
 		)
 	})
@@ -131,5 +155,3 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	return dims
 }
-
-func _(c color.NRGBA) {} // unused color guard
