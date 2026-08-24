@@ -100,14 +100,14 @@ func LightColorScheme() ColorScheme {
 //nolint:dupl // Light and dark color schemes are intentionally similar but different
 func DarkColorScheme() ColorScheme {
 	return ColorScheme{
-		Background:    color.NRGBA{R: 9, G: 9, B: 11, A: 255},      // zinc-950
+		Background:    color.NRGBA{R: 10, G: 10, B: 10, A: 255},    // colorlab(2.75381 0 0) / zinc-950 (#0a0a0a)
 		Foreground:    color.NRGBA{R: 250, G: 250, B: 250, A: 255}, // zinc-50
-		Card:          color.NRGBA{R: 9, G: 9, B: 11, A: 255},      // zinc-950
+		Card:          color.NRGBA{R: 10, G: 10, B: 10, A: 255},    // colorlab(2.75381 0 0) / zinc-950 (#0a0a0a)
 		CardFg:        color.NRGBA{R: 250, G: 250, B: 250, A: 255}, // zinc-50
-		Popover:       color.NRGBA{R: 9, G: 9, B: 11, A: 255},      // zinc-950
+		Popover:       color.NRGBA{R: 10, G: 10, B: 10, A: 255},    // colorlab(2.75381 0 0) / zinc-950 (#0a0a0a)
 		PopoverFg:     color.NRGBA{R: 250, G: 250, B: 250, A: 255}, // zinc-50
 		Primary:       color.NRGBA{R: 250, G: 250, B: 250, A: 255}, // zinc-50
-		PrimaryFg:     color.NRGBA{R: 9, G: 9, B: 11, A: 255},      // zinc-950
+		PrimaryFg:     color.NRGBA{R: 10, G: 10, B: 10, A: 255},    // zinc-950
 		Secondary:     color.NRGBA{R: 39, G: 39, B: 42, A: 255},    // zinc-800
 		SecondaryFg:   color.NRGBA{R: 250, G: 250, B: 250, A: 255}, // zinc-50
 		Muted:         color.NRGBA{R: 39, G: 39, B: 42, A: 255},    // zinc-800
