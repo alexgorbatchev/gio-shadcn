@@ -54,30 +54,54 @@ Whenever adding, modifying, or refactoring the `dialog` component implementation
     - dialog_test.go:70
 
 ### Demos
-- [x] **1. Modal Dialog Window**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-basic.tsx
   - implementation:
-    - component: dialog.go:106
-    - demo: demo.go:11
+    - component: dialog.go:94
+    - demo: demo.go:16
   - tests:
-    - dialog_test.go:13
-- [x] **2. Custom Content Body**
+    - dialog_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-demo.tsx
   - implementation:
-    - component: dialog.go:177
-    - demo: demo.go:12
+    - component: dialog.go:94
+    - demo: demo.go:16
   - tests:
-    - dialog_test.go:70
-- [x] **3. Action Buttons Row**
+    - dialog_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-destructive.tsx
   - implementation:
-    - component: dialog.go:186
-    - demo: demo.go:14
+    - component: dialog.go:76
+    - demo: demo.go:16
   - tests:
-    - dialog_test.go:61
-- [x] **4. Backdrop Overlay**
+    - dialog_test.go:58
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-close-button.tsx
   - implementation:
-    - component: dialog.go:136
-    - demo: demo.go:29
+    - component: dialog.go:66
+    - demo: demo.go:22
   - tests:
-    - dialog_test.go:23
+    - dialog_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-demo.tsx
+  - implementation:
+    - component: dialog.go:94
+    - demo: demo.go:16
+  - tests:
+    - dialog_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-no-close-button.tsx
+  - implementation:
+    - component: dialog.go:114
+    - demo: demo.go:16
+  - tests:
+    - dialog_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-scrollable-content.tsx
+  - implementation:
+    - component: dialog.go:174
+    - demo: demo.go:16
+  - tests:
+    - dialog_test.go:68
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-sticky-footer.tsx
+  - implementation:
+    - component: dialog.go:183
+    - demo: demo.go:16
+  - tests:
+    - dialog_test.go:58
 
 ---
 

@@ -1,6 +1,7 @@
 # Breadcrumb Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/breadcrumb](https://ui.shadcn.com/docs/components/breadcrumb)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/breadcrumb](https://ui.shadcn.com/docs/components/breadcrumb)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/breadcrumb.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/breadcrumb.mdx)
 
 ---
 
@@ -52,12 +53,48 @@ Whenever adding, modifying, or refactoring the `breadcrumb` component implementa
 
 
 ### Demos
-- [x] **1. Standard Breadcrumb Navigation**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-basic.tsx
   - implementation:
-    - component: breadcrumb.go:50
-    - demo: demo.md:13
+    - component: breadcrumb.go:21
+    - demo: demo.go:13
   - tests:
-    - breadcrumb_test.go:15
+    - breadcrumb_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-demo.tsx
+  - implementation:
+    - component: breadcrumb.go:21
+    - demo: demo.go:13
+  - tests:
+    - breadcrumb_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-dropdown.tsx
+  - implementation:
+    - component: breadcrumb.go:21
+    - demo: demo.go:13
+  - tests:
+    - breadcrumb_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-ellipsis.tsx
+  - implementation:
+    - component: breadcrumb.go:21
+    - demo: demo.go:13
+  - tests:
+    - breadcrumb_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-link.tsx
+  - implementation:
+    - component: breadcrumb.go:73
+    - demo: demo.go:13
+  - tests:
+    - breadcrumb_test.go:25
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-rtl.tsx
+  - implementation:
+    - component: breadcrumb.go:21
+    - demo: demo.go:13
+  - tests:
+    - breadcrumb_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/breadcrumb-separator.tsx
+  - implementation:
+    - component: breadcrumb.go:81
+    - demo: demo.go:13
+  - tests:
+    - breadcrumb_test.go:37
 
 ## Code Structure & Entry Points
 - `breadcrumb.go`: Primary component widget layout and state logic.

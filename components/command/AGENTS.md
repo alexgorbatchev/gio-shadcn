@@ -44,22 +44,40 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
     - command_test.go:50
 
 ### Demos
-- [x] **1. Command Palette Search Box**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-basic.tsx
   - implementation:
     - component: command.go:76
-    - demo: demo.go:10
+    - demo: demo.go:14
   - tests:
-    - command_test.go:13
-- [x] **2. Filtered Results List**
+    - command_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-demo.tsx
   - implementation:
-    - component: command.go:107
-    - demo: demo.go:11
+    - component: command.go:76
+    - demo: demo.go:14
   - tests:
-    - command_test.go:23
-- [x] **3. Keyboard Shortcuts**
+    - command_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-dialog.tsx
+  - implementation:
+    - component: command.go:76
+    - demo: demo.go:14
+  - tests:
+    - command_test.go:22
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-groups.tsx
+  - implementation:
+    - component: command.go:115
+    - demo: demo.go:14
+  - tests:
+    - command_test.go:40
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-scrollable.tsx
+  - implementation:
+    - component: command.go:76
+    - demo: demo.go:14
+  - tests:
+    - command_test.go:22
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-shortcuts.tsx
   - implementation:
     - component: command.go:163
-    - demo: demo.go:12
+    - demo: demo.go:14
   - tests:
     - command_test.go:50
 

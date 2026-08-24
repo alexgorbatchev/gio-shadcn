@@ -48,15 +48,81 @@ Whenever adding, modifying, or refactoring the `togglegroup` component implement
 
 
 ### Demos
-- [x] **1. Toggle Group Segmented Buttons**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-demo.tsx
   - implementation:
-    - component: togglegroup.go:50
-    - demo: demo.md:13
+    - component: togglegroup.go:69
+    - demo: demo.go:16
   - tests:
-    - togglegroup_test.go:15
+    - togglegroup_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-disabled.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-demo.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-disabled.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-font-weight-selector.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-outline.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-sizes.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-spacing.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-group-vertical.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-outline.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-sizes.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/toggle-text.tsx
+  - implementation:
+    - component: togglegroup.go:69
+    - demo: demo.go:16
+  - tests:
+    - togglegroup_test.go:28
 
 ## Code Structure & Entry Points
-- `togglegroup.go`: Primary component implementation.
-- `togglegroup_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `togglegroup.go`: Primary component widget layout and state logic.
+- `togglegroup_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

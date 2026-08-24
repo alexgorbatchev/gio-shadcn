@@ -44,18 +44,30 @@ Whenever adding, modifying, or refactoring the `collapsible` component implement
     - collapsible_test.go:42
 
 ### Demos
-- [x] **1. Simple Collapsible**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-basic.tsx
   - implementation:
     - component: collapsible.go:53
-    - demo: demo.go:10
+    - demo: demo.go:14
   - tests:
-    - collapsible_test.go:13
-- [x] **2. Collapsed State Container**
+    - collapsible_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-demo.tsx
   - implementation:
-    - component: collapsible.go:108
-    - demo: demo.go:15
+    - component: collapsible.go:53
+    - demo: demo.go:14
   - tests:
-    - collapsible_test.go:23
+    - collapsible_test.go:21
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-file-tree.tsx
+  - implementation:
+    - component: collapsible.go:73
+    - demo: demo.go:14
+  - tests:
+    - collapsible_test.go:31
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-settings.tsx
+  - implementation:
+    - component: collapsible.go:53
+    - demo: demo.go:14
+  - tests:
+    - collapsible_test.go:40
 
 ---
 

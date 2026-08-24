@@ -44,24 +44,30 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
     - popover_test.go:39
 
 ### Demos
-- [x] **1. Anchored Card Popover**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-alignments.tsx
   - implementation:
     - component: popover.go:49
-    - demo: demo.go:9
+    - demo: demo.go:13
   - tests:
     - popover_test.go:13
-- [x] **2. Filter Form Popover**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-basic.tsx
   - implementation:
     - component: popover.go:49
-    - demo: demo.go:9
-  - tests:
-    - popover_test.go:39
-- [x] **3. Popover Trigger Button**
-  - implementation:
-    - component: popover.go:50
-    - demo: demo.go:9
+    - demo: demo.go:13
   - tests:
     - popover_test.go:24
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-demo.tsx
+  - implementation:
+    - component: popover.go:49
+    - demo: demo.go:13
+  - tests:
+    - popover_test.go:39
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-form.tsx
+  - implementation:
+    - component: popover.go:49
+    - demo: demo.go:13
+  - tests:
+    - popover_test.go:39
 
 ---
 

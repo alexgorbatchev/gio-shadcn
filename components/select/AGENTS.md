@@ -43,20 +43,48 @@ Whenever adding, modifying, or refactoring the `select` component implementation
   - tests:
     - select_test.go:34
 
----
-
-
-
 ### Demos
-- [x] **1. Select Dropdown Menu**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-autocomplete.tsx
   - implementation:
-    - component: select.go:50
-    - demo: demo.md:13
+    - component: select.go:74
+    - demo: demo.go:13
   - tests:
-    - select_test.go:15
+    - select_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-demo.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:13
+  - tests:
+    - select_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-disabled.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:13
+  - tests:
+    - select_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-groups.tsx
+  - implementation:
+    - component: select.go:148
+    - demo: demo.go:13
+  - tests:
+    - select_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-invalid.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:13
+  - tests:
+    - select_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-scrollable.tsx
+  - implementation:
+    - component: select.go:148
+    - demo: demo.go:13
+  - tests:
+    - select_test.go:27
+
+---
 
 ## Code Structure & Entry Points
 - `select.go`: Primary component implementation.
 - `select_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
+- `demo.go`: Modular component interactive demo layout (`components/select/demo.go`).
 - `AGENTS.md`: Component specification.

@@ -48,19 +48,42 @@ Whenever adding, modifying, or refactoring the `radio` component implementation 
   - tests:
     - radio_test.go:34
 
----
-
-
 ### Demos
-- [x] **1. Radio Button Group**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/radio-fields.tsx
   - implementation:
     - component: radio.go:50
-    - demo: demo.md:13
+    - demo: demo.go:13
   - tests:
-    - radio_test.go:15
+    - radio_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/radio-group-choice-card.tsx
+  - implementation:
+    - component: radio.go:50
+    - demo: demo.go:13
+  - tests:
+    - radio_test.go:20
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/radio-group-demo.tsx
+  - implementation:
+    - component: radio.go:50
+    - demo: demo.go:13
+  - tests:
+    - radio_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/radio-group-description.tsx
+  - implementation:
+    - component: radio.go:50
+    - demo: demo.go:13
+  - tests:
+    - radio_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/radio-group-disabled.tsx
+  - implementation:
+    - component: radio.go:50
+    - demo: demo.go:13
+  - tests:
+    - radio_test.go:27
+
+---
 
 ## Code Structure & Entry Points
 - `radio.go`: Primary component widget layout and state logic.
 - `radio_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.md`: Component interactive demo snippets and layout specs (`components/radio/demo.md`).
+- `demo.go`: Modular component interactive demo layout (`components/radio/demo.go`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

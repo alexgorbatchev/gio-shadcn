@@ -58,15 +58,33 @@ Whenever adding, modifying, or refactoring the `toast` component implementation 
 
 
 ### Demos
-- [x] **1. Toast Notification Banner**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-demo.tsx
   - implementation:
-    - component: toast.go:50
-    - demo: demo.md:13
+    - component: toast.go:56
+    - demo: demo.go:16
   - tests:
-    - toast_test.go:15
+    - toast_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-description.tsx
+  - implementation:
+    - component: toast.go:56
+    - demo: demo.go:16
+  - tests:
+    - toast_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-position.tsx
+  - implementation:
+    - component: toast.go:56
+    - demo: demo.go:16
+  - tests:
+    - toast_test.go:23
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-types.tsx
+  - implementation:
+    - component: toast.go:56
+    - demo: demo.go:16
+  - tests:
+    - toast_test.go:23
 
 ## Code Structure & Entry Points
-- `toast.go`: Primary component implementation.
-- `toast_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `toast.go`: Primary component widget layout and state logic.
+- `toast_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

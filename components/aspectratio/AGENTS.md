@@ -1,6 +1,7 @@
 # Aspect Ratio Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/aspect-ratio](https://ui.shadcn.com/docs/components/aspect-ratio)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/aspect-ratio](https://ui.shadcn.com/docs/components/aspect-ratio)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/aspect-ratio.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/aspect-ratio.mdx)
 
 ---
 
@@ -48,20 +49,26 @@ Whenever adding, modifying, or refactoring the `aspectratio` component implement
   - tests:
     - aspectratio_test.go:70
 
-### Demos (All Official shadcn Demos)
-- [x] **1. 16:9 Landscape Image Container**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-demo.tsx
   - implementation:
     - component: aspectratio.go:30
     - demo: demo.go:11
   - tests:
     - aspectratio_test.go:13
-- [x] **2. 4:3 Classic Display Container**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-portrait.tsx
   - implementation:
     - component: aspectratio.go:30
     - demo: demo.go:20
   - tests:
     - aspectratio_test.go:27
-- [x] **3. 1:1 Square Card Container**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-rtl.tsx
+  - implementation:
+    - component: aspectratio.go:30
+    - demo: demo.go:11
+  - tests:
+    - aspectratio_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-square.tsx
   - implementation:
     - component: aspectratio.go:30
     - demo: demo.go:29

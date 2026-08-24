@@ -48,15 +48,15 @@ Whenever adding, modifying, or refactoring the `titlebar` component implementati
 
 
 ### Demos
-- [x] **1. Window Title Bar**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-group-demo.tsx
   - implementation:
-    - component: titlebar.go:50
-    - demo: demo.md:13
+    - component: titlebar.go:87
+    - demo: demo.go:16
   - tests:
-    - titlebar_test.go:15
+    - titlebar_test.go:12
 
 ## Code Structure & Entry Points
-- `titlebar.go`: Primary component implementation.
-- `titlebar_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `titlebar.go`: Primary component widget layout and state logic.
+- `titlebar_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

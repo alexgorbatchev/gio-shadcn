@@ -43,20 +43,36 @@ Whenever adding, modifying, or refactoring the `separator` component implementat
   - tests:
     - separator_test.go:25
 
----
-
-
-
 ### Demos
-- [x] **1. Horizontal Separator Divider**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-demo.tsx
   - implementation:
-    - component: separator.go:50
-    - demo: demo.md:13
+    - component: separator.go:48
+    - demo: demo.go:13
   - tests:
-    - separator_test.go:15
+    - separator_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-list.tsx
+  - implementation:
+    - component: separator.go:48
+    - demo: demo.go:13
+  - tests:
+    - separator_test.go:25
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-menu.tsx
+  - implementation:
+    - component: separator.go:48
+    - demo: demo.go:13
+  - tests:
+    - separator_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-vertical.tsx
+  - implementation:
+    - component: separator.go:61
+    - demo: demo.go:13
+  - tests:
+    - separator_test.go:25
+
+---
 
 ## Code Structure & Entry Points
 - `separator.go`: Primary component implementation.
 - `separator_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
+- `demo.go`: Modular component interactive demo layout (`components/separator/demo.go`).
 - `AGENTS.md`: Component specification.

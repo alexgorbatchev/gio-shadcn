@@ -1,6 +1,7 @@
 # Card Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/card](https://ui.shadcn.com/docs/components/card)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/card](https://ui.shadcn.com/docs/components/card)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/card.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/card.mdx)
 
 ---
 
@@ -62,12 +63,42 @@ Whenever adding, modifying, or refactoring the `card` component implementation o
 
 
 ### Demos
-- [x] **1. Standard Card Container**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/card-demo.tsx
   - implementation:
-    - component: card.go:50
-    - demo: demo.md:13
+    - component: card.go:68
+    - demo: demo.go:13
   - tests:
-    - card_test.go:15
+    - card_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/card-edge-to-edge.tsx
+  - implementation:
+    - component: card.go:68
+    - demo: demo.go:13
+  - tests:
+    - card_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/card-image.tsx
+  - implementation:
+    - component: card.go:68
+    - demo: demo.go:13
+  - tests:
+    - card_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/card-rtl.tsx
+  - implementation:
+    - component: card.go:68
+    - demo: demo.go:13
+  - tests:
+    - card_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/card-small.tsx
+  - implementation:
+    - component: card.go:68
+    - demo: demo.go:13
+  - tests:
+    - card_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/card-spacing.tsx
+  - implementation:
+    - component: card.go:68
+    - demo: demo.go:13
+  - tests:
+    - card_test.go:13
 
 ## Code Structure & Entry Points
 - `card.go`: Primary component widget layout and state logic.

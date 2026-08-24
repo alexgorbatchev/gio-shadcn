@@ -58,15 +58,39 @@ Whenever adding, modifying, or refactoring the `textarea` component implementati
 
 
 ### Demos
-- [x] **1. Multi-Line Text Area**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-button.tsx
   - implementation:
-    - component: textarea.go:50
-    - demo: demo.md:13
+    - component: textarea.go:66
+    - demo: demo.go:16
   - tests:
-    - textarea_test.go:15
+    - textarea_test.go:21
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-demo.tsx
+  - implementation:
+    - component: textarea.go:66
+    - demo: demo.go:16
+  - tests:
+    - textarea_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-disabled.tsx
+  - implementation:
+    - component: textarea.go:66
+    - demo: demo.go:16
+  - tests:
+    - textarea_test.go:21
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-field.tsx
+  - implementation:
+    - component: textarea.go:66
+    - demo: demo.go:16
+  - tests:
+    - textarea_test.go:21
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-invalid.tsx
+  - implementation:
+    - component: textarea.go:66
+    - demo: demo.go:16
+  - tests:
+    - textarea_test.go:21
 
 ## Code Structure & Entry Points
-- `textarea.go`: Primary component implementation.
-- `textarea_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `textarea.go`: Primary component widget layout and state logic.
+- `textarea_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

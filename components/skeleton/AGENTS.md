@@ -48,25 +48,43 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
   - tests:
     - skeleton_test.go:13
 
-### Demos (All Official shadcn Demos)
-- [x] **1. Text Line Skeleton**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-avatar.tsx
   - implementation:
     - component: skeleton.go:47
-    - demo: demo.go:29
+    - demo: demo.go:16
   - tests:
-    - skeleton_test.go:13
-- [x] **2. Circular Avatar Skeleton**
+    - skeleton_test.go:23
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-card.tsx
   - implementation:
     - component: skeleton.go:47
-    - demo: demo.go:41
+    - demo: demo.go:16
   - tests:
-    - skeleton_test.go:24
-- [x] **3. Card Container Skeleton**
+    - skeleton_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-demo.tsx
   - implementation:
     - component: skeleton.go:47
-    - demo: demo.go:53
+    - demo: demo.go:16
   - tests:
-    - skeleton_test.go:35
+    - skeleton_test.go:45
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-form.tsx
+  - implementation:
+    - component: skeleton.go:47
+    - demo: demo.go:16
+  - tests:
+    - skeleton_test.go:45
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-table.tsx
+  - implementation:
+    - component: skeleton.go:47
+    - demo: demo.go:16
+  - tests:
+    - skeleton_test.go:45
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-text.tsx
+  - implementation:
+    - component: skeleton.go:47
+    - demo: demo.go:16
+  - tests:
+    - skeleton_test.go:12
 
 ---
 

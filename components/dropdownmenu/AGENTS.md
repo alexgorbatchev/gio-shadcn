@@ -52,12 +52,132 @@ Whenever adding, modifying, or refactoring the `dropdownmenu` component implemen
 
 
 ### Demos
-- [x] **1. Dropdown Action Menu**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-avatar.tsx
   - implementation:
-    - component: dropdownmenu.go:50
-    - demo: demo.md:13
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
   - tests:
-    - dropdownmenu_test.go:15
+    - dropdownmenu_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-basic.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-checkboxes-icons.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-checkboxes.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-complex.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-demo.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-destructive.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-icons.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-radio-group.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-shortcuts.tsx
+  - implementation:
+    - component: dropdownmenu.go:147
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dropdown-menu-submenu.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:41
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-basic.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-checkboxes.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-demo.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-destructive.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-groups.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-icons.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-radio.tsx
+  - implementation:
+    - component: dropdownmenu.go:82
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-shortcuts.tsx
+  - implementation:
+    - component: dropdownmenu.go:147
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-sides.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:41
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/context-menu-submenu.tsx
+  - implementation:
+    - component: dropdownmenu.go:61
+    - demo: demo.go:14
+  - tests:
+    - dropdownmenu_test.go:41
 
 ## Code Structure & Entry Points
 - `dropdownmenu.go`: Primary component widget layout and state logic.

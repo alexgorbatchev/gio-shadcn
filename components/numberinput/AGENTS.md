@@ -54,22 +54,22 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
     - numberinput_test.go:76
 
 ### Demos
-- [x] **1. BPM Stepper (128)**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/data-picker-with-dropdowns.tsx
   - implementation:
-    - component: numberinput.go:70
-    - demo: demo.go:10
+    - component: numberinput.go:73
+    - demo: demo.go:13
   - tests:
     - numberinput_test.go:13
-- [x] **2. Gain Range Input (-12 to +12)**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/date-picker-basic.tsx
   - implementation:
-    - component: numberinput.go:70
-    - demo: demo.go:10
+    - component: numberinput.go:73
+    - demo: demo.go:13
   - tests:
     - numberinput_test.go:24
-- [x] **3. Min/Max Bounded Stepper**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/date-picker-demo.tsx
   - implementation:
-    - component: numberinput.go:70
-    - demo: demo.go:10
+    - component: numberinput.go:73
+    - demo: demo.go:13
   - tests:
     - numberinput_test.go:35
 

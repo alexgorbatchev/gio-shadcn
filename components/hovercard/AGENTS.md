@@ -43,15 +43,29 @@ Whenever adding, modifying, or refactoring the `hovercard` component implementat
 
 
 ### Demos
-- [x] **1. Hover Preview Card**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/hover-card-demo.tsx
   - implementation:
-    - component: hovercard.go:50
-    - demo: demo.md:13
+    - component: hovercard.go:47
+    - demo: demo.go:14
   - tests:
-    - hovercard_test.go:15
+    - hovercard_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/hover-card-sides.tsx
+  - implementation:
+    - component: hovercard.go:47
+    - demo: demo.go:14
+  - tests:
+    - hovercard_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/hover-card-rtl.tsx
+  - implementation:
+    - component: hovercard.go:47
+    - demo: demo.go:14
+  - tests:
+    - hovercard_test.go:11
+
+---
 
 ## Code Structure & Entry Points
-- `hovercard.go`: Primary component implementation.
-- `hovercard_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `hovercard.go`: Primary component widget layout and state logic.
+- `hovercard_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Exported interactive demo widget (`Demo`).
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

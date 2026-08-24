@@ -59,30 +59,48 @@ Whenever adding, modifying, or refactoring the `drawer` component implementation
     - drawer_test.go:84
 
 ### Demos
-- [x] **1. Bottom Sheet Drawer**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-demo.tsx
   - implementation:
     - component: drawer.go:83
-    - demo: demo.go:11
+    - demo: demo.go:16
   - tests:
-    - drawer_test.go:13
-- [x] **2. Drag Handle Bar**
+    - drawer_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-dialog.tsx
   - implementation:
-    - component: drawer.go:161
-    - demo: demo.go:11
+    - component: drawer.go:83
+    - demo: demo.go:16
   - tests:
-    - drawer_test.go:66
-- [x] **3. Telemetry Metrics Content**
+    - drawer_test.go:22
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-nested.tsx
   - implementation:
     - component: drawer.go:193
-    - demo: demo.go:12
+    - demo: demo.go:16
   - tests:
-    - drawer_test.go:84
-- [x] **4. Backdrop Click-To-Close**
+    - drawer_test.go:82
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-non-modal.tsx
   - implementation:
-    - component: drawer.go:98
-    - demo: demo.go:27
+    - component: drawer.go:107
+    - demo: demo.go:16
   - tests:
-    - drawer_test.go:38
+    - drawer_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-sides.tsx
+  - implementation:
+    - component: drawer.go:129
+    - demo: demo.go:16
+  - tests:
+    - drawer_test.go:48
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-snap-points.tsx
+  - implementation:
+    - component: drawer.go:49
+    - demo: demo.go:16
+  - tests:
+    - drawer_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-swipe-handle.tsx
+  - implementation:
+    - component: drawer.go:161
+    - demo: demo.go:16
+  - tests:
+    - drawer_test.go:64
 
 ---
 

@@ -43,20 +43,30 @@ Whenever adding, modifying, or refactoring the `resizable` component implementat
   - tests:
     - resizable_test.go:32
 
----
-
-
-
 ### Demos
-- [x] **1. Resizable Split Panels**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/resizable-demo.tsx
   - implementation:
-    - component: resizable.go:50
-    - demo: demo.md:13
+    - component: resizable.go:47
+    - demo: demo.go:13
   - tests:
-    - resizable_test.go:15
+    - resizable_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/resizable-handle.tsx
+  - implementation:
+    - component: resizable.go:66
+    - demo: demo.go:13
+  - tests:
+    - resizable_test.go:21
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/resizable-vertical.tsx
+  - implementation:
+    - component: resizable.go:47
+    - demo: demo.go:13
+  - tests:
+    - resizable_test.go:21
+
+---
 
 ## Code Structure & Entry Points
 - `resizable.go`: Primary component implementation.
 - `resizable_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
+- `demo.go`: Modular component interactive demo layout (`components/resizable/demo.go`).
 - `AGENTS.md`: Component specification.

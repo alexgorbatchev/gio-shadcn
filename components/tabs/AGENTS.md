@@ -48,15 +48,39 @@ Whenever adding, modifying, or refactoring the `tabs` component implementation o
 
 
 ### Demos
-- [x] **1. Tabs Navigation Header**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-demo.tsx
   - implementation:
-    - component: tabs.go:50
-    - demo: demo.md:13
+    - component: tabs.go:69
+    - demo: demo.go:16
   - tests:
-    - tabs_test.go:15
+    - tabs_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-disabled.tsx
+  - implementation:
+    - component: tabs.go:69
+    - demo: demo.go:16
+  - tests:
+    - tabs_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-icons.tsx
+  - implementation:
+    - component: tabs.go:69
+    - demo: demo.go:16
+  - tests:
+    - tabs_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-line.tsx
+  - implementation:
+    - component: tabs.go:69
+    - demo: demo.go:16
+  - tests:
+    - tabs_test.go:28
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-vertical.tsx
+  - implementation:
+    - component: tabs.go:69
+    - demo: demo.go:16
+  - tests:
+    - tabs_test.go:28
 
 ## Code Structure & Entry Points
-- `tabs.go`: Primary component implementation.
-- `tabs_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `tabs.go`: Primary component widget layout and state logic.
+- `tabs_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

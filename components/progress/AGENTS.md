@@ -44,28 +44,22 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
     - progress_test.go:34
 
 ### Demos
-- [x] **1. Progress Bar (0%)**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-controlled.tsx
   - implementation:
     - component: progress.go:54
-    - demo: demo.go:9
+    - demo: demo.go:13
+  - tests:
+    - progress_test.go:20
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-demo.tsx
+  - implementation:
+    - component: progress.go:54
+    - demo: demo.go:13
   - tests:
     - progress_test.go:13
-- [x] **2. Progress Bar (35%)**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-label.tsx
   - implementation:
     - component: progress.go:54
-    - demo: demo.go:9
-  - tests:
-    - progress_test.go:20
-- [x] **3. Progress Bar (65%)**
-  - implementation:
-    - component: progress.go:54
-    - demo: demo.go:9
-  - tests:
-    - progress_test.go:20
-- [x] **4. Progress Bar (100%)**
-  - implementation:
-    - component: progress.go:54
-    - demo: demo.go:9
+    - demo: demo.go:13
   - tests:
     - progress_test.go:27
 

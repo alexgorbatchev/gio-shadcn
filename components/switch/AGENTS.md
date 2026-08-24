@@ -57,15 +57,45 @@ Whenever adding, modifying, or refactoring the `switch` component implementation
 
 
 ### Demos
-- [x] **1. Switch Toggle Button**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/switch-choice-card.tsx
   - implementation:
-    - component: switch.go:50
-    - demo: demo.md:13
+    - component: switch.go:51
+    - demo: demo.go:19
   - tests:
-    - switch_test.go:15
+    - switch_test.go:55
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/switch-demo.tsx
+  - implementation:
+    - component: switch.go:51
+    - demo: demo.go:19
+  - tests:
+    - switch_test.go:21
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/switch-description.tsx
+  - implementation:
+    - component: switch.go:51
+    - demo: demo.go:19
+  - tests:
+    - switch_test.go:55
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/switch-disabled.tsx
+  - implementation:
+    - component: switch.go:51
+    - demo: demo.go:19
+  - tests:
+    - switch_test.go:31
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/switch-invalid.tsx
+  - implementation:
+    - component: switch.go:51
+    - demo: demo.go:19
+  - tests:
+    - switch_test.go:55
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/switch-sizes.tsx
+  - implementation:
+    - component: switch.go:51
+    - demo: demo.go:19
+  - tests:
+    - switch_test.go:55
 
 ## Code Structure & Entry Points
 - `switch.go`: Primary component widget layout and state logic.
 - `switch_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.md`: Component interactive demo snippets and layout specs (`components/switch/demo.md`).
+- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

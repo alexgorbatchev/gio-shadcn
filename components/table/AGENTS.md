@@ -53,15 +53,33 @@ Whenever adding, modifying, or refactoring the `table` component implementation 
 
 
 ### Demos
-- [x] **1. Master Data Grid Table**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/data-table-demo.tsx
   - implementation:
-    - component: table.go:50
-    - demo: demo.md:13
+    - component: table.go:58
+    - demo: demo.go:16
   - tests:
-    - table_test.go:15
+    - table_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-actions.tsx
+  - implementation:
+    - component: table.go:58
+    - demo: demo.go:16
+  - tests:
+    - table_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-demo.tsx
+  - implementation:
+    - component: table.go:58
+    - demo: demo.go:16
+  - tests:
+    - table_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-footer.tsx
+  - implementation:
+    - component: table.go:58
+    - demo: demo.go:16
+  - tests:
+    - table_test.go:27
 
 ## Code Structure & Entry Points
-- `table.go`: Primary component implementation.
-- `table_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `table.go`: Primary component widget layout and state logic.
+- `table_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

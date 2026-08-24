@@ -58,12 +58,48 @@ Whenever adding, modifying, or refactoring the `checkbox` component implementati
 
 
 ### Demos
-- [x] **1. Interactive Checkbox**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-basic.tsx
   - implementation:
-    - component: checkbox.go:50
-    - demo: demo.md:13
+    - component: checkbox.go:42
+    - demo: demo.go:13
   - tests:
-    - checkbox_test.go:15
+    - checkbox_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-demo.tsx
+  - implementation:
+    - component: checkbox.go:42
+    - demo: demo.go:13
+  - tests:
+    - checkbox_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-description.tsx
+  - implementation:
+    - component: checkbox.go:88
+    - demo: demo.go:13
+  - tests:
+    - checkbox_test.go:69
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-disabled.tsx
+  - implementation:
+    - component: checkbox.go:78
+    - demo: demo.go:13
+  - tests:
+    - checkbox_test.go:31
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-group.tsx
+  - implementation:
+    - component: checkbox.go:42
+    - demo: demo.go:13
+  - tests:
+    - checkbox_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-invalid.tsx
+  - implementation:
+    - component: checkbox.go:42
+    - demo: demo.go:13
+  - tests:
+    - checkbox_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/checkbox-table.tsx
+  - implementation:
+    - component: checkbox.go:42
+    - demo: demo.go:13
+  - tests:
+    - checkbox_test.go:13
 
 ## Code Structure & Entry Points
 - `checkbox.go`: Primary component implementation.

@@ -1,6 +1,7 @@
 # Carousel Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/carousel](https://ui.shadcn.com/docs/components/carousel)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/carousel](https://ui.shadcn.com/docs/components/carousel)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/carousel.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/carousel.mdx)
 
 ---
 
@@ -48,12 +49,48 @@ Whenever adding, modifying, or refactoring the `carousel` component implementati
 
 
 ### Demos
-- [x] **1. Horizontal Carousel Slider**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-api.tsx
   - implementation:
-    - component: carousel.go:50
-    - demo: demo.md:13
+    - component: carousel.go:34
+    - demo: demo.go:13
   - tests:
-    - carousel_test.go:15
+    - carousel_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-demo.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:13
+  - tests:
+    - carousel_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-multiple.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:13
+  - tests:
+    - carousel_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-orientation.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:13
+  - tests:
+    - carousel_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-plugin.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:13
+  - tests:
+    - carousel_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-size.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:13
+  - tests:
+    - carousel_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-spacing.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:13
+  - tests:
+    - carousel_test.go:13
 
 ## Code Structure & Entry Points
 - `carousel.go`: Primary component implementation.

@@ -1,6 +1,7 @@
 # Avatar Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/avatar](https://ui.shadcn.com/docs/components/avatar)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/avatar](https://ui.shadcn.com/docs/components/avatar)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/avatar.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/avatar.mdx)
 
 ---
 
@@ -53,29 +54,65 @@ Whenever adding, modifying, or refactoring the `avatar` component implementation
   - tests:
     - avatar_test.go:65
 
-### Demos (All Official shadcn Demos)
-- [x] **1. Text Initials Avatar**
-  - implementation:
-    - component: avatar.go:37
-    - demo: demo.go:10
-  - tests:
-    - avatar_test.go:13
-- [x] **2. Online Status Badge Avatar**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-badge-icon.tsx
   - implementation:
     - component: avatar.go:102
     - demo: demo.go:14
   - tests:
     - avatar_test.go:31
-- [x] **3. Custom Small Avatar (32px)**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-badge.tsx
+  - implementation:
+    - component: avatar.go:102
+    - demo: demo.go:14
+  - tests:
+    - avatar_test.go:31
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-basic.tsx
+  - implementation:
+    - component: avatar.go:37
+    - demo: demo.go:10
+  - tests:
+    - avatar_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-demo.tsx
+  - implementation:
+    - component: avatar.go:37
+    - demo: demo.go:10
+  - tests:
+    - avatar_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-dropdown.tsx
+  - implementation:
+    - component: avatar.go:37
+    - demo: demo.go:10
+  - tests:
+    - avatar_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-group-count-icon.tsx
   - implementation:
     - component: avatar.go:32
     - demo: demo.go:20
   - tests:
     - avatar_test.go:56
-- [x] **4. Custom Large Avatar (56px)**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-group-count.tsx
   - implementation:
     - component: avatar.go:32
-    - demo: demo.go:25
+    - demo: demo.go:20
+  - tests:
+    - avatar_test.go:56
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-group.tsx
+  - implementation:
+    - component: avatar.go:32
+    - demo: demo.go:20
+  - tests:
+    - avatar_test.go:56
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-rtl.tsx
+  - implementation:
+    - component: avatar.go:37
+    - demo: demo.go:10
+  - tests:
+    - avatar_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/avatar-size.tsx
+  - implementation:
+    - component: avatar.go:32
+    - demo: demo.go:20
   - tests:
     - avatar_test.go:56
 

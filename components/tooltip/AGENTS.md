@@ -43,15 +43,33 @@ Whenever adding, modifying, or refactoring the `tooltip` component implementatio
 
 
 ### Demos
-- [x] **1. Tooltip Callout Text**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tooltip-demo.tsx
   - implementation:
-    - component: tooltip.go:50
-    - demo: demo.md:13
+    - component: tooltip.go:43
+    - demo: demo.go:16
   - tests:
-    - tooltip_test.go:15
+    - tooltip_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tooltip-disabled.tsx
+  - implementation:
+    - component: tooltip.go:43
+    - demo: demo.go:16
+  - tests:
+    - tooltip_test.go:23
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tooltip-keyboard.tsx
+  - implementation:
+    - component: tooltip.go:43
+    - demo: demo.go:16
+  - tests:
+    - tooltip_test.go:23
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tooltip-sides.tsx
+  - implementation:
+    - component: tooltip.go:43
+    - demo: demo.go:16
+  - tests:
+    - tooltip_test.go:23
 
 ## Code Structure & Entry Points
-- `tooltip.go`: Primary component implementation.
-- `tooltip_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `tooltip.go`: Primary component widget layout and state logic.
+- `tooltip_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `demo.go`: Interactive component gallery demo.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

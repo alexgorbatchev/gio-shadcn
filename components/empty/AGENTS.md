@@ -47,12 +47,54 @@ Whenever adding, modifying, or refactoring the `empty` component implementation 
 
 
 ### Demos
-- [x] **1. Empty State Card**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-avatar-group.tsx
   - implementation:
     - component: empty.go:50
-    - demo: demo.md:13
+    - demo: demo.go:14
   - tests:
-    - empty_test.go:15
+    - empty_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-avatar.tsx
+  - implementation:
+    - component: empty.go:50
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-background.tsx
+  - implementation:
+    - component: empty.go:94
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:37
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-card.tsx
+  - implementation:
+    - component: empty.go:50
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-demo.tsx
+  - implementation:
+    - component: empty.go:50
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-input-group.tsx
+  - implementation:
+    - component: empty.go:68
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-outline.tsx
+  - implementation:
+    - component: empty.go:97
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:37
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-rtl.tsx
+  - implementation:
+    - component: empty.go:50
+    - demo: demo.go:14
+  - tests:
+    - empty_test.go:11
 
 ## Code Structure & Entry Points
 - `empty.go`: Primary component widget layout and state logic.

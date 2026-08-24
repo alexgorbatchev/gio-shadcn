@@ -58,20 +58,30 @@ Whenever adding, modifying, or refactoring the `sheet` component implementation 
   - tests:
     - sheet_test.go:25
 
----
-
-
-
 ### Demos
-- [x] **1. Side Sheet Panel**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sheet-demo.tsx
   - implementation:
-    - component: sheet.go:50
-    - demo: demo.md:13
+    - component: sheet.go:48
+    - demo: demo.go:13
   - tests:
-    - sheet_test.go:15
+    - sheet_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sheet-no-close-button.tsx
+  - implementation:
+    - component: sheet.go:48
+    - demo: demo.go:13
+  - tests:
+    - sheet_test.go:25
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sheet-side.tsx
+  - implementation:
+    - component: sheet.go:108
+    - demo: demo.go:13
+  - tests:
+    - sheet_test.go:25
+
+---
 
 ## Code Structure & Entry Points
 - `sheet.go`: Primary component implementation.
 - `sheet_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
+- `demo.go`: Modular component interactive demo layout (`components/sheet/demo.go`).
 - `AGENTS.md`: Component specification.

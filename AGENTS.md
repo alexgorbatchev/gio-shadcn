@@ -11,11 +11,11 @@ Native Go UI component library bringing `shadcn/ui` design tokens, Flex/Grid lay
 ---
 
 ## Commands
-- **Run Interactive Demo:** `make demo` (or `go run ./demo/cmd`)
-- **Build Demo Binary:** `make build-demo` (creates `bin/demo-app`)
-- **Run Unit Tests:** `go test ./...`
-- **Run Static Analysis:** `go vet ./...`
-- **Format Code:** `go fmt ./...`
+- **Run Interactive Demo:** `just demo` (or `go run ./demo/cmd`)
+- **Build Demo Binary:** `just build-demo` (creates `bin/demo-app`)
+- **Run Unit Tests:** `just test` (or `go test ./...`)
+- **Run Static Analysis:** `just vet` (or `go vet ./...`)
+- **Format Code:** `just fmt-all` (or `go fmt ./...`)
 
 ---
 
@@ -47,10 +47,10 @@ Every UI component in `gio-shadcn` MUST maintain its own dedicated specification
        - <component>_test.go:<line_number>
 
    ### Demos
-   - [x] **Official Demo Example Name**
+   * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/<component>-<variant>.tsx
      - implementation:
        - component: <component>.go:<line_number>
-       - demo: ../../demo/demo.go:<line_number>
+       - demo: demo.go:<line_number>
      - tests:
        - <component>_test.go:<line_number>
    ```

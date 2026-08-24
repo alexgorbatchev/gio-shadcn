@@ -44,24 +44,24 @@ Whenever adding, modifying, or refactoring the `pagination` component implementa
     - pagination_test.go:48
 
 ### Demos
-- [x] **1. Standard Pagination Bar**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-demo.tsx
   - implementation:
-    - component: pagination.go:58
-    - demo: demo.go:9
+    - component: pagination.go:49
+    - demo: demo.go:13
   - tests:
     - pagination_test.go:13
-- [x] **2. Active Page Highlight**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-icons-only.tsx
   - implementation:
-    - component: pagination.go:81
-    - demo: demo.go:9
-  - tests:
-    - pagination_test.go:24
-- [x] **3. Page Controls**
-  - implementation:
-    - component: pagination.go:61
-    - demo: demo.go:9
+    - component: pagination.go:70
+    - demo: demo.go:13
   - tests:
     - pagination_test.go:34
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-simple.tsx
+  - implementation:
+    - component: pagination.go:78
+    - demo: demo.go:13
+  - tests:
+    - pagination_test.go:24
 
 ---
 

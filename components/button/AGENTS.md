@@ -1,6 +1,7 @@
 # Button Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/button](https://ui.shadcn.com/docs/components/button)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/button](https://ui.shadcn.com/docs/components/button)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/button.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/button.mdx)
 
 ---
 
@@ -87,18 +88,78 @@ Whenever adding, modifying, or refactoring the `button` component implementation
 
 
 ### Demos
-- [x] **1. Button Variants**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-default.tsx
   - implementation:
-    - component: button.go:50
-    - demo: demo.md:13
+    - component: button.go:132
+    - demo: demo.go:13
   - tests:
-    - button_test.go:15
-- [x] **2. Button Sizes**
+    - button_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-demo.tsx
   - implementation:
-    - component: button.go:50
-    - demo: demo.md:20
+    - component: button.go:132
+    - demo: demo.go:13
   - tests:
-    - button_test.go:15
+    - button_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-destructive.tsx
+  - implementation:
+    - component: button.go:153
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:39
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-ghost.tsx
+  - implementation:
+    - component: button.go:153
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:32
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-group-demo.tsx
+  - implementation:
+    - component: button.go:132
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-icon.tsx
+  - implementation:
+    - component: button.go:154
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:74
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-link.tsx
+  - implementation:
+    - component: button.go:153
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:46
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-outline.tsx
+  - implementation:
+    - component: button.go:153
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:25
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-secondary.tsx
+  - implementation:
+    - component: button.go:153
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:18
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-size.tsx
+  - implementation:
+    - component: button.go:154
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:53
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-spinner.tsx
+  - implementation:
+    - component: button.go:132
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:11
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/button-with-icon.tsx
+  - implementation:
+    - component: button.go:132
+    - demo: demo.go:13
+  - tests:
+    - button_test.go:11
 
 ## Code Structure & Entry Points
 - `button.go`: Primary component widget layout and state logic.

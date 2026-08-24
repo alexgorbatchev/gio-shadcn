@@ -38,25 +38,43 @@ Whenever adding, modifying, or refactoring the `spinner` component implementatio
   - tests:
     - spinner_test.go:43
 
-### Demos (All Official shadcn Demos)
-- [x] **1. Small Spinner (16dp)**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/spinner-badge.tsx
   - implementation:
     - component: spinner.go:47
-    - demo: demo.go:28
+    - demo: demo.go:16
   - tests:
-    - spinner_test.go:13
-- [x] **2. Default Activity Spinner (24dp)**
+    - spinner_test.go:44
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/spinner-button.tsx
   - implementation:
     - component: spinner.go:47
-    - demo: demo.go:40
+    - demo: demo.go:16
   - tests:
-    - spinner_test.go:23
-- [x] **3. Large Loader Spinner (48dp)**
+    - spinner_test.go:44
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/spinner-custom.tsx
   - implementation:
     - component: spinner.go:47
-    - demo: demo.go:52
+    - demo: demo.go:16
   - tests:
-    - spinner_test.go:33
+    - spinner_test.go:44
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/spinner-demo.tsx
+  - implementation:
+    - component: spinner.go:47
+    - demo: demo.go:16
+  - tests:
+    - spinner_test.go:22
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/spinner-empty.tsx
+  - implementation:
+    - component: spinner.go:47
+    - demo: demo.go:16
+  - tests:
+    - spinner_test.go:44
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/spinner-size.tsx
+  - implementation:
+    - component: spinner.go:47
+    - demo: demo.go:16
+  - tests:
+    - spinner_test.go:12
 
 ---
 

@@ -38,20 +38,24 @@ Whenever adding, modifying, or refactoring the `scrollarea` component implementa
   - tests:
     - scrollarea_test.go:33
 
----
-
-
-
 ### Demos
-- [x] **1. Custom Scroll Area**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/scroll-area-demo.tsx
   - implementation:
-    - component: scrollarea.go:50
-    - demo: demo.md:13
+    - component: scrollarea.go:48
+    - demo: demo.go:13
   - tests:
-    - scrollarea_test.go:15
+    - scrollarea_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/scroll-area-horizontal-demo.tsx
+  - implementation:
+    - component: scrollarea.go:48
+    - demo: demo.go:13
+  - tests:
+    - scrollarea_test.go:24
+
+---
 
 ## Code Structure & Entry Points
 - `scrollarea.go`: Primary component implementation.
 - `scrollarea_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
+- `demo.go`: Modular component interactive demo layout (`components/scrollarea/demo.go`).
 - `AGENTS.md`: Component specification.

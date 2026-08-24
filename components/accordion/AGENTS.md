@@ -1,6 +1,7 @@
 # Accordion Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/accordion](https://ui.shadcn.com/docs/components/accordion)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/accordion](https://ui.shadcn.com/docs/components/accordion)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/accordion.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/accordion.mdx)
 
 ---
 
@@ -68,55 +69,49 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
   - tests:
     - accordion_test.go:87
 
-### Demos (All 8 Official shadcn Demos)
-- [x] **1. Single Open Accordion (Default)**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-basic.tsx
   - implementation:
     - component: accordion.go:107
     - demo: demo.go:9
   - tests:
     - accordion_test.go:13
-- [x] **2. Multiple Open Accordion**
-  - implementation:
-    - component: accordion.go:114
-    - demo: demo.go:17
-  - tests:
-    - accordion_test.go:25
-- [x] **3. Disabled Item Accordion**
-  - implementation:
-    - component: accordion.go:106
-    - demo: demo.go:25
-  - tests:
-    - accordion_test.go:37
-- [x] **4. Chevron Icon Accordion**
-  - implementation:
-    - component: accordion.go:180
-    - demo: demo.go:31
-  - tests:
-    - accordion_test.go:49
-- [x] **5. Custom Header Badge Section**
-  - implementation:
-    - component: accordion.go:167
-    - demo: demo.go:37
-  - tests:
-    - accordion_test.go:49
-- [x] **6. Borderless Variant Accordion**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-borders.tsx
   - implementation:
     - component: accordion.go:220
     - demo: demo.go:43
   - tests:
     - accordion_test.go:61
-- [x] **7. Nested Accordion**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-card.tsx
   - implementation:
-    - component: accordion.go:204
-    - demo: demo.go:57
+    - component: accordion.go:221
+    - demo: demo.go:9
   - tests:
-    - accordion_test.go:72
-- [x] **8. Controlled Accordion State**
+    - accordion_test.go:87
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-demo.tsx
   - implementation:
     - component: accordion.go:107
-    - demo: demo.go:68
+    - demo: demo.go:9
+  - tests:
+    - accordion_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-disabled.tsx
+  - implementation:
+    - component: accordion.go:106
+    - demo: demo.go:25
+  - tests:
+    - accordion_test.go:37
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-multiple.tsx
+  - implementation:
+    - component: accordion.go:114
+    - demo: demo.go:17
   - tests:
     - accordion_test.go:25
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-rtl.tsx
+  - implementation:
+    - component: accordion.go:107
+    - demo: demo.go:9
+  - tests:
+    - accordion_test.go:13
 
 ---
 

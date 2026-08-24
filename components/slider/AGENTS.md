@@ -53,25 +53,43 @@ Whenever adding, modifying, or refactoring the `slider` component implementation
   - tests:
     - slider_test.go:51
 
-### Demos (All Official shadcn Demos)
-- [x] **1. Single Thumb Range Slider (Volume 65%)**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/slider-controlled.tsx
   - implementation:
     - component: slider.go:69
-    - demo: demo.go:28
+    - demo: demo.go:16
   - tests:
-    - slider_test.go:13
-- [x] **2. Pitch Bend Slider (-10 to +10)**
+    - slider_test.go:37
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/slider-demo.tsx
   - implementation:
     - component: slider.go:69
-    - demo: demo.go:40
+    - demo: demo.go:16
   - tests:
-    - slider_test.go:13
-- [x] **3. Disabled Slider State**
+    - slider_test.go:50
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/slider-disabled.tsx
   - implementation:
     - component: slider.go:69
-    - demo: demo.go:52
+    - demo: demo.go:16
   - tests:
-    - slider_test.go:25
+    - slider_test.go:24
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/slider-multiple.tsx
+  - implementation:
+    - component: slider.go:69
+    - demo: demo.go:16
+  - tests:
+    - slider_test.go:50
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/slider-range.tsx
+  - implementation:
+    - component: slider.go:69
+    - demo: demo.go:16
+  - tests:
+    - slider_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/slider-vertical.tsx
+  - implementation:
+    - component: slider.go:69
+    - demo: demo.go:16
+  - tests:
+    - slider_test.go:50
 
 ---
 

@@ -1,6 +1,7 @@
 # Alert Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/alert](https://ui.shadcn.com/docs/components/alert)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/alert](https://ui.shadcn.com/docs/components/alert)  
+**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/alert.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/alert.mdx)
 
 ---
 
@@ -53,31 +54,43 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
   - tests:
     - alert_test.go:66
 
-### Demos (All Official shadcn Demos)
-- [x] **1. Default / Info Alert**
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-action.tsx
   - implementation:
     - component: alert.go:42
     - demo: demo.go:9
   - tests:
     - alert_test.go:13
-- [x] **2. Destructive Warning Alert**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-basic.tsx
+  - implementation:
+    - component: alert.go:42
+    - demo: demo.go:9
+  - tests:
+    - alert_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-colors.tsx
+  - implementation:
+    - component: alert.go:121
+    - demo: demo.go:15
+  - tests:
+    - alert_test.go:51
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-demo.tsx
+  - implementation:
+    - component: alert.go:42
+    - demo: demo.go:9
+  - tests:
+    - alert_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-destructive.tsx
   - implementation:
     - component: alert.go:64
     - demo: demo.go:15
   - tests:
     - alert_test.go:23
-- [x] **3. Title Only Alert**
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-rtl.tsx
   - implementation:
-    - component: alert.go:88
-    - demo: demo.go:21
+    - component: alert.go:42
+    - demo: demo.go:9
   - tests:
-    - alert_test.go:33
-- [x] **4. Description Only Alert**
-  - implementation:
-    - component: alert.go:102
-    - demo: demo.go:26
-  - tests:
-    - alert_test.go:42
+    - alert_test.go:13
 
 ---
 
