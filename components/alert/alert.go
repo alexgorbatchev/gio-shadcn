@@ -28,6 +28,7 @@ type Alert struct {
 	Variant     theme.Variant
 	Classes     string
 	Icon        *lucide.Icon
+	Action      layout.Widget
 }
 
 // Config represents configuration for creating an Alert.
@@ -37,6 +38,7 @@ type Config struct {
 	Variant     theme.Variant
 	Classes     string
 	Icon        *lucide.Icon
+	Action      layout.Widget
 }
 
 // New creates a new Alert component with the given configuration.
@@ -59,6 +61,7 @@ func New(config Config) *Alert {
 		Variant:     v,
 		Classes:     config.Classes,
 		Icon:        ic,
+		Action:      config.Action,
 	}
 }
 
@@ -135,6 +138,12 @@ func (a *Alert) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 						return lbl.Layout(gtx)
 					}),
 				)
+			}),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if a.Action != nil {
+					return layout.Inset{Left: th.Spacing.Space4}.Layout(gtx, a.Action)
+				}
+				return layout.Dimensions{}
 			}),
 		)
 	})

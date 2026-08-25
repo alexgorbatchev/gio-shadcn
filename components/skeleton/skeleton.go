@@ -20,6 +20,8 @@ import (
 type Skeleton struct {
 	Width   unit.Dp
 	Height  unit.Dp
+	Radius  unit.Dp
+	Circle  bool
 	Classes string
 }
 
@@ -27,6 +29,8 @@ type Skeleton struct {
 type Config struct {
 	Width   unit.Dp
 	Height  unit.Dp
+	Radius  unit.Dp
+	Circle  bool
 	Classes string
 }
 
@@ -43,6 +47,8 @@ func New(config Config) *Skeleton {
 	return &Skeleton{
 		Width:   w,
 		Height:  h,
+		Radius:  config.Radius,
+		Circle:  config.Circle,
 		Classes: config.Classes,
 	}
 }
@@ -66,6 +72,11 @@ func (s *Skeleton) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 
 	rect := image.Rectangle{Max: size}
 	radius := gtx.Dp(th.Radius.RadiusMD)
+	if s.Circle {
+		radius = hPx / 2
+	} else if s.Radius > 0 {
+		radius = gtx.Dp(s.Radius)
+	}
 
 	theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 

@@ -14,23 +14,29 @@ import (
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
+	"gioui.org/unit"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
 
 // Badge represents a shadcn/ui badge component.
 type Badge struct {
-	Text    string
-	Variant theme.Variant
-	Classes string
+	Text     string
+	Variant  theme.Variant
+	Classes  string
+	Icon     *lucide.Icon
+	IconRight bool
 }
 
 // Config represents configuration for creating a Badge.
 type Config struct {
-	Text    string
-	Variant theme.Variant
-	Classes string
+	Text      string
+	Variant   theme.Variant
+	Classes   string
+	Icon      *lucide.Icon
+	IconRight bool
 }
 
 // New creates a new Badge with the given configuration.
@@ -40,9 +46,11 @@ func New(config Config) *Badge {
 		v = theme.VariantDefault
 	}
 	return &Badge{
-		Text:    config.Text,
-		Variant: v,
-		Classes: config.Classes,
+		Text:      config.Text,
+		Variant:   v,
+		Classes:   config.Classes,
+		Icon:      config.Icon,
+		IconRight: config.IconRight,
 	}
 }
 
@@ -78,12 +86,51 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		mTheme = material.NewTheme()
 	}
 
-	contentDims := padding.Layout(gtxContent, func(gtx layout.Context) layout.Dimensions {
+	renderContent := func(gtx layout.Context) layout.Dimensions {
+		if b.Icon != nil && b.Text != "" {
+			var leftChild, rightChild layout.FlexChild
+			if b.IconRight {
+				leftChild = layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
+					lbl.Color = fgColor
+					lbl.Alignment = text.Start
+					return lbl.Layout(gtx)
+				})
+				rightChild = layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return b.Icon.LayoutSize(gtx, unit.Dp(12), fgColor)
+				})
+			} else {
+				leftChild = layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return b.Icon.LayoutSize(gtx, unit.Dp(12), fgColor)
+				})
+				rightChild = layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
+					lbl.Color = fgColor
+					lbl.Alignment = text.Start
+					return lbl.Layout(gtx)
+				})
+			}
+
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				leftChild,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx)
+				}),
+				rightChild,
+			)
+		}
+
+		if b.Icon != nil {
+			return b.Icon.LayoutSize(gtx, unit.Dp(12), fgColor)
+		}
+
 		lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
 		lbl.Color = fgColor
 		lbl.Alignment = text.Start
 		return lbl.Layout(gtx)
-	})
+	}
+
+	contentDims := padding.Layout(gtxContent, renderContent)
 
 	badgeSize := contentDims.Size
 	gtx.Constraints = layout.Exact(badgeSize)
@@ -109,12 +156,7 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		}),
 
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				lbl := material.Label(mTheme, th.Typography.FontSizeXS, b.Text)
-				lbl.Color = fgColor
-				lbl.Alignment = text.Start
-				return lbl.Layout(gtx)
-			})
+			return padding.Layout(gtx, renderContent)
 		}),
 	)
 

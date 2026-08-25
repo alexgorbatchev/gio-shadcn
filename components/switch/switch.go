@@ -24,6 +24,8 @@ type Switch struct {
 
 	Value    bool
 	Disabled bool
+	Invalid  bool
+	Size     theme.Size
 	Classes  string
 	OnChange func(bool)
 }
@@ -32,16 +34,24 @@ type Switch struct {
 type Config struct {
 	Value    bool
 	Disabled bool
+	Invalid  bool
+	Size     theme.Size
 	Classes  string
 	OnChange func(bool)
 }
 
 // New creates a new Switch component with the given configuration.
 func New(config Config) *Switch {
+	s := config.Size
+	if s == "" {
+		s = theme.SizeDefault
+	}
 	return &Switch{
 		clickable: new(widget.Clickable),
 		Value:     config.Value,
 		Disabled:  config.Disabled,
+		Invalid:   config.Invalid,
+		Size:      s,
 		Classes:   config.Classes,
 		OnChange:  config.OnChange,
 	}
@@ -60,10 +70,22 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		}
 	}
 
-	trackWidth := gtx.Dp(unit.Dp(36))
-	trackHeight := gtx.Dp(unit.Dp(20))
-	thumbSize := gtx.Dp(unit.Dp(16))
-	padding := gtx.Dp(unit.Dp(2))
+	trackWidthDp := unit.Dp(36)
+	trackHeightDp := unit.Dp(20)
+	thumbSizeDp := unit.Dp(16)
+	paddingDp := unit.Dp(2)
+
+	if s.Size == theme.SizeSM {
+		trackWidthDp = unit.Dp(30)
+		trackHeightDp = unit.Dp(16)
+		thumbSizeDp = unit.Dp(12)
+		paddingDp = unit.Dp(2)
+	}
+
+	trackWidth := gtx.Dp(trackWidthDp)
+	trackHeight := gtx.Dp(trackHeightDp)
+	thumbSize := gtx.Dp(thumbSizeDp)
+	padding := gtx.Dp(paddingDp)
 
 	size := image.Pt(trackWidth, trackHeight)
 	gtx.Constraints = layout.Exact(size)
@@ -71,10 +93,17 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Determine colors
 	trackColor := th.Colors.Muted
 	thumbColor := th.Colors.MutedFg
+	borderColor := th.Colors.Border
 
 	if s.Value {
 		trackColor = th.Colors.Primary
 		thumbColor = th.Colors.PrimaryFg
+	}
+
+	if s.Invalid {
+		borderColor = th.Colors.Destructive
+		trackColor = th.Colors.Destructive
+		thumbColor = th.Colors.DestructiveFg
 	}
 
 	if s.Disabled {
@@ -93,10 +122,10 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		trackRadius := trackHeight / 2
 		theme.DrawRRectBackground(gtx, trackRect, trackRadius, trackColor)
 
-		// Draw border if unselected
-		if !s.Value {
+		// Draw border if unselected or invalid
+		if !s.Value || s.Invalid {
 			rrTrack := clip.UniformRRect(trackRect, trackRadius)
-			theme.DrawStroke(gtx, rrTrack.Path(gtx.Ops), 1.0, th.Colors.Border)
+			theme.DrawStroke(gtx, rrTrack.Path(gtx.Ops), 1.0, borderColor)
 		}
 
 		// Calculate thumb position
@@ -123,9 +152,4 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	return dims
 }
 
-// Clicked returns true if the switch was toggled in the current frame.
-func (s *Switch) Clicked(gtx layout.Context) bool {
-	return s.clickable.Clicked(gtx) && !s.Disabled
-}
-
-func _(c color.NRGBA) {} // unused color reference guard
+func _(c color.NRGBA) {}

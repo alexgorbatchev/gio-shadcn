@@ -19,26 +19,35 @@ import (
 	"github.com/bnema/gio-shadcn/utils"
 )
 
+type Orientation string
+
+const (
+	OrientationHorizontal Orientation = "horizontal"
+	OrientationVertical   Orientation = "vertical"
+)
+
 // Slider represents an interactive range slider component.
 type Slider struct {
-	Value    float32
-	Min      float32
-	Max      float32
-	Disabled bool
-	Classes  string
-	OnChange func(float32)
+	Value       float32
+	Min         float32
+	Max         float32
+	Orientation Orientation
+	Disabled    bool
+	Classes     string
+	OnChange    func(float32)
 
 	dragID pointer.ID
 }
 
 // Config represents configuration for creating a Slider.
 type Config struct {
-	Value    float32
-	Min      float32
-	Max      float32
-	Disabled bool
-	Classes  string
-	OnChange func(float32)
+	Value       float32
+	Min         float32
+	Max         float32
+	Orientation Orientation
+	Disabled    bool
+	Classes     string
+	OnChange    func(float32)
 }
 
 // New creates a new Slider component with the given configuration.
@@ -55,13 +64,18 @@ func New(config Config) *Slider {
 	} else if val > maxVal {
 		val = maxVal
 	}
+	ori := config.Orientation
+	if ori == "" {
+		ori = OrientationHorizontal
+	}
 	return &Slider{
-		Value:    val,
-		Min:      minVal,
-		Max:      maxVal,
-		Disabled: config.Disabled,
-		Classes:  config.Classes,
-		OnChange: config.OnChange,
+		Value:       val,
+		Min:         minVal,
+		Max:         maxVal,
+		Orientation: ori,
+		Disabled:    config.Disabled,
+		Classes:     config.Classes,
+		OnChange:    config.OnChange,
 	}
 }
 
@@ -71,6 +85,13 @@ func (s *Slider) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		th = theme.New()
 	}
 
+	if s.Orientation == OrientationVertical {
+		return s.layoutVertical(gtx, th)
+	}
+	return s.layoutHorizontal(gtx, th)
+}
+
+func (s *Slider) layoutHorizontal(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	trackHeight := gtx.Dp(unit.Dp(6))
 	thumbRadius := gtx.Dp(unit.Dp(8))
 	widthPx := gtx.Constraints.Max.X
@@ -142,9 +163,7 @@ func (s *Slider) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		Min: image.Pt(0, trackY),
 		Max: image.Pt(widthPx, trackY+trackHeight),
 	}
-	rrTrack := clip.UniformRRect(trackRect, trackHeight/2)
 	theme.DrawRRectBackground(gtx, trackRect, trackHeight/2, trackColor)
-	_ = rrTrack
 
 	// Draw filled portion
 	progWidth := int(float32(widthPx) * ratio)
@@ -160,6 +179,104 @@ func (s *Slider) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	thumbX := int(float32(widthPx) * ratio)
 	thumbMin := image.Pt(thumbX-thumbRadius, 0)
 	thumbMax := image.Pt(thumbX+thumbRadius, heightPx)
+	thumbRect := image.Rectangle{Min: thumbMin, Max: thumbMax}
+
+	ellipseThumb := clip.Ellipse(thumbRect)
+	elClip := ellipseThumb.Push(gtx.Ops)
+	theme.DrawRRectBackground(gtx, thumbRect, thumbRadius, thumbColor)
+	elClip.Pop()
+
+	// Draw thumb border
+	theme.DrawStroke(gtx, ellipseThumb.Path(gtx.Ops), 1.5, th.Colors.Primary)
+
+	// Reset active GPU paint color state back to background
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return layout.Dimensions{Size: size}
+}
+
+func (s *Slider) layoutVertical(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	trackWidth := gtx.Dp(unit.Dp(6))
+	thumbRadius := gtx.Dp(unit.Dp(8))
+	heightPx := gtx.Constraints.Max.Y
+	if heightPx <= 0 {
+		heightPx = gtx.Dp(unit.Dp(160))
+	}
+	widthPx := thumbRadius * 2
+
+	size := image.Pt(widthPx, heightPx)
+	gtx.Constraints = layout.Exact(size)
+
+	// Process pointer drag/click events
+	if !s.Disabled {
+		area := clip.Rect(image.Rectangle{Max: size}).Push(gtx.Ops)
+		event.Op(gtx.Ops, s)
+		area.Pop()
+
+		for {
+			ev, ok := gtx.Event(pointer.Filter{
+				Target: s,
+				Kinds:  pointer.Press | pointer.Drag | pointer.Release,
+			})
+			if !ok {
+				break
+			}
+			if pEv, ok := ev.(pointer.Event); ok {
+				if pEv.Kind == pointer.Press || pEv.Kind == pointer.Drag {
+					ratio := 1.0 - (pEv.Position.Y / float32(heightPx))
+					if ratio < 0 {
+						ratio = 0
+					} else if ratio > 1 {
+						ratio = 1
+					}
+					s.Value = s.Min + ratio*(s.Max-s.Min)
+					if s.OnChange != nil {
+						s.OnChange(s.Value)
+					}
+				}
+			}
+		}
+	}
+
+	ratio := (s.Value - s.Min) / (s.Max - s.Min)
+	if ratio < 0 {
+		ratio = 0
+	} else if ratio > 1 {
+		ratio = 1
+	}
+
+	trackColor := th.Colors.Muted
+	progressColor := th.Colors.Primary
+	thumbColor := th.Colors.PrimaryFg
+
+	if s.Disabled {
+		trackColor.A = 128
+		progressColor.A = 128
+		thumbColor.A = 128
+	}
+
+	// Draw track background (centered horizontally)
+	trackX := (widthPx - trackWidth) / 2
+	trackRect := image.Rectangle{
+		Min: image.Pt(trackX, 0),
+		Max: image.Pt(trackX+trackWidth, heightPx),
+	}
+	theme.DrawRRectBackground(gtx, trackRect, trackWidth/2, trackColor)
+
+	// Draw filled portion from bottom
+	progHeight := int(float32(heightPx) * ratio)
+	if progHeight > 0 {
+		progRect := image.Rectangle{
+			Min: image.Pt(trackX, heightPx-progHeight),
+			Max: image.Pt(trackX+trackWidth, heightPx),
+		}
+		theme.DrawRRectBackground(gtx, progRect, trackWidth/2, progressColor)
+	}
+
+	// Draw thumb circle
+	thumbY := heightPx - int(float32(heightPx)*ratio)
+	thumbMin := image.Pt(0, thumbY-thumbRadius)
+	thumbMax := image.Pt(widthPx, thumbY+thumbRadius)
 	thumbRect := image.Rectangle{Min: thumbMin, Max: thumbMax}
 
 	ellipseThumb := clip.Ellipse(thumbRect)
