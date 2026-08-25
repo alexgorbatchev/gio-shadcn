@@ -15,6 +15,7 @@ import (
 	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
@@ -53,6 +54,7 @@ type Config struct {
 	TriggerText   string
 	TriggerButton *button.Button
 	Trigger       layout.Widget
+	Icon          *lucide.Icon
 	Open          bool
 	Items         []*Item
 	Classes       string
@@ -71,9 +73,14 @@ func New(config Config) *DropdownMenu {
 	}
 
 	if config.TriggerText != "" && dm.TriggerButton == nil {
+		ic := config.Icon
+		if ic == nil {
+			ic = lucide.ChevronDown
+		}
 		dm.TriggerButton = button.New(button.Config{
 			Text:    config.TriggerText,
 			Variant: theme.VariantOutline,
+			Icon:    ic,
 			OnClick: func() {
 				dm.Open = !dm.Open
 			},
@@ -100,6 +107,14 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 
 	// 1. If trigger is present, render trigger and conditionally render anchored menu below it
 	if dm.TriggerButton != nil || dm.Trigger != nil {
+		if dm.TriggerButton != nil {
+			if dm.Open {
+				dm.TriggerButton.Icon = lucide.ChevronUp
+			} else {
+				dm.TriggerButton.Icon = lucide.ChevronDown
+			}
+		}
+
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				if dm.TriggerButton != nil {

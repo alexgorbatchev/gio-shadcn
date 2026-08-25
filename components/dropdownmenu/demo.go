@@ -2,6 +2,7 @@ package dropdownmenu
 
 import (
 	"gioui.org/layout"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/label"
 	"github.com/bnema/gio-shadcn/theme"
 )
@@ -20,6 +21,7 @@ func NewDemoState() *DemoState {
 
 	s.DropdownDemo = New(Config{
 		TriggerText: "Open dropdown menu",
+		Icon:        lucide.ChevronDown,
 		Open:        false,
 		Items: []*Item{
 			NewItem("Profile", "⇧⌘P"),

@@ -99,3 +99,22 @@ func TestButtonSizes(t *testing.T) {
 	_ = btnSM.Layout(gtx, th)
 	_ = btnLG.Layout(gtx, th)
 }
+
+func TestButtonClickCallback(t *testing.T) {
+	th := theme.NewDark()
+	clicked := false
+	btn := button.New(button.Config{
+		Text: "Click Me",
+		OnClick: func() {
+			clicked = true
+		},
+	})
+	btn.Click()
+
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	btn.Layout(gtx, th)
+
+	if !clicked {
+		t.Fatalf("expected OnClick to be called when Click() event is queued on button")
+	}
+}

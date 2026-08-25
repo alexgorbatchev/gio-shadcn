@@ -107,15 +107,19 @@ func (b *Button) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	dims := b.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return b.drawButton(gtx, th, bgColor, fgColor, variant, padding, minHeight, fontSize, styles)
-	})
-
-	if b.clickable.Clicked(gtx) && !b.Disabled && b.OnClick != nil {
-		b.OnClick()
+	for b.clickable.Clicked(gtx) {
+		if !b.Disabled && b.OnClick != nil {
+			b.OnClick()
+		}
 	}
 
-	return dims
+	return b.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		return b.drawButton(gtx, th, bgColor, fgColor, variant, padding, minHeight, fontSize, styles)
+	})
+}
+
+func (b *Button) Click() {
+	b.clickable.Click()
 }
 
 func (b *Button) Update(gtx layout.Context) theme.ComponentState {
