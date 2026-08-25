@@ -61,6 +61,7 @@ import (
 	"github.com/bnema/gio-shadcn/components/toast"
 	"github.com/bnema/gio-shadcn/components/togglegroup"
 	"github.com/bnema/gio-shadcn/components/tooltip"
+	"github.com/bnema/gio-shadcn/components/tree"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
@@ -139,6 +140,7 @@ func runWindow(w *app.Window) error {
 		// Containers & Navigation
 		{ID: "accordion", Category: "Navigation", Name: "Accordion", clickable: new(widget.Clickable)},
 		{ID: "collapsible", Category: "Navigation", Name: "Collapsible", clickable: new(widget.Clickable)},
+		{ID: "tree", Category: "Navigation", Name: "Tree View (DnD)", clickable: new(widget.Clickable)},
 		{ID: "tabs", Category: "Navigation", Name: "Tabs", clickable: new(widget.Clickable)},
 		{ID: "breadcrumb", Category: "Navigation", Name: "Breadcrumbs", clickable: new(widget.Clickable)},
 		{ID: "pagination", Category: "Navigation", Name: "Pagination", clickable: new(widget.Clickable)},
@@ -435,6 +437,8 @@ func renderComponentGalleryPage(gtx layout.Context, th *theme.Theme, activeID st
 		return togglegroup.Demo(gtx, th)
 	case "tooltip":
 		return tooltip.Demo(gtx, th)
+	case "tree":
+		return tree.Demo(gtx, th)
 	default:
 		return layout.Dimensions{}
 	}
