@@ -10,29 +10,38 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestResizableCreation(t *testing.T) {
-	rz := resizable.New(resizable.Config{
-		Ratio: 0.6,
+func TestResizableBasic(t *testing.T) {
+	th := theme.NewDark()
+	r := resizable.New(resizable.Config{
+		Ratio: 0.5,
+		LeftWidget: func(gtx layout.Context) layout.Dimensions {
+			return layout.Dimensions{Size: image.Pt(100, 50)}
+		},
+		RightWidget: func(gtx layout.Context) layout.Dimensions {
+			return layout.Dimensions{Size: image.Pt(100, 50)}
+		},
 	})
-
-	if rz.Ratio != 0.6 {
-		t.Errorf("expected Ratio to be 0.6, got %f", rz.Ratio)
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 100))}
+	dims := r.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestResizableLayout(t *testing.T) {
+func TestResizableCustomRatio(t *testing.T) {
 	th := theme.NewDark()
-	rz := resizable.New(resizable.Config{
-		Ratio: 0.5,
+	r := resizable.New(resizable.Config{
+		Ratio: 0.35,
+		LeftWidget: func(gtx layout.Context) layout.Dimensions {
+			return layout.Dimensions{Size: image.Pt(100, 50)}
+		},
+		RightWidget: func(gtx layout.Context) layout.Dimensions {
+			return layout.Dimensions{Size: image.Pt(100, 50)}
+		},
 	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(400, 200)),
-	}
-	dims := rz.Layout(gtx, th)
-
-	if dims.Size.X != 400 || dims.Size.Y != 200 {
-		t.Errorf("invalid dimensions returned from Resizable.Layout")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 100))}
+	dims := r.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }

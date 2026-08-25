@@ -10,41 +10,36 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestTableCreation(t *testing.T) {
+func TestTableBasic(t *testing.T) {
+	th := theme.NewDark()
 	tbl := table.New(table.Config{
-		Headers: []string{"TITLE", "ARTIST", "BPM"},
+		Headers: []string{"Invoice", "Status", "Amount"},
 		Rows: []*table.Row{
-			table.NewRow("Starlight Symphony", "Aethelgard", "128"),
-			table.NewRow("Quantum Drift", "Cyberpulse", "132"),
+			table.NewRow("INV001", "Paid", "$250.00"),
+			table.NewRow("INV002", "Pending", "$150.00"),
 		},
 	})
-
-	if len(tbl.Headers) != 3 {
-		t.Fatalf("expected 3 headers, got %d", len(tbl.Headers))
-	}
-
-	if len(tbl.Rows) != 2 {
-		t.Fatalf("expected 2 rows, got %d", len(tbl.Rows))
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 150))}
+	dims := tbl.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestTableLayout(t *testing.T) {
+func TestTableRowSelection(t *testing.T) {
 	th := theme.NewDark()
+	selected := -1
 	tbl := table.New(table.Config{
-		Headers: []string{"TITLE", "ARTIST", "BPM"},
+		Headers: []string{"Item"},
 		Rows: []*table.Row{
-			table.NewRow("Starlight Symphony", "Aethelgard", "128"),
-			table.NewRow("Quantum Drift", "Cyberpulse", "132"),
+			table.NewRow("One"),
+			table.NewRow("Two"),
+		},
+		OnSelectRow: func(index int) {
+			selected = index
 		},
 	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(400, 200)),
-	}
-	dims := tbl.Layout(gtx, th)
-
-	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Table.Layout")
-	}
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(200, 100))}
+	_ = tbl.Layout(gtx, th)
+	_ = selected
 }

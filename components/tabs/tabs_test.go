@@ -10,40 +10,34 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestTabsCreation(t *testing.T) {
-	tb := tabs.New(tabs.Config{
-		Tabs: []*tabs.Tab{
-			tabs.NewTab("sink", "Kitchen Sink"),
-			tabs.NewTab("deck", "Audio Deck"),
-		},
-		ActiveKey: "sink",
-	})
-
-	if len(tb.Tabs) != 2 {
-		t.Fatalf("expected 2 tabs, got %d", len(tb.Tabs))
-	}
-
-	if tb.ActiveKey != "sink" {
-		t.Errorf("expected ActiveKey to be 'sink', got %s", tb.ActiveKey)
-	}
-}
-
-func TestTabsLayout(t *testing.T) {
+func TestTabsBasic(t *testing.T) {
 	th := theme.NewDark()
 	tb := tabs.New(tabs.Config{
 		Tabs: []*tabs.Tab{
-			tabs.NewTab("sink", "Kitchen Sink"),
-			tabs.NewTab("deck", "Audio Deck"),
+			tabs.NewTab("account", "Account"),
+			tabs.NewTab("password", "Password"),
 		},
+		ActiveKey: "account",
 	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(300, 50)),
-	}
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 40))}
 	dims := tb.Layout(gtx, th)
-
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Tabs.Layout")
+		t.Errorf("invalid dimensions")
+	}
+}
+
+func TestTabsSelection(t *testing.T) {
+	th := theme.NewDark()
+	tb := tabs.New(tabs.Config{
+		Tabs: []*tabs.Tab{
+			tabs.NewTab("one", "One"),
+			tabs.NewTab("two", "Two"),
+		},
+		ActiveKey: "one",
+	})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 40))}
+	dims := tb.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }

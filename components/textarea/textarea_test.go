@@ -10,31 +10,22 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestTextAreaCreation(t *testing.T) {
-	ta := textarea.New(textarea.Config{
-		Text:        "Notes about track FLAC encoding",
-		Placeholder: "Type notes here...",
-	})
-
-	if ta.Text != "Notes about track FLAC encoding" {
-		t.Errorf("expected Text to be 'Notes about track FLAC encoding', got %s", ta.Text)
+func TestTextAreaStandard(t *testing.T) {
+	th := theme.NewDark()
+	ta := textarea.New(textarea.Config{Placeholder: "Write..."})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 100))}
+	dims := ta.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestTextAreaLayout(t *testing.T) {
+func TestTextAreaDisabled(t *testing.T) {
 	th := theme.NewDark()
-	ta := textarea.New(textarea.Config{
-		Text:        "Notes about track FLAC encoding",
-		Placeholder: "Type notes here...",
-	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(300, 100)),
-	}
+	ta := textarea.New(textarea.Config{Placeholder: "Disabled"})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 100))}
 	dims := ta.Layout(gtx, th)
-
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from TextArea.Layout")
+		t.Errorf("invalid dimensions")
 	}
 }

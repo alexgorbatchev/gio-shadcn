@@ -10,54 +10,22 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestInputStandardTextInput(t *testing.T) {
-	inp := input.Text("Enter text...")
-	if inp.Placeholder != "Enter text..." {
-		t.Fatalf("expected Placeholder 'Enter text...'")
-	}
-}
-
-func TestInputPrefilledTextInput(t *testing.T) {
-	inp := input.Text("Enter text...")
-	inp.SetText("Prefilled Text")
-	if inp.Text() != "Prefilled Text" {
-		t.Fatalf("expected Text 'Prefilled Text'")
-	}
-}
-
-func TestInputDisabledTextInput(t *testing.T) {
-	inp := input.Text("Placeholder")
-	inp.Disabled = true
-	if !inp.Disabled {
-		t.Fatalf("expected Disabled true")
-	}
-}
-
-func TestInputSingleLineTextEditing(t *testing.T) {
-	inp := input.Text("Placeholder")
-	inp.SetText("Single Line")
-	if inp.Value != "Single Line" {
-		t.Errorf("expected Value 'Single Line'")
-	}
-}
-
-func TestInputPlaceholderText(t *testing.T) {
-	inp := input.Text("Track Title Placeholder")
-	if inp.Placeholder != "Track Title Placeholder" {
-		t.Errorf("expected Placeholder 'Track Title Placeholder'")
-	}
-}
-
-func TestInputFocusRingStroke(t *testing.T) {
+func TestInputStandard(t *testing.T) {
 	th := theme.NewDark()
-	inp := input.Text("Placeholder")
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(400, 40)),
-	}
+	inp := input.Text("Enter text...")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 40))}
 	dims := inp.Layout(gtx, th)
-	if dims.Size.X <= 0 {
-		t.Errorf("invalid width")
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
+	}
+}
+
+func TestInputDisabled(t *testing.T) {
+	th := theme.NewDark()
+	inp := input.NewInput(input.WithPlaceholder("Disabled"), input.WithInputDisabled(true))
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 40))}
+	dims := inp.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }

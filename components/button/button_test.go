@@ -1,99 +1,101 @@
 package button_test
 
 import (
+	"image"
 	"testing"
 
+	"gioui.org/layout"
+	"gioui.org/op"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestButtonDefaultVariant(t *testing.T) {
-	btn := button.New(button.Config{Text: "Primary", Variant: theme.VariantDefault})
-	if btn.Variant != theme.VariantDefault {
-		t.Fatalf("expected VariantDefault")
+func TestButtonDefault(t *testing.T) {
+	th := theme.NewDark()
+	btn := button.New(button.Config{Text: "Button", Variant: theme.VariantDefault})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonSecondaryVariant(t *testing.T) {
+func TestButtonSecondary(t *testing.T) {
+	th := theme.NewDark()
 	btn := button.New(button.Config{Text: "Secondary", Variant: theme.VariantSecondary})
-	if btn.Variant != theme.VariantSecondary {
-		t.Fatalf("expected VariantSecondary")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonOutlineVariant(t *testing.T) {
+func TestButtonOutline(t *testing.T) {
+	th := theme.NewDark()
 	btn := button.New(button.Config{Text: "Outline", Variant: theme.VariantOutline})
-	if btn.Variant != theme.VariantOutline {
-		t.Fatalf("expected VariantOutline")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonGhostVariant(t *testing.T) {
+func TestButtonGhost(t *testing.T) {
+	th := theme.NewDark()
 	btn := button.New(button.Config{Text: "Ghost", Variant: theme.VariantGhost})
-	if btn.Variant != theme.VariantGhost {
-		t.Fatalf("expected VariantGhost")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonDestructiveVariant(t *testing.T) {
+func TestButtonDestructive(t *testing.T) {
+	th := theme.NewDark()
 	btn := button.New(button.Config{Text: "Destructive", Variant: theme.VariantDestructive})
-	if btn.Variant != theme.VariantDestructive {
-		t.Fatalf("expected VariantDestructive")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonLinkVariant(t *testing.T) {
+func TestButtonLink(t *testing.T) {
+	th := theme.NewDark()
 	btn := button.New(button.Config{Text: "Link", Variant: theme.VariantLink})
-	if btn.Variant != theme.VariantLink {
-		t.Fatalf("expected VariantLink")
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonSmallSize(t *testing.T) {
-	btn := button.New(button.Config{Text: "Small", Size: theme.SizeSM})
-	if btn.Size != theme.SizeSM {
-		t.Fatalf("expected SizeSM")
+func TestButtonWithIcon(t *testing.T) {
+	th := theme.NewDark()
+	btn := button.New(button.Config{Text: "Login with Email", Variant: theme.VariantDefault, Icon: lucide.Mail})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(160, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonDefaultSize(t *testing.T) {
-	btn := button.New(button.Config{Text: "Default Size", Size: theme.SizeDefault})
-	if btn.Size != theme.SizeDefault {
-		t.Fatalf("expected SizeDefault")
+func TestButtonIconOnly(t *testing.T) {
+	th := theme.NewDark()
+	btn := button.New(button.Config{Variant: theme.VariantOutline, Size: theme.SizeIcon, Icon: lucide.ChevronRight})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(40, 40))}
+	dims := btn.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestButtonLargeSize(t *testing.T) {
-	btn := button.New(button.Config{Text: "Large Size", Size: theme.SizeLG})
-	if btn.Size != theme.SizeLG {
-		t.Fatalf("expected SizeLG")
-	}
-}
-
-func TestButtonIconSize(t *testing.T) {
-	btn := button.New(button.Config{Size: theme.SizeIcon})
-	if btn.Size != theme.SizeIcon {
-		t.Fatalf("expected SizeIcon")
-	}
-}
-
-func TestButtonDisabledState(t *testing.T) {
-	btn := button.New(button.Config{Text: "Disabled", Disabled: true})
-	if !btn.Disabled {
-		t.Fatalf("expected Disabled true")
-	}
-}
-
-func TestButtonPointerClickEvent(t *testing.T) {
-	clicked := false
-	btn := button.New(button.Config{
-		Text: "Click Me",
-		OnClick: func() {
-			clicked = true
-		},
-	})
-	if btn.OnClick == nil {
-		t.Fatalf("expected OnClick handler")
-	}
-	_ = clicked
+func TestButtonSizes(t *testing.T) {
+	th := theme.NewDark()
+	btnSM := button.New(button.Config{Text: "Small", Size: theme.SizeSM})
+	btnLG := button.New(button.Config{Text: "Large", Size: theme.SizeLG})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(100, 40))}
+	_ = btnSM.Layout(gtx, th)
+	_ = btnLG.Layout(gtx, th)
 }

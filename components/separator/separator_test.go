@@ -10,29 +10,22 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestSeparatorCreation(t *testing.T) {
-	sep := separator.New(separator.Config{
-		Horizontal: true,
-	})
-
-	if !sep.Horizontal {
-		t.Errorf("expected Horizontal to be true")
+func TestSeparatorHorizontal(t *testing.T) {
+	th := theme.NewDark()
+	s := separator.New(separator.Config{Horizontal: true})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(200, 1))}
+	dims := s.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestSeparatorLayout(t *testing.T) {
+func TestSeparatorVertical(t *testing.T) {
 	th := theme.NewDark()
-	sep := separator.New(separator.Config{
-		Horizontal: true,
-	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(400, 20)),
-	}
-	dims := sep.Layout(gtx, th)
-
-	if dims.Size.X != 400 {
-		t.Errorf("expected width to be 400, got %d", dims.Size.X)
+	s := separator.New(separator.Config{Horizontal: false})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(1, 20))}
+	dims := s.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }

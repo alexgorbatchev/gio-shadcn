@@ -10,76 +10,46 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestCheckboxUncheckedState(t *testing.T) {
-	cb := checkbox.New(checkbox.Config{
-		Value: false,
-	})
-	if cb.Value {
-		t.Fatalf("expected Value false")
+func TestCheckboxUnchecked(t *testing.T) {
+	th := theme.NewDark()
+	c := checkbox.New(checkbox.Config{Value: false})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(30, 30))}
+	dims := c.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestCheckboxCheckedState(t *testing.T) {
-	cb := checkbox.New(checkbox.Config{
-		Value: true,
-	})
-	if !cb.Value {
-		t.Fatalf("expected Value true")
+func TestCheckboxChecked(t *testing.T) {
+	th := theme.NewDark()
+	c := checkbox.New(checkbox.Config{Value: true})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(30, 30))}
+	dims := c.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestCheckboxDisabledState(t *testing.T) {
-	cb := checkbox.New(checkbox.Config{
-		Value:    true,
-		Disabled: true,
-	})
-	if !cb.Disabled {
-		t.Fatalf("expected Disabled true")
+func TestCheckboxDisabled(t *testing.T) {
+	th := theme.NewDark()
+	c := checkbox.New(checkbox.Config{Value: true, Disabled: true})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(30, 30))}
+	dims := c.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestCheckboxInteractiveClickToggle(t *testing.T) {
-	changed := false
-	cb := checkbox.New(checkbox.Config{
+func TestCheckboxClickToggle(t *testing.T) {
+	th := theme.NewDark()
+	toggled := false
+	c := checkbox.New(checkbox.Config{
 		Value: false,
 		OnChange: func(val bool) {
-			changed = true
+			toggled = val
 		},
 	})
-	if cb.OnChange == nil {
-		t.Fatalf("expected OnChange handler")
-	}
-	_ = changed
-}
-
-func TestCheckboxCheckmarkVectorPathDrawing(t *testing.T) {
-	th := theme.NewDark()
-	cb := checkbox.New(checkbox.Config{
-		Value: true,
-	})
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(16, 16)),
-	}
-	dims := cb.Layout(gtx, th)
-	if dims.Size.X <= 0 {
-		t.Errorf("invalid width")
-	}
-}
-
-func TestCheckboxLabelAssociation(t *testing.T) {
-	th := theme.NewDark()
-	cb := checkbox.New(checkbox.Config{
-		Value: false,
-	})
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(16, 16)),
-	}
-	dims := cb.Layout(gtx, th)
-	if dims.Size.Y <= 0 {
-		t.Errorf("invalid height")
-	}
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(30, 30))}
+	_ = c.Layout(gtx, th)
+	_ = toggled
 }

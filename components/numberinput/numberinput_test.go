@@ -34,6 +34,30 @@ func TestNumberInputGainRangeInput(t *testing.T) {
 	}
 }
 
+func TestNumberInputQuantityStepper(t *testing.T) {
+	ni := numberinput.New(numberinput.Config{
+		Value: 1.0,
+		Step:  1.0,
+		Min:   1.0,
+		Max:   10.0,
+	})
+	if ni.Min != 1.0 || ni.Max != 10.0 {
+		t.Errorf("expected quantity range 1 to 10")
+	}
+}
+
+func TestNumberInputDecimalStepper(t *testing.T) {
+	ni := numberinput.New(numberinput.Config{
+		Value: 0.75,
+		Step:  0.05,
+		Min:   0.0,
+		Max:   1.0,
+	})
+	if ni.Step != 0.05 {
+		t.Errorf("expected step 0.05, got %f", ni.Step)
+	}
+}
+
 func TestNumberInputMinMaxBounds(t *testing.T) {
 	ni := numberinput.New(numberinput.Config{
 		Value: 250.0,

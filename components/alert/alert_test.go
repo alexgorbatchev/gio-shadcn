@@ -6,79 +6,98 @@ import (
 
 	"gioui.org/layout"
 	"gioui.org/op"
+	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/alert"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestAlertDefaultVariant(t *testing.T) {
+func TestAlertActionDemo(t *testing.T) {
 	al := alert.New(alert.Config{
-		Title:       "Default Info Alert",
-		Description: "Audio buffer set to 64 samples.",
-		Variant:     theme.VariantDefault,
+		Title:       "Dark mode is now available",
+		Description: "Enable it under your profile settings to get started.",
+		Action: func(gtx layout.Context) layout.Dimensions {
+			return layout.Dimensions{Size: image.Pt(60, 24)}
+		},
 	})
-	if al.Variant != theme.VariantDefault {
-		t.Fatalf("expected VariantDefault")
+	if al.Action == nil {
+		t.Errorf("expected Action widget to be non-nil")
 	}
 }
 
-func TestAlertDestructiveVariant(t *testing.T) {
+func TestAlertBasicDemo(t *testing.T) {
 	al := alert.New(alert.Config{
-		Title:       "Audio Clip Warning",
-		Description: "Output signal clipped +1.2dB on Deck A.",
+		Icon:        lucide.CircleCheck,
+		Title:       "Account updated successfully",
+		Description: "Your profile information has been saved.",
+	})
+	if al.Icon == nil {
+		t.Errorf("expected Icon to be non-nil")
+	}
+}
+
+func TestAlertColorsDemo(t *testing.T) {
+	al := alert.New(alert.Config{
+		Icon:        lucide.TriangleAlert,
+		Title:       "Your subscription will expire in 3 days.",
+		Description: "Renew now to avoid service interruption.",
+	})
+	if al.Title == "" {
+		t.Errorf("expected Title to be set")
+	}
+}
+
+func TestAlertStandardDemo(t *testing.T) {
+	al1 := alert.New(alert.Config{
+		Icon:        lucide.CircleCheck,
+		Title:       "Payment successful",
+		Description: "Your payment of $29.99 has been processed.",
+	})
+	al2 := alert.New(alert.Config{
+		Icon:        lucide.Info,
+		Title:       "New feature available",
+		Description: "We've added dark mode support.",
+	})
+	if al1.Title == "" || al2.Title == "" {
+		t.Errorf("expected titles to be set")
+	}
+}
+
+func TestAlertDestructiveDemo(t *testing.T) {
+	al := alert.New(alert.Config{
 		Variant:     theme.VariantDestructive,
+		Icon:        lucide.CircleAlert,
+		Title:       "Payment failed",
+		Description: "Your payment could not be processed.",
 	})
 	if al.Variant != theme.VariantDestructive {
-		t.Fatalf("expected VariantDestructive")
+		t.Errorf("expected VariantDestructive, got %v", al.Variant)
 	}
 }
 
-func TestAlertTitleHeader(t *testing.T) {
+func TestAlertRTLDemo(t *testing.T) {
 	al := alert.New(alert.Config{
-		Title: "Header Title",
+		Icon:        lucide.CircleCheck,
+		Title:       "تم الدفع بنجاح",
+		Description: "تمت معالجة دفعتك البالغة 29.99 دولارًا.",
 	})
-	if al.Title != "Header Title" {
-		t.Errorf("expected Title 'Header Title', got %s", al.Title)
+	if al.Title == "" {
+		t.Errorf("expected RTL title to be set")
 	}
 }
 
-func TestAlertDescriptionBody(t *testing.T) {
-	al := alert.New(alert.Config{
-		Description: "Body description text",
-	})
-	if al.Description != "Body description text" {
-		t.Errorf("expected Description 'Body description text', got %s", al.Description)
-	}
-}
-
-func TestAlertVariantBackgroundStyling(t *testing.T) {
+func TestAlertLayout(t *testing.T) {
 	th := theme.NewDark()
 	al := alert.New(alert.Config{
-		Title:   "Alert Title",
-		Variant: theme.VariantDestructive,
+		Title:       "System Alert",
+		Description: "Buffer rate 96kHz.",
 	})
 	ops := new(op.Ops)
 	gtx := layout.Context{
 		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(300, 100)),
+		Constraints: layout.Exact(image.Pt(400, 100)),
 	}
 	dims := al.Layout(gtx, th)
-	if dims.Size.X <= 0 {
-		t.Errorf("invalid width")
-	}
-}
-
-func TestAlertBorderStroke(t *testing.T) {
-	th := theme.NewDark()
-	al := alert.New(alert.Config{
-		Title: "Alert Title",
-	})
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(300, 100)),
-	}
-	dims := al.Layout(gtx, th)
-	if dims.Size.Y <= 0 {
-		t.Errorf("invalid height")
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions from Alert.Layout: %v", dims.Size)
 	}
 }

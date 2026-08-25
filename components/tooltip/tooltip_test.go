@@ -10,29 +10,22 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestTooltipCreation(t *testing.T) {
-	tt := tooltip.New(tooltip.Config{
-		Text: "ASIO Low Latency Driver",
-	})
-
-	if tt.Text != "ASIO Low Latency Driver" {
-		t.Errorf("expected Text to be 'ASIO Low Latency Driver', got %s", tt.Text)
+func TestTooltipBasic(t *testing.T) {
+	th := theme.NewDark()
+	tp := tooltip.New(tooltip.Config{Text: "Add to library"})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(200, 30))}
+	dims := tp.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestTooltipLayout(t *testing.T) {
+func TestTooltipCustomText(t *testing.T) {
 	th := theme.NewDark()
-	tt := tooltip.New(tooltip.Config{
-		Text: "ASIO Low Latency Driver",
-	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(200, 30)),
-	}
-	dims := tt.Layout(gtx, th)
-
+	tp := tooltip.New(tooltip.Config{Text: "Keyboard shortcut: ⌘S"})
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(250, 30))}
+	dims := tp.Layout(gtx, th)
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Tooltip.Layout")
+		t.Errorf("invalid dimensions")
 	}
 }

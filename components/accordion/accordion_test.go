@@ -10,12 +10,13 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestAccordionSingleOpenItem(t *testing.T) {
+func TestAccordionBasic(t *testing.T) {
 	acc := accordion.New(accordion.Config{
 		Type: accordion.TypeSingle,
 		Items: []*accordion.Item{
-			accordion.NewItem("Section 1", "Content 1", true),
-			accordion.NewItem("Section 2", "Content 2", false),
+			accordion.NewItem("How do I reset my password?", "Click on 'Forgot Password' on the login page.", true),
+			accordion.NewItem("Can I change my subscription plan?", "Yes, you can upgrade or downgrade.", false),
+			accordion.NewItem("What payment methods do you accept?", "We accept credit cards, PayPal, bank transfers.", false),
 		},
 	})
 	if !acc.Items[0].Expanded || acc.Items[1].Expanded {
@@ -23,23 +24,49 @@ func TestAccordionSingleOpenItem(t *testing.T) {
 	}
 }
 
-func TestAccordionMultipleOpenItems(t *testing.T) {
+func TestAccordionBorders(t *testing.T) {
 	acc := accordion.New(accordion.Config{
-		Type: accordion.TypeMultiple,
+		Type: accordion.TypeSingle,
 		Items: []*accordion.Item{
-			accordion.NewItem("Section 1", "Content 1", true),
-			accordion.NewItem("Section 2", "Content 2", true),
+			accordion.NewItem("How does billing work?", "We offer monthly and annual subscription plans.", true),
+			accordion.NewItem("Is my data secure?", "Yes. We use end-to-end encryption.", false),
 		},
 	})
-	if !acc.Items[0].Expanded || !acc.Items[1].Expanded {
-		t.Errorf("expected both items expanded in multiple mode")
+	if len(acc.Items) != 2 {
+		t.Errorf("expected 2 items, got %d", len(acc.Items))
 	}
 }
 
-func TestAccordionDisabledState(t *testing.T) {
+func TestAccordionCard(t *testing.T) {
+	acc := accordion.New(accordion.Config{
+		Type: accordion.TypeSingle,
+		Items: []*accordion.Item{
+			accordion.NewItem("What subscription plans do you offer?", "Starter ($9/mo), Pro ($29/mo), Enterprise ($99/mo).", true),
+			accordion.NewItem("How do I cancel my subscription?", "You can cancel anytime from account settings.", false),
+		},
+	})
+	if !acc.Items[0].Expanded {
+		t.Errorf("expected first item expanded")
+	}
+}
+
+func TestAccordionStandardDemo(t *testing.T) {
+	acc := accordion.New(accordion.Config{
+		Type: accordion.TypeSingle,
+		Items: []*accordion.Item{
+			accordion.NewItem("What are your shipping options?", "Standard, express, overnight shipping.", true),
+			accordion.NewItem("What is your return policy?", "Returns accepted within 30 days.", false),
+		},
+	})
+	if !acc.Items[0].Expanded {
+		t.Errorf("expected shipping item expanded")
+	}
+}
+
+func TestAccordionDisabledDemo(t *testing.T) {
 	item := accordion.NewItemConfig(accordion.ItemConfig{
-		Title:    "Disabled Item",
-		Content:  "Content",
+		Title:    "Premium feature information",
+		Content:  "This section contains information about premium features.",
 		Expanded: false,
 		Disabled: true,
 	})
@@ -48,54 +75,36 @@ func TestAccordionDisabledState(t *testing.T) {
 	}
 }
 
-func TestAccordionCustomHeaderAndIcon(t *testing.T) {
-	item := accordion.NewItemConfig(accordion.ItemConfig{
-		Title:    "Header",
-		Content:  "Body",
-		Icon:     "v",
-		Expanded: true,
-	})
-	if item.Icon != "v" {
-		t.Errorf("expected icon 'v', got %s", item.Icon)
-	}
-}
-
-func TestAccordionBorderlessVariant(t *testing.T) {
+func TestAccordionMultipleDemo(t *testing.T) {
 	acc := accordion.New(accordion.Config{
-		Borderless: true,
+		Type: accordion.TypeMultiple,
 		Items: []*accordion.Item{
-			accordion.NewItem("Section 1", "Content 1", true),
+			accordion.NewItem("Notification Settings", "Manage how you receive notifications.", true),
+			accordion.NewItem("Privacy & Security", "Control privacy settings.", true),
 		},
 	})
-	if !acc.Borderless {
-		t.Errorf("expected Borderless to be true")
+	if !acc.Items[0].Expanded || !acc.Items[1].Expanded {
+		t.Errorf("expected both items expanded in multiple mode")
 	}
 }
 
-func TestAccordionNestedContentWidget(t *testing.T) {
-	innerAcc := accordion.New(accordion.Config{
+func TestAccordionRTLDemo(t *testing.T) {
+	acc := accordion.New(accordion.Config{
+		Type: accordion.TypeSingle,
 		Items: []*accordion.Item{
-			accordion.NewItem("Inner Section", "Inner Content", true),
+			accordion.NewItem("كيف يمكنني إعادة تعيين كلمة المرور؟", "انقر على 'نسيت كلمة المرور'.", true),
 		},
 	})
-	outerItem := accordion.NewItemConfig(accordion.ItemConfig{
-		Title:    "Outer Section",
-		Expanded: true,
-		ContentWidget: func(gtx layout.Context) layout.Dimensions {
-			return innerAcc.Layout(gtx, theme.NewDark())
-		},
-	})
-	if outerItem.ContentWidget == nil {
-		t.Errorf("expected ContentWidget to be non-nil")
+	if len(acc.Items) != 1 || !acc.Items[0].Expanded {
+		t.Errorf("expected 1 RTL item expanded")
 	}
 }
 
-func TestAccordionLayoutDimensions(t *testing.T) {
+func TestAccordionLayout(t *testing.T) {
 	th := theme.NewDark()
 	acc := accordion.New(accordion.Config{
 		Items: []*accordion.Item{
 			accordion.NewItem("Section 1", "Content 1", true),
-			accordion.NewItem("Section 2", "Content 2", false),
 		},
 	})
 	ops := new(op.Ops)

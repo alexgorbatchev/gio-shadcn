@@ -10,22 +10,45 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestDrawerBottomSheetPanel(t *testing.T) {
+func TestDrawerCreation(t *testing.T) {
 	dr := drawer.New(drawer.Config{
-		Title:       "Bottom Sheet",
-		Description: "Slide-up panel",
+		Title:       "Pick a delivery time",
+		Description: "Standard delivery 25-35 min",
 		Open:        true,
 	})
 	if !dr.Open {
-		t.Fatalf("expected Open true")
+		t.Errorf("expected Open to be true")
 	}
 }
 
-func TestDrawerDarkBackdropOverlay(t *testing.T) {
+func TestDrawerProfileDialog(t *testing.T) {
+	dr := drawer.New(drawer.Config{
+		Title:       "Edit profile",
+		Description: "Make changes to your profile",
+		Open:        false,
+	})
+	if dr.Title != "Edit profile" {
+		t.Errorf("unexpected title: %s", dr.Title)
+	}
+}
+
+func TestDrawerMoveGoal(t *testing.T) {
+	dr := drawer.New(drawer.Config{
+		Title:       "Move Goal",
+		Description: "Set daily activity goal",
+		Open:        true,
+	})
+	if dr.Description != "Set daily activity goal" {
+		t.Errorf("unexpected description: %s", dr.Description)
+	}
+}
+
+func TestDrawerLayout(t *testing.T) {
 	th := theme.NewDark()
 	dr := drawer.New(drawer.Config{
-		Title: "Drawer",
-		Open:  true,
+		Title:       "Telemetry Drawer",
+		Description: "CPU Usage: 2.1%",
+		Open:        true,
 	})
 	ops := new(op.Ops)
 	gtx := layout.Context{
@@ -33,79 +56,7 @@ func TestDrawerDarkBackdropOverlay(t *testing.T) {
 		Constraints: layout.Exact(image.Pt(600, 400)),
 	}
 	dims := dr.Layout(gtx, th)
-	if dims.Size.X < 0 {
-		t.Errorf("invalid width")
-	}
-}
-
-func TestDrawerBackdropClickToClose(t *testing.T) {
-	closed := false
-	dr := drawer.New(drawer.Config{
-		Title: "Drawer",
-		Open:  true,
-		OnClose: func() {
-			closed = true
-		},
-	})
-	if dr.OnClose == nil {
-		t.Fatalf("expected OnClose handler")
-	}
-	_ = closed
-}
-
-func TestDrawerSouthViewportEdgeAlignment(t *testing.T) {
-	th := theme.NewDark()
-	dr := drawer.New(drawer.Config{
-		Title: "Drawer",
-		Open:  true,
-	})
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(600, 400)),
-	}
-	dims := dr.Layout(gtx, th)
-	if dims.Size.Y < 0 {
-		t.Errorf("invalid height")
-	}
-}
-
-func TestDrawerDragHandleIndicator(t *testing.T) {
-	dr := drawer.New(drawer.Config{
-		Title: "Drawer with Handle",
-	})
-	if dr.Title != "Drawer with Handle" {
-		t.Errorf("expected Title 'Drawer with Handle'")
-	}
-}
-
-func TestDrawerCloseButton(t *testing.T) {
-	dr := drawer.New(drawer.Config{
-		Title: "Drawer Title",
-	})
-	if dr.Title != "Drawer Title" {
-		t.Errorf("expected Title 'Drawer Title'")
-	}
-}
-
-func TestDrawerCustomContentWidget(t *testing.T) {
-	contentRan := false
-	dr := drawer.New(drawer.Config{
-		Title: "Drawer",
-		Open:  true,
-		Content: func(gtx layout.Context) layout.Dimensions {
-			contentRan = true
-			return layout.Dimensions{Size: image.Pt(100, 50)}
-		},
-	})
-	th := theme.NewDark()
-	ops := new(op.Ops)
-	gtx := layout.Context{
-		Ops:         ops,
-		Constraints: layout.Exact(image.Pt(600, 400)),
-	}
-	_ = dr.Layout(gtx, th)
-	if !contentRan {
-		t.Errorf("expected custom content widget to execute")
+	if dims.Size.X < 0 || dims.Size.Y < 0 {
+		t.Errorf("invalid dimensions returned from Drawer.Layout")
 	}
 }

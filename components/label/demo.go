@@ -10,22 +10,26 @@ type DemoState struct {
 	H2Typography    *Typography
 	H3Typography    *Typography
 	H4Typography    *Typography
+	LeadTypography  *Typography
 	PTypography     *Typography
-	MutedTypography *Typography
+	LargeTypography *Typography
 	SmallTypography *Typography
+	MutedTypography *Typography
 }
 
 var defaultDemo = NewDemoState()
 
 func NewDemoState() *DemoState {
 	return &DemoState{
-		H1Typography:    NewTypography("Typography Heading 1", H1, ""),
-		H2Typography:    NewTypography("Typography Heading 2", H2, ""),
-		H3Typography:    NewTypography("Typography Heading 3", H3, ""),
-		H4Typography:    NewTypography("Typography Heading 4", H4, ""),
-		PTypography:     NewTypography("Body paragraph demonstrating standard typography scaling.", P, ""),
-		MutedTypography: NewTypography("Muted secondary text style.", Muted, ""),
-		SmallTypography: NewTypography("Small caption text for fine print.", Small, ""),
+		H1Typography:    NewTypography("The Joke Tax Chronicles", H1, ""),
+		H2Typography:    NewTypography("The People of the Kingdom", H2, ""),
+		H3Typography:    NewTypography("The Joke Tax", H3, ""),
+		H4Typography:    NewTypography("People stopped telling jokes", H4, ""),
+		LeadTypography:  NewTypography("A modal series of components designed for maximum accessibility.", P, ""),
+		PTypography:     NewTypography("The king thought long and hard, and finally decided to tax all jokes in the kingdom.", P, ""),
+		LargeTypography: NewTypography("Are you absolutely sure?", H4, ""),
+		SmallTypography: NewTypography("Email address is required for verification.", Small, ""),
+		MutedTypography: NewTypography("Enter your email address.", Muted, ""),
 	}
 }
 
@@ -43,11 +47,15 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.H4Typography.Layout(gtx, th) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.LeadTypography.Layout(gtx, th) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.PTypography.Layout(gtx, th) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.MutedTypography.Layout(gtx, th) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.LargeTypography.Layout(gtx, th) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.SmallTypography.Layout(gtx, th) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.MutedTypography.Layout(gtx, th) }),
 	)
 }
 

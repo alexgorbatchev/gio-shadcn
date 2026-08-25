@@ -10,38 +10,35 @@ import (
 	"github.com/bnema/gio-shadcn/theme"
 )
 
-func TestSelectCreation(t *testing.T) {
-	sel := selectcomp.New(selectcomp.Config{
+func TestSelectBasic(t *testing.T) {
+	th := theme.NewDark()
+	s := selectcomp.New(selectcomp.Config{
 		Options: []*selectcomp.Item{
-			selectcomp.NewItem("house", "Progressive House"),
-			selectcomp.NewItem("techno", "Techno"),
+			selectcomp.NewItem("apple", "Apple"),
+			selectcomp.NewItem("banana", "Banana"),
 		},
-		SelectedValue: "house",
+		SelectedValue: "apple",
 	})
-
-	if sel.SelectedValue != "house" {
-		t.Errorf("expected SelectedValue to be 'house', got %s", sel.SelectedValue)
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(200, 40))}
+	dims := s.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Errorf("invalid dimensions")
 	}
 }
 
-func TestSelectLayout(t *testing.T) {
+func TestSelectOpen(t *testing.T) {
 	th := theme.NewDark()
-	sel := selectcomp.New(selectcomp.Config{
+	s := selectcomp.New(selectcomp.Config{
 		Options: []*selectcomp.Item{
-			selectcomp.NewItem("house", "Progressive House"),
-			selectcomp.NewItem("techno", "Techno"),
+			selectcomp.NewItem("apple", "Apple"),
+			selectcomp.NewItem("banana", "Banana"),
 		},
-		SelectedValue: "house",
+		SelectedValue: "apple",
 		Open:          true,
 	})
-
-	gtx := layout.Context{
-		Ops: new(op.Ops),
-		Constraints: layout.Exact(image.Pt(200, 100)),
-	}
-	dims := sel.Layout(gtx, th)
-
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(200, 150))}
+	dims := s.Layout(gtx, th)
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
-		t.Errorf("invalid dimensions returned from Select.Layout")
+		t.Errorf("invalid dimensions")
 	}
 }
