@@ -24,63 +24,69 @@ Whenever adding, modifying, or refactoring the `tabs` component implementation o
   - implementation:
     - tabs.go:69
   - tests:
-    - tabs_test.go:13
+    - tabs_test.go:12
 
 ### Capabilities & Features
 - [x] **Tab Selection Buttons**
   - implementation:
     - tabs.go:76
   - tests:
-    - tabs_test.go:15
+    - tabs_test.go:12
 - [x] **Active Tab Highlight**
   - implementation:
     - tabs.go:126
   - tests:
-    - tabs_test.go:21
+    - tabs_test.go:12
 - [x] **Selected Key State**
   - implementation:
     - tabs.go:79
   - tests:
-    - tabs_test.go:21
+    - tabs_test.go:26
 
 ---
-
-
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-demo.tsx
   - implementation:
     - component: tabs.go:69
-    - demo: demo.go:16
+    - demo: demo.go:19
+  - tests:
+    - tabs_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-icons.tsx
+  - implementation:
+    - component: tabs.go:69
+    - demo: demo.go:26
   - tests:
     - tabs_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-disabled.tsx
   - implementation:
     - component: tabs.go:69
-    - demo: demo.go:16
+    - demo: demo.go:19
   - tests:
-    - tabs_test.go:28
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-icons.tsx
-  - implementation:
-    - component: tabs.go:69
-    - demo: demo.go:16
-  - tests:
-    - tabs_test.go:28
+    - tabs_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-line.tsx
   - implementation:
     - component: tabs.go:69
-    - demo: demo.go:16
+    - demo: demo.go:19
   - tests:
-    - tabs_test.go:28
+    - tabs_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-vertical.tsx
   - implementation:
     - component: tabs.go:69
-    - demo: demo.go:16
+    - demo: demo.go:19
   - tests:
-    - tabs_test.go:28
+    - tabs_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/tabs-rtl.tsx
+  - implementation:
+    - component: tabs.go:69
+    - demo: demo.go:19
+  - tests:
+    - tabs_test.go:12
+
+---
 
 ## Code Structure & Entry Points
 - `tabs.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `tabs_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

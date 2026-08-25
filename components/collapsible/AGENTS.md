@@ -22,52 +22,52 @@ Whenever adding, modifying, or refactoring the `collapsible` component implement
 ### Variants
 - [x] **Expanded State**
   - implementation:
-    - collapsible.go:53
+    - collapsible.go:40
   - tests:
     - collapsible_test.go:13
 - [x] **Collapsed State**
   - implementation:
-    - collapsible.go:108
+    - collapsible.go:94
   - tests:
-    - collapsible_test.go:23
+    - collapsible_test.go:49
 
 ### Capabilities & Features
 - [x] **Trigger Button Header**
   - implementation:
-    - collapsible.go:90
+    - collapsible.go:80
   - tests:
-    - collapsible_test.go:33
+    - collapsible_test.go:23
 - [x] **Content Body Visibility Toggle**
   - implementation:
-    - collapsible.go:58
+    - collapsible.go:94
   - tests:
-    - collapsible_test.go:42
+    - collapsible_test.go:35
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-basic.tsx
   - implementation:
-    - component: collapsible.go:53
-    - demo: demo.go:14
+    - component: collapsible.go:40
+    - demo: demo.go:24
   - tests:
-    - collapsible_test.go:11
+    - collapsible_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-demo.tsx
   - implementation:
-    - component: collapsible.go:53
-    - demo: demo.go:14
+    - component: collapsible.go:40
+    - demo: demo.go:32
   - tests:
-    - collapsible_test.go:21
+    - collapsible_test.go:23
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-file-tree.tsx
   - implementation:
-    - component: collapsible.go:73
-    - demo: demo.go:14
+    - component: collapsible.go:94
+    - demo: demo.go:40
   - tests:
-    - collapsible_test.go:31
+    - collapsible_test.go:35
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/collapsible-settings.tsx
   - implementation:
-    - component: collapsible.go:53
-    - demo: demo.go:14
+    - component: collapsible.go:40
+    - demo: demo.go:68
   - tests:
-    - collapsible_test.go:40
+    - collapsible_test.go:49
 
 ---
 

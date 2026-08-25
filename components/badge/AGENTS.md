@@ -1,7 +1,6 @@
 # Badge Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/badge](https://ui.shadcn.com/docs/components/badge)  
-**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/badge.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/badge.mdx)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/badge](https://ui.shadcn.com/docs/components/badge)
 
 ---
 
@@ -23,91 +22,97 @@ Whenever adding, modifying, or refactoring the `badge` component implementation 
 ### Variants
 - [x] **Default / Primary Badge**
   - implementation:
-    - badge.go:133
+    - badge.go:142
   - tests:
-    - badge_test.go:13
+    - badge_test.go:12
 - [x] **Secondary Badge**
   - implementation:
-    - badge.go:127
+    - badge.go:136
   - tests:
-    - badge_test.go:23
+    - badge_test.go:22
 - [x] **Outline Badge**
   - implementation:
-    - badge.go:129
+    - badge.go:138
   - tests:
-    - badge_test.go:33
+    - badge_test.go:32
 - [x] **Destructive Badge**
   - implementation:
-    - badge.go:131
+    - badge.go:140
   - tests:
-    - badge_test.go:43
+    - badge_test.go:42
 
 ### Capabilities & Features
 - [x] **Full Rounded Radius**
   - implementation:
-    - badge.go:96
+    - badge.go:103
   - tests:
-    - badge_test.go:53
+    - badge_test.go:12
 - [x] **XS Typography Label**
   - implementation:
-    - badge.go:80
+    - badge.go:88
   - tests:
-    - badge_test.go:67
+    - badge_test.go:12
 - [x] **Compact Padding**
   - implementation:
-    - badge.go:58
+    - badge.go:61
   - tests:
-    - badge_test.go:80
+    - badge_test.go:12
+- [x] **Icon Support**
+  - implementation:
+    - badge.go:73
+  - tests:
+    - badge_test.go:52
 
 ---
 
-
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-colors.tsx
-  - implementation:
-    - component: badge.go:127
-    - demo: demo.go:14
-  - tests:
-    - badge_test.go:23
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-demo.tsx
   - implementation:
-    - component: badge.go:133
-    - demo: demo.go:13
+    - component: badge.go:142
+    - demo: demo.go:22
   - tests:
-    - badge_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-icon.tsx
-  - implementation:
-    - component: badge.go:133
-    - demo: demo.go:13
-  - tests:
-    - badge_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-link.tsx
-  - implementation:
-    - component: badge.go:129
-    - demo: demo.go:15
-  - tests:
-    - badge_test.go:33
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-rtl.tsx
-  - implementation:
-    - component: badge.go:133
-    - demo: demo.go:13
-  - tests:
-    - badge_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-spinner.tsx
-  - implementation:
-    - component: badge.go:133
-    - demo: demo.go:13
-  - tests:
-    - badge_test.go:13
+    - badge_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-variants.tsx
   - implementation:
-    - component: badge.go:127
-    - demo: demo.go:14
+    - component: badge.go:136
+    - demo: demo.go:23
   - tests:
-    - badge_test.go:23
+    - badge_test.go:22
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-icon.tsx
+  - implementation:
+    - component: badge.go:73
+    - demo: demo.go:26
+  - tests:
+    - badge_test.go:52
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-spinner.tsx
+  - implementation:
+    - component: badge.go:73
+    - demo: demo.go:27
+  - tests:
+    - badge_test.go:62
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-link.tsx
+  - implementation:
+    - component: badge.go:53
+    - demo: demo.go:28
+  - tests:
+    - badge_test.go:72
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-colors.tsx
+  - implementation:
+    - component: badge.go:68
+    - demo: demo.go:29
+  - tests:
+    - badge_test.go:82
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/badge-rtl.tsx
+  - implementation:
+    - component: badge.go:53
+    - demo: demo.go:22
+  - tests:
+    - badge_test.go:12
+
+---
 
 ## Code Structure & Entry Points
 - `badge.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `badge_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.md`: Component interactive demo snippets and layout specs (`components/badge/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

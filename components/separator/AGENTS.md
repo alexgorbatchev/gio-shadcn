@@ -24,55 +24,63 @@ Whenever adding, modifying, or refactoring the `separator` component implementat
   - implementation:
     - separator.go:58
   - tests:
-    - separator_test.go:13
+    - separator_test.go:12
 - [x] **Vertical Separator**
   - implementation:
     - separator.go:64
   - tests:
-    - separator_test.go:25
+    - separator_test.go:22
 
 ### Capabilities & Features
 - [x] **1px Divider Stroke Line**
   - implementation:
     - separator.go:76
   - tests:
-    - separator_test.go:33
+    - separator_test.go:12
 - [x] **Muted Border Theme Color**
   - implementation:
     - separator.go:71
   - tests:
-    - separator_test.go:25
+    - separator_test.go:12
+
+---
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-demo.tsx
   - implementation:
     - component: separator.go:48
-    - demo: demo.go:13
+    - demo: demo.go:20
   - tests:
-    - separator_test.go:13
+    - separator_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-vertical.tsx
+  - implementation:
+    - component: separator.go:64
+    - demo: demo.go:21
+  - tests:
+    - separator_test.go:22
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-list.tsx
   - implementation:
     - component: separator.go:48
-    - demo: demo.go:13
+    - demo: demo.go:20
   - tests:
-    - separator_test.go:25
+    - separator_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-menu.tsx
   - implementation:
     - component: separator.go:48
-    - demo: demo.go:13
+    - demo: demo.go:20
   - tests:
-    - separator_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-vertical.tsx
+    - separator_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/separator-rtl.tsx
   - implementation:
-    - component: separator.go:61
-    - demo: demo.go:13
+    - component: separator.go:48
+    - demo: demo.go:20
   - tests:
-    - separator_test.go:25
+    - separator_test.go:12
 
 ---
 
 ## Code Structure & Entry Points
-- `separator.go`: Primary component implementation.
-- `separator_test.go`: Unit test suite.
-- `demo.go`: Modular component interactive demo layout (`components/separator/demo.go`).
-- `AGENTS.md`: Component specification.
+- `separator.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
+- `separator_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

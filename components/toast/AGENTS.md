@@ -24,67 +24,62 @@ Whenever adding, modifying, or refactoring the `toast` component implementation 
   - implementation:
     - toast.go:56
   - tests:
-    - toast_test.go:13
+    - toast_test.go:12
 - [x] **Destructive Toast Banner**
   - implementation:
     - toast.go:69
   - tests:
-    - toast_test.go:13
+    - toast_test.go:27
 
 ### Capabilities & Features
 - [x] **Title Header**
   - implementation:
-    - toast.go:99
+    - toast.go:103
   - tests:
-    - toast_test.go:14
+    - toast_test.go:12
 - [x] **Description Body**
   - implementation:
-    - toast.go:114
+    - toast.go:118
   - tests:
-    - toast_test.go:15
-- [x] **Close Button**
+    - toast_test.go:12
+- [x] **Lucide Icon Integration**
   - implementation:
-    - toast.go:57
+    - toast.go:96
   - tests:
-    - toast_test.go:20
-- [x] **Action Button**
-  - implementation:
-    - toast.go:129
-  - tests:
-    - toast_test.go:33
+    - toast_test.go:12
 
 ---
-
-
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-demo.tsx
   - implementation:
     - component: toast.go:56
-    - demo: demo.go:16
+    - demo: demo.go:20
   - tests:
     - toast_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-description.tsx
   - implementation:
     - component: toast.go:56
-    - demo: demo.go:16
+    - demo: demo.go:20
   - tests:
     - toast_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-types.tsx
+  - implementation:
+    - component: toast.go:69
+    - demo: demo.go:27
+  - tests:
+    - toast_test.go:27
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-position.tsx
   - implementation:
     - component: toast.go:56
-    - demo: demo.go:16
+    - demo: demo.go:20
   - tests:
-    - toast_test.go:23
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sonner-types.tsx
-  - implementation:
-    - component: toast.go:56
-    - demo: demo.go:16
-  - tests:
-    - toast_test.go:23
+    - toast_test.go:12
+
+---
 
 ## Code Structure & Entry Points
 - `toast.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `toast_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

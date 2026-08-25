@@ -1,7 +1,6 @@
 # Carousel Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/carousel](https://ui.shadcn.com/docs/components/carousel)  
-**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/carousel.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/carousel.mdx)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/carousel](https://ui.shadcn.com/docs/components/carousel)
 
 ---
 
@@ -25,75 +24,81 @@ Whenever adding, modifying, or refactoring the `carousel` component implementati
   - implementation:
     - carousel.go:34
   - tests:
-    - carousel_test.go:13
+    - carousel_test.go:12
 
 ### Capabilities & Features
 - [x] **Active Slide Index Tracking**
   - implementation:
     - carousel.go:61
   - tests:
-    - carousel_test.go:25
+    - carousel_test.go:26
 - [x] **Next / Previous Controls**
   - implementation:
     - carousel.go:78
   - tests:
-    - carousel_test.go:37
+    - carousel_test.go:26
 - [x] **Slide Item Container**
   - implementation:
     - carousel.go:70
   - tests:
-    - carousel_test.go:56
+    - carousel_test.go:12
 
 ---
 
-
-
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-api.tsx
-  - implementation:
-    - component: carousel.go:34
-    - demo: demo.go:13
-  - tests:
-    - carousel_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-demo.tsx
   - implementation:
     - component: carousel.go:34
-    - demo: demo.go:13
+    - demo: demo.go:42
   - tests:
-    - carousel_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-multiple.tsx
-  - implementation:
-    - component: carousel.go:34
-    - demo: demo.go:13
-  - tests:
-    - carousel_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-orientation.tsx
-  - implementation:
-    - component: carousel.go:34
-    - demo: demo.go:13
-  - tests:
-    - carousel_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-plugin.tsx
-  - implementation:
-    - component: carousel.go:34
-    - demo: demo.go:13
-  - tests:
-    - carousel_test.go:13
+    - carousel_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-size.tsx
   - implementation:
     - component: carousel.go:34
-    - demo: demo.go:13
+    - demo: demo.go:45
   - tests:
-    - carousel_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-spacing.tsx
+    - carousel_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-multiple.tsx
   - implementation:
     - component: carousel.go:34
-    - demo: demo.go:13
+    - demo: demo.go:48
   - tests:
-    - carousel_test.go:13
+    - carousel_test.go:26
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-api.tsx
+  - implementation:
+    - component: carousel.go:61
+    - demo: demo.go:42
+  - tests:
+    - carousel_test.go:26
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-spacing.tsx
+  - implementation:
+    - component: carousel.go:70
+    - demo: demo.go:45
+  - tests:
+    - carousel_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-orientation.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:42
+  - tests:
+    - carousel_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-plugin.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:42
+  - tests:
+    - carousel_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/carousel-rtl.tsx
+  - implementation:
+    - component: carousel.go:34
+    - demo: demo.go:42
+  - tests:
+    - carousel_test.go:12
+
+---
 
 ## Code Structure & Entry Points
-- `carousel.go`: Primary component implementation.
-- `carousel_test.go`: Unit test suite.
-- `demo.md`: Component interactive demo snippets.
-- `AGENTS.md`: Component specification.
+- `carousel.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
+- `carousel_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

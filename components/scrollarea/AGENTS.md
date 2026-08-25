@@ -24,38 +24,40 @@ Whenever adding, modifying, or refactoring the `scrollarea` component implementa
   - implementation:
     - scrollarea.go:31
   - tests:
-    - scrollarea_test.go:13
+    - scrollarea_test.go:12
 
 ### Capabilities & Features
 - [x] **Vertical / Horizontal Scroll Tracks**
   - implementation:
     - scrollarea.go:34
   - tests:
-    - scrollarea_test.go:19
+    - scrollarea_test.go:12
 - [x] **Custom Scroll Thumb Bar**
   - implementation:
     - scrollarea.go:68
   - tests:
-    - scrollarea_test.go:33
+    - scrollarea_test.go:12
+
+---
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/scroll-area-demo.tsx
   - implementation:
     - component: scrollarea.go:48
-    - demo: demo.go:13
+    - demo: demo.go:18
   - tests:
-    - scrollarea_test.go:13
+    - scrollarea_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/scroll-area-horizontal-demo.tsx
   - implementation:
     - component: scrollarea.go:48
-    - demo: demo.go:13
+    - demo: demo.go:18
   - tests:
-    - scrollarea_test.go:24
+    - scrollarea_test.go:12
 
 ---
 
 ## Code Structure & Entry Points
-- `scrollarea.go`: Primary component implementation.
-- `scrollarea_test.go`: Unit test suite.
-- `demo.go`: Modular component interactive demo layout (`components/scrollarea/demo.go`).
-- `AGENTS.md`: Component specification.
+- `scrollarea.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
+- `scrollarea_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

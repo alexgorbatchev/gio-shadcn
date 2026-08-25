@@ -22,82 +22,88 @@ Whenever adding, modifying, or refactoring the `empty` component implementation 
 ### Variants
 - [x] **Empty State Card**
   - implementation:
-    - empty.go:21
+    - empty.go:34
   - tests:
-    - empty_test.go:13
+    - empty_test.go:12
 
 ### Capabilities & Features
 - [x] **Title Header & Description Body**
   - implementation:
-    - empty.go:75
+    - empty.go:102
   - tests:
-    - empty_test.go:30
-- [x] **Default Fallback Text**
+    - empty_test.go:12
+- [x] **Illustrated Lucide Icon**
   - implementation:
-    - empty.go:34
+    - empty.go:96
   - tests:
-    - empty_test.go:23
+    - empty_test.go:12
+- [x] **Action Widget Button**
+  - implementation:
+    - empty.go:119
+  - tests:
+    - empty_test.go:25
 - [x] **Card Background & Border Stroke**
   - implementation:
-    - empty.go:92
+    - empty.go:132
   - tests:
-    - empty_test.go:40
+    - empty_test.go:12
 
 ---
 
-
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-avatar-group.tsx
-  - implementation:
-    - component: empty.go:50
-    - demo: demo.go:14
-  - tests:
-    - empty_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-avatar.tsx
-  - implementation:
-    - component: empty.go:50
-    - demo: demo.go:14
-  - tests:
-    - empty_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-background.tsx
-  - implementation:
-    - component: empty.go:94
-    - demo: demo.go:14
-  - tests:
-    - empty_test.go:37
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-card.tsx
-  - implementation:
-    - component: empty.go:50
-    - demo: demo.go:14
-  - tests:
-    - empty_test.go:11
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-demo.tsx
   - implementation:
-    - component: empty.go:50
-    - demo: demo.go:14
+    - component: empty.go:34
+    - demo: demo.go:21
   - tests:
-    - empty_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-input-group.tsx
+    - empty_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-card.tsx
   - implementation:
-    - component: empty.go:68
-    - demo: demo.go:14
+    - component: empty.go:34
+    - demo: demo.go:21
   - tests:
-    - empty_test.go:27
+    - empty_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-outline.tsx
   - implementation:
-    - component: empty.go:97
-    - demo: demo.go:14
+    - component: empty.go:34
+    - demo: demo.go:30
   - tests:
-    - empty_test.go:37
+    - empty_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-avatar.tsx
+  - implementation:
+    - component: empty.go:34
+    - demo: demo.go:21
+  - tests:
+    - empty_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-avatar-group.tsx
+  - implementation:
+    - component: empty.go:34
+    - demo: demo.go:21
+  - tests:
+    - empty_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-background.tsx
+  - implementation:
+    - component: empty.go:132
+    - demo: demo.go:21
+  - tests:
+    - empty_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-input-group.tsx
+  - implementation:
+    - component: empty.go:34
+    - demo: demo.go:21
+  - tests:
+    - empty_test.go:25
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/empty-rtl.tsx
   - implementation:
-    - component: empty.go:50
-    - demo: demo.go:14
+    - component: empty.go:34
+    - demo: demo.go:21
   - tests:
-    - empty_test.go:11
+    - empty_test.go:12
+
+---
 
 ## Code Structure & Entry Points
 - `empty.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `empty_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.md`: Component interactive demo snippets and layout specs (`components/empty/demo.md`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

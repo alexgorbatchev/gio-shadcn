@@ -25,43 +25,59 @@ Whenever adding, modifying, or refactoring the `pagination` component implementa
     - pagination.go:41
   - tests:
     - pagination_test.go:13
+- [x] **Active Page Highlight Variant**
+  - implementation:
+    - pagination.go:88
+  - tests:
+    - pagination_test.go:24
+- [x] **Icons Only Navigation Variant**
+  - implementation:
+    - pagination.go:70
+  - tests:
+    - pagination_test.go:34
 
 ### Capabilities & Features
 - [x] **Previous & Next Navigation Buttons**
   - implementation:
-    - pagination.go:61
+    - pagination.go:70
   - tests:
     - pagination_test.go:34
-- [x] **Active Page Button Highlight**
-  - implementation:
-    - pagination.go:81
-  - tests:
-    - pagination_test.go:24
 - [x] **OnSelectPage Event Callback**
   - implementation:
     - pagination.go:65
   - tests:
-    - pagination_test.go:48
+    - pagination_test.go:44
+- [x] **Layout Dimensions Calculation**
+  - implementation:
+    - pagination.go:103
+  - tests:
+    - pagination_test.go:56
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-demo.tsx
   - implementation:
-    - component: pagination.go:49
-    - demo: demo.go:13
+    - component: pagination.go:41
+    - demo: demo.go:18
   - tests:
     - pagination_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-icons-only.tsx
   - implementation:
     - component: pagination.go:70
-    - demo: demo.go:13
+    - demo: demo.go:19
   - tests:
     - pagination_test.go:34
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-simple.tsx
   - implementation:
-    - component: pagination.go:78
-    - demo: demo.go:13
+    - component: pagination.go:88
+    - demo: demo.go:20
   - tests:
     - pagination_test.go:24
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/pagination-rtl.tsx
+  - implementation:
+    - component: pagination.go:103
+    - demo: demo.go:21
+  - tests:
+    - pagination_test.go:56
 
 ---
 

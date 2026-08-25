@@ -22,64 +22,58 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
 ### Variants
 - [x] **Command Palette Search Box**
   - implementation:
-    - command.go:76
+    - command.go:61
   - tests:
     - command_test.go:13
 
 ### Capabilities & Features
 - [x] **Search Input Filter**
   - implementation:
-    - command.go:107
+    - command.go:94
   - tests:
-    - command_test.go:23
-- [x] **Command Item List**
+    - command_test.go:13
+- [x] **Command Item List with Groups**
   - implementation:
-    - command.go:115
+    - command.go:121
   - tests:
-    - command_test.go:40
-- [x] **Shortcut Badges**
+    - command_test.go:37
+- [x] **Shortcut Badges & Icons**
   - implementation:
-    - command.go:163
+    - command.go:189
   - tests:
-    - command_test.go:50
+    - command_test.go:25
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-basic.tsx
   - implementation:
-    - component: command.go:76
-    - demo: demo.go:14
+    - component: command.go:61
+    - demo: demo.go:22
   - tests:
-    - command_test.go:11
+    - command_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-demo.tsx
   - implementation:
-    - component: command.go:76
-    - demo: demo.go:14
+    - component: command.go:61
+    - demo: demo.go:32
   - tests:
-    - command_test.go:11
+    - command_test.go:25
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-dialog.tsx
   - implementation:
-    - component: command.go:76
-    - demo: demo.go:14
+    - component: command.go:61
+    - demo: demo.go:45
   - tests:
-    - command_test.go:22
+    - command_test.go:37
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-groups.tsx
   - implementation:
-    - component: command.go:115
-    - demo: demo.go:14
+    - component: command.go:121
+    - demo: demo.go:56
   - tests:
-    - command_test.go:40
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-scrollable.tsx
-  - implementation:
-    - component: command.go:76
-    - demo: demo.go:14
-  - tests:
-    - command_test.go:22
+    - command_test.go:37
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-shortcuts.tsx
   - implementation:
-    - component: command.go:163
-    - demo: demo.go:14
+    - component: command.go:189
+    - demo: demo.go:67
   - tests:
-    - command_test.go:50
+    - command_test.go:25
 
 ---
 

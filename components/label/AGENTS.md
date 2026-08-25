@@ -24,157 +24,113 @@ Whenever adding, modifying, or refactoring the `label` component implementation 
   - implementation:
     - label.go:167
   - tests:
-    - label_test.go:13
+    - label_test.go:12
 - [x] **Heading 2 (H2)**
   - implementation:
     - label.go:168
   - tests:
-    - label_test.go:20
+    - label_test.go:22
 - [x] **Heading 3 (H3)**
   - implementation:
     - label.go:169
   - tests:
-    - label_test.go:27
+    - label_test.go:32
 - [x] **Heading 4 (H4)**
   - implementation:
     - label.go:170
   - tests:
-    - label_test.go:34
+    - label_test.go:42
 - [x] **Body Paragraph (P)**
   - implementation:
     - label.go:171
   - tests:
-    - label_test.go:41
+    - label_test.go:52
 - [x] **Muted & Small Text**
   - implementation:
     - label.go:172
   - tests:
-    - label_test.go:48
+    - label_test.go:52
 
 ### Capabilities & Features
 - [x] **Typography Font Scale**
   - implementation:
     - label.go:197
   - tests:
-    - label_test.go:56
+    - label_test.go:12
 - [x] **Theme Color Integration**
   - implementation:
     - label.go:214
   - tests:
-    - label_test.go:69
+    - label_test.go:12
 
 ---
 
-
-
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/label-demo.tsx
-  - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
-  - tests:
-    - label_test.go:11
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h1.tsx
   - implementation:
-    - component: label.go:250
-    - demo: demo.go:18
-  - tests:
-    - label_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h2.tsx
-  - implementation:
-    - component: label.go:252
-    - demo: demo.go:19
-  - tests:
-    - label_test.go:18
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h3.tsx
-  - implementation:
-    - component: label.go:254
+    - component: label.go:167
     - demo: demo.go:20
   - tests:
-    - label_test.go:25
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h4.tsx
+    - label_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h2.tsx
   - implementation:
-    - component: label.go:256
+    - component: label.go:168
     - demo: demo.go:21
   - tests:
-    - label_test.go:32
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-p.tsx
+    - label_test.go:22
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h3.tsx
   - implementation:
-    - component: label.go:258
+    - component: label.go:169
     - demo: demo.go:22
   - tests:
-    - label_test.go:39
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-muted.tsx
+    - label_test.go:32
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-h4.tsx
   - implementation:
-    - component: label.go:264
+    - component: label.go:170
     - demo: demo.go:23
   - tests:
-    - label_test.go:46
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-small.tsx
+    - label_test.go:42
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-p.tsx
   - implementation:
-    - component: label.go:260
-    - demo: demo.go:24
+    - component: label.go:171
+    - demo: demo.go:25
   - tests:
-    - label_test.go:46
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-demo.tsx
-  - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
-  - tests:
-    - label_test.go:11
+    - label_test.go:52
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-lead.tsx
   - implementation:
-    - component: label.go:262
-    - demo: demo.go:17
+    - component: label.go:171
+    - demo: demo.go:24
   - tests:
-    - label_test.go:53
+    - label_test.go:52
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-large.tsx
   - implementation:
-    - component: label.go:266
-    - demo: demo.go:17
+    - component: label.go:170
+    - demo: demo.go:26
   - tests:
-    - label_test.go:53
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-blockquote.tsx
+    - label_test.go:42
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-small.tsx
   - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
+    - component: label.go:172
+    - demo: demo.go:27
   - tests:
-    - label_test.go:53
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-inline-code.tsx
+    - label_test.go:52
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-muted.tsx
   - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
+    - component: label.go:172
+    - demo: demo.go:28
   - tests:
-    - label_test.go:53
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-list.tsx
+    - label_test.go:52
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/label-demo.tsx
   - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
+    - component: label.go:167
+    - demo: demo.go:20
   - tests:
-    - label_test.go:53
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-table.tsx
-  - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
-  - tests:
-    - label_test.go:53
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/label-rtl.tsx
-  - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
-  - tests:
-    - label_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/typography-rtl.tsx
-  - implementation:
-    - component: label.go:197
-    - demo: demo.go:17
-  - tests:
-    - label_test.go:11
+    - label_test.go:12
 
 ---
 
 ## Code Structure & Entry Points
 - `label.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `label_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Exported interactive demo widget (`Demo`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

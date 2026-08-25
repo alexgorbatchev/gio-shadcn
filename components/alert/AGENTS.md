@@ -1,7 +1,6 @@
 # Alert Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/alert](https://ui.shadcn.com/docs/components/alert)  
-**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/alert.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/alert.mdx)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/alert](https://ui.shadcn.com/docs/components/alert)
 
 ---
 
@@ -25,72 +24,77 @@ Whenever adding, modifying, or refactoring the `alert` component implementation 
   - implementation:
     - alert.go:42
   - tests:
-    - alert_test.go:13
+    - alert_test.go:25
 - [x] **Destructive / Warning Alert**
   - implementation:
     - alert.go:64
   - tests:
-    - alert_test.go:23
+    - alert_test.go:60
 
 ### Capabilities & Features
 - [x] **Title Header**
   - implementation:
     - alert.go:88
   - tests:
-    - alert_test.go:33
+    - alert_test.go:35
 - [x] **Description Body**
   - implementation:
     - alert.go:102
   - tests:
-    - alert_test.go:42
-- [x] **Variant Background Styling**
+    - alert_test.go:46
+- [x] **Action Widget Support**
+  - implementation:
+    - alert.go:128
+  - tests:
+    - alert_test.go:13
+- [x] **Icon Support**
   - implementation:
     - alert.go:121
   - tests:
-    - alert_test.go:51
-- [x] **Border Stroke**
+    - alert_test.go:25
+- [x] **Border & Background Drawing**
   - implementation:
-    - alert.go:124
+    - alert.go:136
   - tests:
-    - alert_test.go:66
+    - alert_test.go:82
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-action.tsx
   - implementation:
-    - component: alert.go:42
-    - demo: demo.go:9
+    - component: alert.go:128
+    - demo: demo.go:32
   - tests:
     - alert_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-basic.tsx
   - implementation:
     - component: alert.go:42
-    - demo: demo.go:9
+    - demo: demo.go:42
   - tests:
-    - alert_test.go:13
+    - alert_test.go:25
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-colors.tsx
   - implementation:
-    - component: alert.go:121
-    - demo: demo.go:15
+    - component: alert.go:136
+    - demo: demo.go:49
   - tests:
-    - alert_test.go:51
+    - alert_test.go:35
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-demo.tsx
   - implementation:
     - component: alert.go:42
-    - demo: demo.go:9
+    - demo: demo.go:56
   - tests:
-    - alert_test.go:13
+    - alert_test.go:46
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-destructive.tsx
   - implementation:
     - component: alert.go:64
-    - demo: demo.go:15
+    - demo: demo.go:68
   - tests:
-    - alert_test.go:23
+    - alert_test.go:60
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-rtl.tsx
   - implementation:
     - component: alert.go:42
-    - demo: demo.go:9
+    - demo: demo.go:76
   - tests:
-    - alert_test.go:13
+    - alert_test.go:72
 
 ---
 

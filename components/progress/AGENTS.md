@@ -24,49 +24,57 @@ Whenever adding, modifying, or refactoring the `progress` component implementati
   - implementation:
     - progress.go:37
   - tests:
-    - progress_test.go:13
+    - progress_test.go:12
 
 ### Capabilities & Features
 - [x] **Background Track Drawing**
   - implementation:
     - progress.go:82
   - tests:
-    - progress_test.go:50
+    - progress_test.go:12
 - [x] **Filled Progress Portion (0% to 100%)**
   - implementation:
     - progress.go:88
   - tests:
-    - progress_test.go:20
+    - progress_test.go:22
 - [x] **Clamped Radius Half-Height Safety**
   - implementation:
     - progress.go:76
   - tests:
-    - progress_test.go:34
+    - progress_test.go:12
+
+---
 
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-controlled.tsx
-  - implementation:
-    - component: progress.go:54
-    - demo: demo.go:13
-  - tests:
-    - progress_test.go:20
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-demo.tsx
   - implementation:
     - component: progress.go:54
-    - demo: demo.go:13
+    - demo: demo.go:23
   - tests:
-    - progress_test.go:13
+    - progress_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-controlled.tsx
+  - implementation:
+    - component: progress.go:54
+    - demo: demo.go:24
+  - tests:
+    - progress_test.go:22
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-label.tsx
   - implementation:
     - component: progress.go:54
-    - demo: demo.go:13
+    - demo: demo.go:23
   - tests:
-    - progress_test.go:27
+    - progress_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/progress-rtl.tsx
+  - implementation:
+    - component: progress.go:54
+    - demo: demo.go:23
+  - tests:
+    - progress_test.go:12
 
 ---
 
 ## Code Structure & Entry Points
 - `progress.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `progress_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Modular component interactive demo layout (`components/progress/demo.go`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

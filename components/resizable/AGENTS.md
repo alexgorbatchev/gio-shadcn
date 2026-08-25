@@ -24,49 +24,51 @@ Whenever adding, modifying, or refactoring the `resizable` component implementat
   - implementation:
     - resizable.go:34
   - tests:
-    - resizable_test.go:13
+    - resizable_test.go:12
 
 ### Capabilities & Features
 - [x] **Left Widget Container**
   - implementation:
     - resizable.go:58
   - tests:
-    - resizable_test.go:25
+    - resizable_test.go:12
 - [x] **Right Widget Container**
   - implementation:
     - resizable.go:73
   - tests:
-    - resizable_test.go:25
+    - resizable_test.go:12
 - [x] **Divider Handle Bar**
   - implementation:
     - resizable.go:66
   - tests:
-    - resizable_test.go:32
+    - resizable_test.go:12
+
+---
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/resizable-demo.tsx
   - implementation:
     - component: resizable.go:47
-    - demo: demo.go:13
+    - demo: demo.go:18
   - tests:
-    - resizable_test.go:13
+    - resizable_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/resizable-handle.tsx
   - implementation:
     - component: resizable.go:66
-    - demo: demo.go:13
+    - demo: demo.go:32
   - tests:
-    - resizable_test.go:21
+    - resizable_test.go:28
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/resizable-vertical.tsx
   - implementation:
     - component: resizable.go:47
-    - demo: demo.go:13
+    - demo: demo.go:18
   - tests:
-    - resizable_test.go:21
+    - resizable_test.go:12
 
 ---
 
 ## Code Structure & Entry Points
-- `resizable.go`: Primary component implementation.
-- `resizable_test.go`: Unit test suite.
-- `demo.go`: Modular component interactive demo layout (`components/resizable/demo.go`).
-- `AGENTS.md`: Component specification.
+- `resizable.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
+- `resizable_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

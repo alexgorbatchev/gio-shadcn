@@ -24,7 +24,7 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
   - implementation:
     - popover.go:37
   - tests:
-    - popover_test.go:13
+    - popover_test.go:12
 
 ### Capabilities & Features
 - [x] **Open / Closed Visibility State**
@@ -36,43 +36,51 @@ Whenever adding, modifying, or refactoring the `popover` component implementatio
   - implementation:
     - popover.go:81
   - tests:
-    - popover_test.go:39
+    - popover_test.go:12
 - [x] **Border & Background Card Drawing**
   - implementation:
     - popover.go:111
   - tests:
-    - popover_test.go:39
+    - popover_test.go:12
+
+---
 
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-alignments.tsx
-  - implementation:
-    - component: popover.go:49
-    - demo: demo.go:13
-  - tests:
-    - popover_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-basic.tsx
-  - implementation:
-    - component: popover.go:49
-    - demo: demo.go:13
-  - tests:
-    - popover_test.go:24
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-demo.tsx
   - implementation:
-    - component: popover.go:49
-    - demo: demo.go:13
+    - component: popover.go:50
+    - demo: demo.go:20
   - tests:
-    - popover_test.go:39
+    - popover_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-basic.tsx
+  - implementation:
+    - component: popover.go:50
+    - demo: demo.go:27
+  - tests:
+    - popover_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-form.tsx
   - implementation:
-    - component: popover.go:49
-    - demo: demo.go:13
+    - component: popover.go:50
+    - demo: demo.go:20
   - tests:
-    - popover_test.go:39
+    - popover_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-alignments.tsx
+  - implementation:
+    - component: popover.go:50
+    - demo: demo.go:20
+  - tests:
+    - popover_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/popover-rtl.tsx
+  - implementation:
+    - component: popover.go:50
+    - demo: demo.go:20
+  - tests:
+    - popover_test.go:12
 
 ---
 
 ## Code Structure & Entry Points
 - `popover.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `popover_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Modular component interactive demo layout (`components/popover/demo.go`).
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

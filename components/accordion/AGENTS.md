@@ -1,7 +1,6 @@
 # Accordion Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/accordion](https://ui.shadcn.com/docs/components/accordion)  
-**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/accordion.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/accordion.mdx)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/accordion](https://ui.shadcn.com/docs/components/accordion)
 
 ---
 
@@ -30,17 +29,17 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
   - implementation:
     - accordion.go:114
   - tests:
-    - accordion_test.go:25
+    - accordion_test.go:76
 - [x] **Disabled Item State (`Disabled`)**
   - implementation:
     - accordion.go:106
   - tests:
-    - accordion_test.go:37
+    - accordion_test.go:64
 - [x] **Borderless Variant (`Borderless`)**
   - implementation:
     - accordion.go:220
   - tests:
-    - accordion_test.go:61
+    - accordion_test.go:27
 
 ### Capabilities & Features
 - [x] **Expand / Collapse Toggle**
@@ -52,66 +51,66 @@ Whenever adding, modifying, or refactoring the `accordion` component implementat
   - implementation:
     - accordion.go:180
   - tests:
-    - accordion_test.go:49
+    - accordion_test.go:52
 - [x] **Custom Header Widget**
   - implementation:
     - accordion.go:167
   - tests:
-    - accordion_test.go:49
+    - accordion_test.go:64
 - [x] **Nested Content Widget**
   - implementation:
     - accordion.go:204
   - tests:
-    - accordion_test.go:72
+    - accordion_test.go:40
 - [x] **Border & Background Drawing**
   - implementation:
     - accordion.go:221
   - tests:
-    - accordion_test.go:87
+    - accordion_test.go:99
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-basic.tsx
   - implementation:
     - component: accordion.go:107
-    - demo: demo.go:9
+    - demo: demo.go:26
   - tests:
     - accordion_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-borders.tsx
   - implementation:
     - component: accordion.go:220
-    - demo: demo.go:43
+    - demo: demo.go:37
   - tests:
-    - accordion_test.go:61
+    - accordion_test.go:27
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-card.tsx
   - implementation:
     - component: accordion.go:221
-    - demo: demo.go:9
+    - demo: demo.go:48
   - tests:
-    - accordion_test.go:87
+    - accordion_test.go:40
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-demo.tsx
   - implementation:
     - component: accordion.go:107
-    - demo: demo.go:9
+    - demo: demo.go:59
   - tests:
-    - accordion_test.go:13
+    - accordion_test.go:52
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-disabled.tsx
   - implementation:
     - component: accordion.go:106
-    - demo: demo.go:25
+    - demo: demo.go:70
   - tests:
-    - accordion_test.go:37
+    - accordion_test.go:64
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-multiple.tsx
   - implementation:
     - component: accordion.go:114
-    - demo: demo.go:17
+    - demo: demo.go:81
   - tests:
-    - accordion_test.go:25
+    - accordion_test.go:76
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/accordion-rtl.tsx
   - implementation:
     - component: accordion.go:107
-    - demo: demo.go:9
+    - demo: demo.go:92
   - tests:
-    - accordion_test.go:13
+    - accordion_test.go:88
 
 ---
 

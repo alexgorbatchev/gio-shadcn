@@ -24,62 +24,68 @@ Whenever adding, modifying, or refactoring the `table` component implementation 
   - implementation:
     - table.go:58
   - tests:
-    - table_test.go:13
+    - table_test.go:12
 
 ### Capabilities & Features
 - [x] **Header Row Columns**
   - implementation:
     - table.go:106
   - tests:
-    - table_test.go:21
+    - table_test.go:12
 - [x] **Selectable Data Rows**
   - implementation:
     - table.go:78
   - tests:
-    - table_test.go:25
+    - table_test.go:27
 - [x] **Row Hover / Selected State**
   - implementation:
     - table.go:146
   - tests:
-    - table_test.go:30
+    - table_test.go:27
 - [x] **Bottom Divider Strokes**
   - implementation:
     - table.go:175
   - tests:
-    - table_test.go:30
+    - table_test.go:12
 
 ---
 
-
-
 ### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-demo.tsx
+  - implementation:
+    - component: table.go:58
+    - demo: demo.go:19
+  - tests:
+    - table_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/data-table-demo.tsx
   - implementation:
     - component: table.go:58
-    - demo: demo.go:16
+    - demo: demo.go:29
   - tests:
     - table_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-actions.tsx
   - implementation:
     - component: table.go:58
-    - demo: demo.go:16
+    - demo: demo.go:19
   - tests:
     - table_test.go:27
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-demo.tsx
-  - implementation:
-    - component: table.go:58
-    - demo: demo.go:16
-  - tests:
-    - table_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-footer.tsx
   - implementation:
     - component: table.go:58
-    - demo: demo.go:16
+    - demo: demo.go:19
   - tests:
-    - table_test.go:27
+    - table_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/table-rtl.tsx
+  - implementation:
+    - component: table.go:58
+    - demo: demo.go:19
+  - tests:
+    - table_test.go:12
+
+---
 
 ## Code Structure & Entry Points
 - `table.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `table_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

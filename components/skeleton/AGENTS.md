@@ -22,74 +22,74 @@ Whenever adding, modifying, or refactoring the `skeleton` component implementati
 ### Variants
 - [x] **Text Line Skeleton**
   - implementation:
-    - skeleton.go:31
+    - skeleton.go:34
   - tests:
-    - skeleton_test.go:13
+    - skeleton_test.go:12
 - [x] **Circular Avatar Skeleton**
   - implementation:
-    - skeleton.go:31
+    - skeleton.go:69
   - tests:
-    - skeleton_test.go:24
+    - skeleton_test.go:22
 - [x] **Card Skeleton Container**
   - implementation:
-    - skeleton.go:31
+    - skeleton.go:52
   - tests:
-    - skeleton_test.go:35
+    - skeleton_test.go:33
 
 ### Capabilities & Features
 - [x] **Muted Shimmer Background**
   - implementation:
-    - skeleton.go:56
+    - skeleton.go:61
   - tests:
-    - skeleton_test.go:46
+    - skeleton_test.go:68
 - [x] **Custom Width & Height Dimensions**
   - implementation:
-    - skeleton.go:51
+    - skeleton.go:57
   - tests:
-    - skeleton_test.go:13
+    - skeleton_test.go:12
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-avatar.tsx
   - implementation:
-    - component: skeleton.go:47
-    - demo: demo.go:16
+    - component: skeleton.go:69
+    - demo: demo.go:46
   - tests:
-    - skeleton_test.go:23
+    - skeleton_test.go:44
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-card.tsx
   - implementation:
-    - component: skeleton.go:47
-    - demo: demo.go:16
+    - component: skeleton.go:52
+    - demo: demo.go:51
   - tests:
-    - skeleton_test.go:34
+    - skeleton_test.go:56
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-demo.tsx
   - implementation:
-    - component: skeleton.go:47
-    - demo: demo.go:16
+    - component: skeleton.go:34
+    - demo: demo.go:57
   - tests:
-    - skeleton_test.go:45
+    - skeleton_test.go:68
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-form.tsx
   - implementation:
-    - component: skeleton.go:47
-    - demo: demo.go:16
+    - component: skeleton.go:57
+    - demo: demo.go:62
   - tests:
-    - skeleton_test.go:45
+    - skeleton_test.go:79
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-table.tsx
   - implementation:
-    - component: skeleton.go:47
-    - demo: demo.go:16
+    - component: skeleton.go:52
+    - demo: demo.go:74
   - tests:
-    - skeleton_test.go:45
+    - skeleton_test.go:90
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/skeleton-text.tsx
   - implementation:
-    - component: skeleton.go:47
-    - demo: demo.go:16
+    - component: skeleton.go:34
+    - demo: demo.go:68
   - tests:
-    - skeleton_test.go:12
+    - skeleton_test.go:101
 
 ---
 
 ## Code Structure & Entry Points
 - `skeleton.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `skeleton_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

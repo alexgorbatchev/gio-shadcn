@@ -30,48 +30,64 @@ Whenever adding, modifying, or refactoring the `numberinput` component implement
     - numberinput.go:46
   - tests:
     - numberinput_test.go:24
+- [x] **Quantity Range Stepper Variant (1 to 10)**
+  - implementation:
+    - numberinput.go:48
+  - tests:
+    - numberinput_test.go:35
+- [x] **Decimal Precision Stepper Variant (0.0 to 1.0)**
+  - implementation:
+    - numberinput.go:50
+  - tests:
+    - numberinput_test.go:46
 - [x] **Min/Max Bounded Stepper Variant**
   - implementation:
     - numberinput.go:52
   - tests:
-    - numberinput_test.go:35
+    - numberinput_test.go:57
 
 ### Capabilities & Features
 - [x] **Increment & Decrement Click Buttons**
   - implementation:
     - numberinput.go:73
   - tests:
-    - numberinput_test.go:46
+    - numberinput_test.go:68
 - [x] **OnValueChange Event Callback**
   - implementation:
     - numberinput.go:78
   - tests:
-    - numberinput_test.go:62
+    - numberinput_test.go:84
 - [x] **Value Display Box Formatting**
   - implementation:
     - numberinput.go:105
   - tests:
-    - numberinput_test.go:76
+    - numberinput_test.go:98
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/data-picker-with-dropdowns.tsx
   - implementation:
-    - component: numberinput.go:73
-    - demo: demo.go:13
+    - component: numberinput.go:41
+    - demo: demo.go:18
   - tests:
     - numberinput_test.go:13
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/date-picker-basic.tsx
   - implementation:
-    - component: numberinput.go:73
-    - demo: demo.go:13
+    - component: numberinput.go:46
+    - demo: demo.go:19
   - tests:
     - numberinput_test.go:24
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/date-picker-demo.tsx
   - implementation:
-    - component: numberinput.go:73
-    - demo: demo.go:13
+    - component: numberinput.go:48
+    - demo: demo.go:20
   - tests:
     - numberinput_test.go:35
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/date-picker-input.tsx
+  - implementation:
+    - component: numberinput.go:50
+    - demo: demo.go:21
+  - tests:
+    - numberinput_test.go:46
 
 ---
 

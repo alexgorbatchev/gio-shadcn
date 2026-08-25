@@ -1,7 +1,6 @@
 # Aspect Ratio Component Specification (`gio-shadcn`)
 
-**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/aspect-ratio](https://ui.shadcn.com/docs/components/aspect-ratio)  
-**Official shadcn Source Spec (.mdx):** [https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/aspect-ratio.mdx](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/components/aria/aspect-ratio.mdx)
+**Official shadcn Reference:** [https://ui.shadcn.com/docs/components/aspect-ratio](https://ui.shadcn.com/docs/components/aspect-ratio)
 
 ---
 
@@ -23,57 +22,57 @@ Whenever adding, modifying, or refactoring the `aspectratio` component implement
 ### Variants
 - [x] **16:9 Standard Ratio**
   - implementation:
-    - aspectratio.go:30
+    - aspectratio.go:34
   - tests:
-    - aspectratio_test.go:13
-- [x] **4:3 Classic Ratio**
+    - aspectratio_test.go:12
+- [x] **9:16 Portrait Ratio**
   - implementation:
-    - aspectratio.go:30
+    - aspectratio.go:34
   - tests:
-    - aspectratio_test.go:27
+    - aspectratio_test.go:23
 - [x] **1:1 Square Ratio**
   - implementation:
-    - aspectratio.go:30
+    - aspectratio.go:34
   - tests:
-    - aspectratio_test.go:41
+    - aspectratio_test.go:34
 
 ### Capabilities & Features
 - [x] **Proportional Constraint Layout**
   - implementation:
-    - aspectratio.go:41
+    - aspectratio.go:49
   - tests:
-    - aspectratio_test.go:55
+    - aspectratio_test.go:45
 - [x] **Wrapped Child Fitting**
   - implementation:
-    - aspectratio.go:48
+    - aspectratio.go:61
   - tests:
-    - aspectratio_test.go:70
+    - aspectratio_test.go:45
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-demo.tsx
   - implementation:
-    - component: aspectratio.go:30
-    - demo: demo.go:11
+    - component: aspectratio.go:34
+    - demo: demo.go:34
   - tests:
-    - aspectratio_test.go:13
+    - aspectratio_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-portrait.tsx
   - implementation:
-    - component: aspectratio.go:30
-    - demo: demo.go:20
+    - component: aspectratio.go:34
+    - demo: demo.go:40
   - tests:
-    - aspectratio_test.go:27
+    - aspectratio_test.go:23
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-rtl.tsx
   - implementation:
-    - component: aspectratio.go:30
-    - demo: demo.go:11
+    - component: aspectratio.go:34
+    - demo: demo.go:46
   - tests:
-    - aspectratio_test.go:13
+    - aspectratio_test.go:45
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/aspect-ratio-square.tsx
   - implementation:
-    - component: aspectratio.go:30
-    - demo: demo.go:29
+    - component: aspectratio.go:34
+    - demo: demo.go:52
   - tests:
-    - aspectratio_test.go:41
+    - aspectratio_test.go:34
 
 ---
 

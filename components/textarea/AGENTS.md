@@ -24,73 +24,79 @@ Whenever adding, modifying, or refactoring the `textarea` component implementati
   - implementation:
     - textarea.go:42
   - tests:
-    - textarea_test.go:13
+    - textarea_test.go:12
 - [x] **Prefilled Text Area**
   - implementation:
     - textarea.go:45
   - tests:
-    - textarea_test.go:14
+    - textarea_test.go:12
 - [x] **Disabled Text Area**
   - implementation:
     - textarea.go:73
   - tests:
-    - textarea_test.go:24
+    - textarea_test.go:22
 
 ### Capabilities & Features
 - [x] **Multi-Line Text Editing**
   - implementation:
     - textarea.go:44
   - tests:
-    - textarea_test.go:13
+    - textarea_test.go:12
 - [x] **Placeholder Text**
   - implementation:
     - textarea.go:107
   - tests:
-    - textarea_test.go:16
+    - textarea_test.go:12
 - [x] **Focus Ring Stroke**
   - implementation:
     - textarea.go:124
   - tests:
-    - textarea_test.go:33
+    - textarea_test.go:12
 
 ---
 
-
-
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-button.tsx
-  - implementation:
-    - component: textarea.go:66
-    - demo: demo.go:16
-  - tests:
-    - textarea_test.go:21
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-demo.tsx
   - implementation:
     - component: textarea.go:66
-    - demo: demo.go:16
+    - demo: demo.go:20
+  - tests:
+    - textarea_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-button.tsx
+  - implementation:
+    - component: textarea.go:66
+    - demo: demo.go:22
   - tests:
     - textarea_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-disabled.tsx
   - implementation:
-    - component: textarea.go:66
-    - demo: demo.go:16
+    - component: textarea.go:73
+    - demo: demo.go:21
   - tests:
-    - textarea_test.go:21
+    - textarea_test.go:22
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-field.tsx
   - implementation:
     - component: textarea.go:66
-    - demo: demo.go:16
+    - demo: demo.go:20
   - tests:
-    - textarea_test.go:21
+    - textarea_test.go:12
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-invalid.tsx
   - implementation:
     - component: textarea.go:66
-    - demo: demo.go:16
+    - demo: demo.go:20
   - tests:
-    - textarea_test.go:21
+    - textarea_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/textarea-rtl.tsx
+  - implementation:
+    - component: textarea.go:66
+    - demo: demo.go:20
+  - tests:
+    - textarea_test.go:12
+
+---
 
 ## Code Structure & Entry Points
 - `textarea.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
 - `textarea_test.go`: Automated unit test suite verifying layout dimensions and state updates.
-- `demo.go`: Interactive component gallery demo.
 - `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).

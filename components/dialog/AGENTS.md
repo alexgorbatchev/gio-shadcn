@@ -22,86 +22,63 @@ Whenever adding, modifying, or refactoring the `dialog` component implementation
 ### Variants
 - [x] **Modal Dialog Window**
   - implementation:
-    - dialog.go:106
+    - dialog.go:50
   - tests:
     - dialog_test.go:13
 
 ### Capabilities & Features
-- [x] **Dark Backdrop Overlay**
+- [x] **Dark Backdrop Overlay & Outside Click-To-Close**
   - implementation:
-    - dialog.go:136
+    - dialog.go:108
   - tests:
-    - dialog_test.go:23
-- [x] **Backdrop Click-To-Close**
-  - implementation:
-    - dialog.go:121
-  - tests:
-    - dialog_test.go:38
+    - dialog_test.go:13
 - [x] **Header Title & Description**
   - implementation:
-    - dialog.go:163
+    - dialog.go:142
   - tests:
-    - dialog_test.go:52
+    - dialog_test.go:24
 - [x] **Confirm & Cancel Actions**
   - implementation:
-    - dialog.go:186
+    - dialog.go:167
   - tests:
-    - dialog_test.go:61
-- [x] **Custom Content Widget**
+    - dialog_test.go:37
+- [x] **Custom Content Body Widget**
   - implementation:
-    - dialog.go:177
+    - dialog.go:158
   - tests:
-    - dialog_test.go:70
+    - dialog_test.go:49
 
 ### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-basic.tsx
-  - implementation:
-    - component: dialog.go:94
-    - demo: demo.go:16
-  - tests:
-    - dialog_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-demo.tsx
-  - implementation:
-    - component: dialog.go:94
-    - demo: demo.go:16
-  - tests:
-    - dialog_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-destructive.tsx
-  - implementation:
-    - component: dialog.go:76
-    - demo: demo.go:16
-  - tests:
-    - dialog_test.go:58
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-close-button.tsx
-  - implementation:
-    - component: dialog.go:66
-    - demo: demo.go:22
-  - tests:
-    - dialog_test.go:34
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-demo.tsx
   - implementation:
-    - component: dialog.go:94
-    - demo: demo.go:16
+    - component: dialog.go:50
+    - demo: demo.go:28
   - tests:
-    - dialog_test.go:11
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-no-close-button.tsx
+    - dialog_test.go:13
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-demo.tsx
   - implementation:
-    - component: dialog.go:114
-    - demo: demo.go:16
+    - component: dialog.go:50
+    - demo: demo.go:54
   - tests:
-    - dialog_test.go:34
+    - dialog_test.go:24
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/alert-dialog-destructive.tsx
+  - implementation:
+    - component: dialog.go:50
+    - demo: demo.go:73
+  - tests:
+    - dialog_test.go:37
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-close-button.tsx
+  - implementation:
+    - component: dialog.go:50
+    - demo: demo.go:92
+  - tests:
+    - dialog_test.go:49
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-scrollable-content.tsx
   - implementation:
-    - component: dialog.go:174
-    - demo: demo.go:16
+    - component: dialog.go:50
+    - demo: demo.go:114
   - tests:
-    - dialog_test.go:68
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-sticky-footer.tsx
-  - implementation:
-    - component: dialog.go:183
-    - demo: demo.go:16
-  - tests:
-    - dialog_test.go:58
+    - dialog_test.go:49
 
 ---
 

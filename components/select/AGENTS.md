@@ -24,67 +24,75 @@ Whenever adding, modifying, or refactoring the `select` component implementation
   - implementation:
     - select.go:57
   - tests:
-    - select_test.go:13
+    - select_test.go:12
 
 ### Capabilities & Features
 - [x] **Option Items List**
   - implementation:
     - select.go:153
   - tests:
-    - select_test.go:15
+    - select_test.go:12
 - [x] **Active Selected Value**
   - implementation:
     - select.go:183
   - tests:
-    - select_test.go:21
+    - select_test.go:12
 - [x] **Open/Close Overlay Dropdown**
   - implementation:
     - select.go:79
-  - tests:
-    - select_test.go:34
-
-### Demos
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-autocomplete.tsx
-  - implementation:
-    - component: select.go:74
-    - demo: demo.go:13
-  - tests:
-    - select_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-demo.tsx
-  - implementation:
-    - component: select.go:74
-    - demo: demo.go:13
-  - tests:
-    - select_test.go:27
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-disabled.tsx
-  - implementation:
-    - component: select.go:74
-    - demo: demo.go:13
-  - tests:
-    - select_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-groups.tsx
-  - implementation:
-    - component: select.go:148
-    - demo: demo.go:13
-  - tests:
-    - select_test.go:27
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-invalid.tsx
-  - implementation:
-    - component: select.go:74
-    - demo: demo.go:13
-  - tests:
-    - select_test.go:13
-* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-scrollable.tsx
-  - implementation:
-    - component: select.go:148
-    - demo: demo.go:13
   - tests:
     - select_test.go:27
 
 ---
 
+### Demos
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-demo.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:18
+  - tests:
+    - select_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-scrollable.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:27
+  - tests:
+    - select_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-disabled.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:18
+  - tests:
+    - select_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-groups.tsx
+  - implementation:
+    - component: select.go:153
+    - demo: demo.go:18
+  - tests:
+    - select_test.go:27
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-autocomplete.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:18
+  - tests:
+    - select_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-invalid.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:18
+  - tests:
+    - select_test.go:12
+* [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/select-rtl.tsx
+  - implementation:
+    - component: select.go:74
+    - demo: demo.go:18
+  - tests:
+    - select_test.go:12
+
+---
+
 ## Code Structure & Entry Points
-- `select.go`: Primary component implementation.
-- `select_test.go`: Unit test suite.
-- `demo.go`: Modular component interactive demo layout (`components/select/demo.go`).
-- `AGENTS.md`: Component specification.
+- `select.go`: Primary component widget layout and state logic.
+- `demo.go`: Modular interactive demo component for gallery integration (`Demo`).
+- `select_test.go`: Automated unit test suite verifying layout dimensions and state updates.
+- `AGENTS.md`: Component specification, shadcn reference URL, and maintainer guidelines (this file).
