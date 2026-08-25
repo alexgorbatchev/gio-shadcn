@@ -15,6 +15,7 @@ import (
 	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -37,38 +38,59 @@ func NewItem(label, shortcut string) *Item {
 
 // DropdownMenu represents an action dropdown menu component.
 type DropdownMenu struct {
-	Open         bool
-	Items        []*Item
-	Classes      string
-	OnSelectItem func(index int)
+	Open          bool
+	Items         []*Item
+	Classes       string
+	OnSelectItem  func(index int)
+	TriggerButton *button.Button
+	Trigger       layout.Widget
+
+	backdropClick widget.Clickable
 }
 
 // Config represents configuration for creating a DropdownMenu.
 type Config struct {
-	Open         bool
-	Items        []*Item
-	Classes      string
-	OnSelectItem func(index int)
+	TriggerText   string
+	TriggerButton *button.Button
+	Trigger       layout.Widget
+	Open          bool
+	Items         []*Item
+	Classes       string
+	OnSelectItem  func(index int)
 }
 
 // New creates a new DropdownMenu component.
 func New(config Config) *DropdownMenu {
-	return &DropdownMenu{
-		Open:         config.Open,
-		Items:        config.Items,
-		Classes:      config.Classes,
-		OnSelectItem: config.OnSelectItem,
+	dm := &DropdownMenu{
+		Open:          config.Open,
+		Items:         config.Items,
+		Classes:       config.Classes,
+		OnSelectItem:  config.OnSelectItem,
+		TriggerButton: config.TriggerButton,
+		Trigger:       config.Trigger,
 	}
+
+	if config.TriggerText != "" && dm.TriggerButton == nil {
+		dm.TriggerButton = button.New(button.Config{
+			Text:    config.TriggerText,
+			Variant: theme.VariantOutline,
+			OnClick: func() {
+				dm.Open = !dm.Open
+			},
+		})
+	}
+
+	return dm
 }
 
-// Layout renders the dropdown menu panel when Open == true with background drawn first.
+// Layout renders the dropdown menu panel or trigger with anchored menu when Open == true.
 func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !dm.Open {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
+	}
+
+	if dm.backdropClick.Clicked(gtx) {
+		dm.Open = false
 	}
 
 	mTheme := th.MaterialTheme
@@ -76,6 +98,38 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 		mTheme = material.NewTheme()
 	}
 
+	// 1. If trigger is present, render trigger and conditionally render anchored menu below it
+	if dm.TriggerButton != nil || dm.Trigger != nil {
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if dm.TriggerButton != nil {
+					return dm.TriggerButton.Layout(gtx, th)
+				}
+				if dm.Trigger != nil {
+					return dm.Trigger(gtx)
+				}
+				return layout.Dimensions{}
+			}),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if !dm.Open {
+					return layout.Dimensions{}
+				}
+				return layout.Inset{Top: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return dm.layoutMenuBox(gtx, th, mTheme)
+				})
+			}),
+		)
+	}
+
+	// 2. Standalone menu rendering without trigger
+	if !dm.Open {
+		return layout.Dimensions{}
+	}
+
+	return dm.layoutMenuBox(gtx, th, mTheme)
+}
+
+func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme) layout.Dimensions {
 	gtxContent := gtx
 	gtxContent.Constraints.Min = image.Pt(0, 0)
 
@@ -123,30 +177,36 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 
 			return layout.Dimensions{Size: menuSize}
 		}),
+
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			return renderContent(gtx)
 		}),
 	)
 
-	// Reset active GPU paint color state
+	// Reset active GPU paint color state back to background
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
 	return dims
 }
 
 func (dm *DropdownMenu) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, item *Item) layout.Dimensions {
-	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		padding := layout.Inset{
-			Top:    th.Spacing.Space2,
-			Bottom: th.Spacing.Space2,
-			Left:   th.Spacing.Space3,
-			Right:  th.Spacing.Space3,
-		}
+	padding := layout.Inset{
+		Top:    th.Spacing.Space2,
+		Bottom: th.Spacing.Space2,
+		Left:   th.Spacing.Space3,
+		Right:  th.Spacing.Space3,
+	}
 
+	itemBg := th.Colors.Popover
+	if item.clickable.Hovered() {
+		itemBg = th.Colors.Secondary
+	}
+
+	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		gtxContent := gtx
 		gtxContent.Constraints.Min = image.Pt(0, 0)
 
-		renderItem := func(gtx layout.Context) layout.Dimensions {
+		renderContent := func(gtx layout.Context) layout.Dimensions {
 			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
@@ -160,26 +220,26 @@ func (dm *DropdownMenu) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *
 						}
 						lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
 						lbl.Color = th.Colors.MutedFg
-						lbl.Font.Weight = font.Bold
+						lbl.Font.Weight = font.Medium
 						return lbl.Layout(gtx)
 					}),
 				)
 			})
 		}
 
-		itemDims := renderItem(gtxContent)
+		itemDims := renderContent(gtxContent)
 		itemSize := itemDims.Size
 
 		return layout.Stack{}.Layout(gtx,
 			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-				if item.clickable.Hovered() {
-					rect := image.Rectangle{Max: itemSize}
-					theme.DrawRRectBackground(gtx, rect, 0, th.Colors.Secondary)
-				}
+				rect := image.Rectangle{Max: itemSize}
+				radiusPx := gtx.Dp(th.Radius.RadiusSM)
+				theme.DrawRRectBackground(gtx, rect, radiusPx, itemBg)
 				return layout.Dimensions{Size: itemSize}
 			}),
+
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderItem(gtx)
+				return renderContent(gtx)
 			}),
 		)
 	})
