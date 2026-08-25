@@ -217,13 +217,11 @@ func TestTreeDropInsideGenerousHitZone(t *testing.T) {
 }
 
 func TestTreeConfigurableIndent(t *testing.T) {
-	// Default indent must be 9dp (50% reduction from old 18dp)
 	trDefault := tree.New(tree.Config{})
 	if trDefault.Indent != unit.Dp(9) {
 		t.Errorf("expected default indent 9dp, got %v", trDefault.Indent)
 	}
 
-	// Custom configured indent
 	trCustom := tree.New(tree.Config{
 		Indent: unit.Dp(14),
 	})
@@ -256,5 +254,115 @@ func TestTreeNodeTrailingActions(t *testing.T) {
 
 	if !actionRendered {
 		t.Errorf("expected trailing action to be rendered")
+	}
+}
+
+func TestCrossTreeDragAndDrop(t *testing.T) {
+	session := tree.NewDragSession()
+
+	fileA := tree.NewNode(tree.NodeConfig{ID: "fileA", Label: "TrackA.flac", Selected: true})
+	treeA := tree.New(tree.Config{
+		Nodes:   []*tree.Node{fileA},
+		Session: session,
+	})
+
+	folderB := tree.NewNode(tree.NodeConfig{
+		ID:       "folderB",
+		Label:    "Playlist",
+		Expanded: true,
+	})
+	treeB := tree.New(tree.Config{
+		Nodes:   []*tree.Node{folderB},
+		Session: session,
+	})
+
+	// Move fileA from treeA into folderB in treeB
+	session.MoveNodeCrossTree(treeA, treeB, fileA, folderB, tree.DropInside)
+
+	if len(treeA.Nodes) != 0 {
+		t.Errorf("expected fileA to be removed from treeA, got len=%d", len(treeA.Nodes))
+	}
+	if len(folderB.Children) != 1 || folderB.Children[0] != fileA {
+		t.Fatalf("expected fileA to be child of folderB in treeB")
+	}
+}
+
+func TestDragSessionCrossTreeHitTesting(t *testing.T) {
+	th := theme.NewDark()
+	session := tree.NewDragSession()
+
+	fileA := tree.NewNode(tree.NodeConfig{ID: "a", Label: "FileA.ts", Selected: true})
+	treeA := tree.New(tree.Config{
+		Nodes:   []*tree.Node{fileA},
+		Session: session,
+	})
+
+	folderB := tree.NewNode(tree.NodeConfig{ID: "b", Label: "FolderB", Expanded: true})
+	treeB := tree.New(tree.Config{
+		Nodes:   []*tree.Node{folderB},
+		Session: session,
+	})
+
+	ops := new(op.Ops)
+	gtx := layout.Context{Ops: ops, Constraints: layout.Exact(image.Pt(600, 300))}
+
+	// Layout TreeA on left (X: 0..280) and TreeB on right (X: 300..580)
+	_ = layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			gtx.Constraints = layout.Exact(image.Pt(280, 300))
+			return treeA.Layout(gtx, th)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Width: unit.Dp(20)}.Layout(gtx)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			gtx.Constraints = layout.Exact(image.Pt(280, 300))
+			return treeB.Layout(gtx, th)
+		}),
+	)
+
+	// Simulate dragging fileA from TreeA over into TreeB at (X=350, Y=16)
+	targetTree, targetNode, pos := session.ResolveDropTargetAtGlobal(fileA, 350.0, 16.0)
+	if targetTree != treeB {
+		t.Errorf("expected targetTree to be treeB, got %v", targetTree)
+	}
+	if targetNode != folderB {
+		t.Errorf("expected targetNode to be folderB, got %v", targetNode)
+	}
+	if pos != tree.DropInside && pos != tree.DropBefore && pos != tree.DropAfter {
+		t.Errorf("expected valid drop position, got %v", pos)
+	}
+}
+
+func TestCrossTreeMoveMaintainsTargetSelection(t *testing.T) {
+	session := tree.NewDragSession()
+
+	fileA := tree.NewNode(tree.NodeConfig{ID: "fileA", Label: "TrackA.flac", Selected: true})
+	treeA := tree.New(tree.Config{
+		Nodes:   []*tree.Node{fileA},
+		Session: session,
+	})
+
+	fileB := tree.NewNode(tree.NodeConfig{ID: "fileB", Label: "ExistingSelection.flac", Selected: true})
+	folderB := tree.NewNode(tree.NodeConfig{
+		ID:       "folderB",
+		Label:    "Playlist",
+		Expanded: true,
+		Children: []*tree.Node{fileB},
+	})
+	treeB := tree.New(tree.Config{
+		Nodes:   []*tree.Node{folderB},
+		Session: session,
+	})
+
+	// Move fileA from treeA into folderB in treeB
+	session.MoveNodeCrossTree(treeA, treeB, fileA, folderB, tree.DropInside)
+
+	// In treeB, the original selection (fileB) must be maintained, and the dropped node (fileA) must NOT also be selected
+	if !fileB.Selected {
+		t.Errorf("expected target tree original selection (fileB) to be maintained as true")
+	}
+	if fileA.Selected {
+		t.Errorf("expected dropped node (fileA) to have Selected=false so target tree does not have two selected items")
 	}
 }

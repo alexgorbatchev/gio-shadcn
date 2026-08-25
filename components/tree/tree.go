@@ -4,7 +4,7 @@ for gio-shadcn applications.
 
 Trees display nested hierarchical items (such as file systems, categories, or navigation paths)
 with expandable chevrons, optional sub-icons (folders, files), interactive node selection,
-right-aligned action elements, and intuitive drag-and-drop reordering on selected items.
+right-aligned action elements, and intuitive drag-and-drop reordering within or across tree views.
 */
 package tree
 
@@ -35,6 +35,139 @@ const (
 	DropInside
 	DropAfter
 )
+
+// DragSession coordinates drag-and-drop operations across single or multiple Tree instances.
+type DragSession struct {
+	DraggedNode    *Node
+	SourceTree     *Tree
+	DragStart      f32.Point
+	GlobalDragX    float32
+	GlobalDragY    float32
+	LocalDragX     float32
+	LocalDragY     float32
+	DropTargetNode *Node
+	DropTargetTree *Tree
+	DropPosition   DropPosition
+	WasDragging    bool
+
+	registeredTrees []*Tree
+}
+
+// NewDragSession creates a shared drag-and-drop coordinator.
+func NewDragSession() *DragSession {
+	return &DragSession{}
+}
+
+// RegisterTree registers a tree instance for cross-tree drag-and-drop resolution.
+func (s *DragSession) RegisterTree(t *Tree) {
+	for _, registered := range s.registeredTrees {
+		if registered == t {
+			return
+		}
+	}
+	s.registeredTrees = append(s.registeredTrees, t)
+}
+
+// ResolveDropTargetAtGlobal resolves the target tree and target node from global coordinates.
+func (s *DragSession) ResolveDropTargetAtGlobal(dragged *Node, globalX, globalY float32) (*Tree, *Node, DropPosition) {
+	if dragged == nil {
+		return nil, nil, DropNone
+	}
+
+	// In multi-tree layouts, compute cumulative horizontal offsets
+	cumX := float32(0)
+	for i, tr := range s.registeredTrees {
+		width := float32(tr.cachedWidth)
+		if width <= 0 {
+			width = 280
+		}
+		tr.cachedOriginX = int(cumX)
+
+		isLast := (i == len(s.registeredTrees)-1)
+		if (globalX >= cumX && globalX < cumX+width) || (isLast && globalX >= cumX) {
+			localTreeY := globalY
+			targetNode, pos := tr.resolveDropTargetByTreeY(localTreeY)
+			if targetNode != nil {
+				return tr, targetNode, pos
+			}
+		}
+		cumX += width
+	}
+
+	// Fallback
+	if len(s.registeredTrees) > 0 {
+		first := s.registeredTrees[0]
+		targetNode, pos := first.resolveDropTargetByTreeY(globalY)
+		return first, targetNode, pos
+	}
+
+	return nil, nil, DropNone
+}
+
+// MoveNodeCrossTree moves a node from sourceTree to targetTree relative to target node.
+func (s *DragSession) MoveNodeCrossTree(sourceTree, targetTree *Tree, source, target *Node, pos DropPosition) {
+	if sourceTree == nil || targetTree == nil || source == nil || target == nil || source == target {
+		return
+	}
+
+	// Prevent dropping a parent into its own descendant
+	if sourceTree == targetTree && sourceTree.isDescendant(source, target) {
+		return
+	}
+
+	// 1. Remove source from sourceTree
+	if !sourceTree.removeNode(nil, sourceTree.Nodes, source) {
+		return
+	}
+
+	// 2. When moving across trees, if targetTree already has an active selection,
+	// maintain the targetTree's original selection by clearing source.Selected.
+	if sourceTree != targetTree {
+		if targetTree.hasSelected(targetTree.Nodes) {
+			source.Selected = false
+		}
+	}
+
+	// 3. Insert into targetTree
+	if pos == DropInside {
+		target.Children = append(target.Children, source)
+		target.Expanded = true
+		target.isFolder = true
+	} else {
+		parent, idx := targetTree.findParentAndIndex(nil, targetTree.Nodes, target)
+		if idx < 0 {
+			targetTree.Nodes = append(targetTree.Nodes, source)
+		} else {
+			if pos == DropAfter {
+				idx++
+			}
+			if parent != nil {
+				if idx < 0 {
+					idx = 0
+				}
+				if idx > len(parent.Children) {
+					idx = len(parent.Children)
+				}
+				parent.Children = insertNode(parent.Children, idx, source)
+			} else {
+				if idx < 0 {
+					idx = 0
+				}
+				if idx > len(targetTree.Nodes) {
+					idx = len(targetTree.Nodes)
+				}
+				targetTree.Nodes = insertNode(targetTree.Nodes, idx, source)
+			}
+		}
+	}
+
+	if sourceTree.OnMove != nil {
+		sourceTree.OnMove(source, target, int(pos))
+	}
+	if targetTree != sourceTree && targetTree.OnMove != nil {
+		targetTree.OnMove(source, target, int(pos))
+	}
+}
 
 // Node represents a single item or branch in the Tree hierarchy.
 type Node struct {
@@ -103,17 +236,14 @@ type Tree struct {
 	Nodes    []*Node
 	Indent   unit.Dp
 	Classes  string
+	Session  *DragSession
 	OnSelect func(node *Node)
 	OnMove   func(source *Node, targetParent *Node, targetIndex int)
 
-	// Drag and drop state
-	draggedNode      *Node
-	dragStart        f32.Point
-	dragPos          f32.Point
-	dropTargetNode   *Node
-	dropPosition     DropPosition
+	cachedOriginX    int
+	cachedOriginY    int
+	cachedWidth      int
 	flatVisibleNodes []*Node
-	wasDragging      bool
 }
 
 // Config represents configuration for creating a Tree.
@@ -121,6 +251,7 @@ type Config struct {
 	Nodes    []*Node
 	Indent   unit.Dp
 	Classes  string
+	Session  *DragSession
 	OnSelect func(node *Node)
 	OnMove   func(source *Node, targetParent *Node, targetIndex int)
 }
@@ -132,13 +263,22 @@ func New(config Config) *Tree {
 		indent = unit.Dp(9)
 	}
 
-	return &Tree{
+	session := config.Session
+	if session == nil {
+		session = NewDragSession()
+	}
+
+	t := &Tree{
 		Nodes:    config.Nodes,
 		Indent:   indent,
 		Classes:  config.Classes,
+		Session:  session,
 		OnSelect: config.OnSelect,
 		OnMove:   config.OnMove,
 	}
+
+	session.RegisterTree(t)
+	return t
 }
 
 // SelectNode selects the specified node and unselects all other nodes in the tree.
@@ -162,6 +302,18 @@ func (t *Tree) unselectAll(list []*Node) {
 	}
 }
 
+func (t *Tree) hasSelected(list []*Node) bool {
+	for _, n := range list {
+		if n.Selected {
+			return true
+		}
+		if len(n.Children) > 0 && t.hasSelected(n.Children) {
+			return true
+		}
+	}
+	return false
+}
+
 // Layout renders the tree hierarchy, chevrons, sub-icons, and interactive DnD indicators.
 func (t *Tree) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
@@ -172,6 +324,10 @@ func (t *Tree) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if mTheme == nil {
 		mTheme = material.NewTheme()
 	}
+
+	// Register with session
+	t.Session.RegisterTree(t)
+	t.cachedWidth = gtx.Constraints.Max.X
 
 	// 1. Flatten visible nodes for hit testing and linear rendering
 	t.flatVisibleNodes = t.flatVisibleNodes[:0]
@@ -194,7 +350,6 @@ func (t *Tree) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			return dims
 		}))
 
-		// Estimate height for next row if not yet measured, or use cached
 		h := node.cachedH
 		if h <= 0 {
 			h = gtx.Dp(unit.Dp(32))
@@ -204,8 +359,8 @@ func (t *Tree) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	dims := layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
 
-	// 4. If dragging, render floating drag preview badge at cursor location
-	if t.draggedNode != nil && t.wasDragging {
+	// 4. If dragging, render floating drag preview badge at cursor location (anchored to source tree)
+	if t.Session.DraggedNode != nil && t.Session.WasDragging && t.Session.SourceTree == t {
 		t.layoutDragGhost(gtx, th, mTheme)
 	}
 
@@ -228,8 +383,9 @@ func (t *Tree) flattenNodes(nodes []*Node, depth int) {
 }
 
 func (t *Tree) processDnD(gtx layout.Context) {
+	session := t.Session
+
 	for _, node := range t.flatVisibleNodes {
-		// Only the currently selected node can be dragged
 		if !node.Selected || node.Disabled || !node.Draggable {
 			continue
 		}
@@ -241,26 +397,40 @@ func (t *Tree) processDnD(gtx layout.Context) {
 			}
 			switch ev.Kind {
 			case pointer.Press:
-				t.dragStart = f32.Pt(ev.Position.X, float32(node.cachedY)+ev.Position.Y)
-				t.dragPos = t.dragStart
-				t.wasDragging = false
+				session.LocalDragX = ev.Position.X
+				session.LocalDragY = ev.Position.Y
+				session.GlobalDragX = ev.Position.X + float32(t.cachedOriginX)
+				session.GlobalDragY = float32(node.cachedY+t.cachedOriginY) + ev.Position.Y
+				session.DragStart = f32.Pt(session.GlobalDragX, session.GlobalDragY)
+				session.DraggedNode = node
+				session.SourceTree = t
+				session.WasDragging = false
 			case pointer.Drag:
-				t.dragPos = f32.Pt(ev.Position.X, float32(node.cachedY)+ev.Position.Y)
-				dx := t.dragPos.X - t.dragStart.X
-				dy := t.dragPos.Y - t.dragStart.Y
-				if dx*dx+dy*dy >= 9 { // 3px slop threshold
-					t.draggedNode = node
-					t.wasDragging = true
-					t.dropTargetNode, t.dropPosition = t.ResolveDropTarget(node, ev.Position.Y)
+				session.LocalDragX = ev.Position.X
+				session.LocalDragY = ev.Position.Y
+				session.GlobalDragX = ev.Position.X + float32(t.cachedOriginX)
+				session.GlobalDragY = float32(node.cachedY+t.cachedOriginY) + ev.Position.Y
+
+				dx := session.GlobalDragX - session.DragStart.X
+				dy := session.GlobalDragY - session.DragStart.Y
+				if dx*dx+dy*dy >= 9 {
+					session.DraggedNode = node
+					session.SourceTree = t
+					session.WasDragging = true
+					targetTree, targetNode, pos := session.ResolveDropTargetAtGlobal(node, session.GlobalDragX, session.GlobalDragY)
+					session.DropTargetTree = targetTree
+					session.DropTargetNode = targetNode
+					session.DropPosition = pos
 				}
 			case pointer.Release, pointer.Cancel:
-				if t.wasDragging && t.draggedNode != nil && t.dropTargetNode != nil && t.draggedNode != t.dropTargetNode {
-					t.MoveNode(t.draggedNode, t.dropTargetNode, t.dropPosition)
+				if session.WasDragging && session.DraggedNode != nil && session.DropTargetTree != nil && session.DropTargetNode != nil && session.DraggedNode != session.DropTargetNode {
+					session.MoveNodeCrossTree(session.SourceTree, session.DropTargetTree, session.DraggedNode, session.DropTargetNode, session.DropPosition)
 				}
-				t.draggedNode = nil
-				t.dropTargetNode = nil
-				t.dropPosition = DropNone
-				t.wasDragging = false
+				session.DraggedNode = nil
+				session.DropTargetTree = nil
+				session.DropTargetNode = nil
+				session.DropPosition = DropNone
+				session.WasDragging = false
 			}
 		}
 	}
@@ -272,7 +442,10 @@ func (t *Tree) ResolveDropTarget(dragged *Node, localY float32) (*Node, DropPosi
 		return nil, DropNone
 	}
 	absoluteY := float32(dragged.cachedY) + localY
+	return t.resolveDropTargetByTreeY(absoluteY)
+}
 
+func (t *Tree) resolveDropTargetByTreeY(treeY float32) (*Node, DropPosition) {
 	for _, node := range t.flatVisibleNodes {
 		top := float32(node.cachedY)
 		h := float32(node.cachedH)
@@ -281,10 +454,9 @@ func (t *Tree) ResolveDropTarget(dragged *Node, localY float32) (*Node, DropPosi
 		}
 		bottom := top + h
 
-		if absoluteY >= top && absoluteY < bottom {
-			relY := absoluteY - top
+		if treeY >= top && treeY < bottom {
+			relY := treeY - top
 
-			// Generous 70% middle drop-inside zone for folders (15% to 85%)
 			if node.isFolder {
 				if relY >= h*0.15 && relY <= h*0.85 {
 					return node, DropInside
@@ -295,7 +467,6 @@ func (t *Tree) ResolveDropTarget(dragged *Node, localY float32) (*Node, DropPosi
 				return node, DropAfter
 			}
 
-			// 50/50 split for leaf nodes
 			if relY < h*0.5 {
 				return node, DropBefore
 			}
@@ -306,11 +477,11 @@ func (t *Tree) ResolveDropTarget(dragged *Node, localY float32) (*Node, DropPosi
 	// Clamped boundary checks
 	if len(t.flatVisibleNodes) > 0 {
 		last := t.flatVisibleNodes[len(t.flatVisibleNodes)-1]
-		if absoluteY >= float32(last.cachedY+last.cachedH) {
+		if treeY >= float32(last.cachedY+last.cachedH) {
 			return last, DropAfter
 		}
 		first := t.flatVisibleNodes[0]
-		if absoluteY < float32(first.cachedY) {
+		if treeY < float32(first.cachedY) {
 			return first, DropBefore
 		}
 	}
@@ -318,59 +489,9 @@ func (t *Tree) ResolveDropTarget(dragged *Node, localY float32) (*Node, DropPosi
 	return nil, DropNone
 }
 
-// MoveNode moves source relative to target (DropBefore, DropAfter, or DropInside).
+// MoveNode moves source relative to target within this Tree.
 func (t *Tree) MoveNode(source, target *Node, pos DropPosition) {
-	if source == nil || target == nil || source == target {
-		return
-	}
-
-	// Prevent dropping a parent into its own descendant
-	if t.isDescendant(source, target) {
-		return
-	}
-
-	// 1. Locate source and remove it
-	if !t.removeNode(nil, t.Nodes, source) {
-		return
-	}
-
-	// 2. Insert into new location based on target and pos
-	if pos == DropInside {
-		target.Children = append(target.Children, source)
-		target.Expanded = true
-		target.isFolder = true
-	} else {
-		parent, idx := t.findParentAndIndex(nil, t.Nodes, target)
-		if idx < 0 {
-			// Fallback: append to root
-			t.Nodes = append(t.Nodes, source)
-		} else {
-			if pos == DropAfter {
-				idx++
-			}
-			if parent != nil {
-				if idx < 0 {
-					idx = 0
-				}
-				if idx > len(parent.Children) {
-					idx = len(parent.Children)
-				}
-				parent.Children = insertNode(parent.Children, idx, source)
-			} else {
-				if idx < 0 {
-					idx = 0
-				}
-				if idx > len(t.Nodes) {
-					idx = len(t.Nodes)
-				}
-				t.Nodes = insertNode(t.Nodes, idx, source)
-			}
-		}
-	}
-
-	if t.OnMove != nil {
-		t.OnMove(source, target, int(pos))
-	}
+	t.Session.MoveNodeCrossTree(t, t, source, target, pos)
 }
 
 func insertNode(slice []*Node, index int, item *Node) []*Node {
@@ -444,7 +565,7 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 
 	// Select on node click (evaluated before layout)
 	for node.clickable.Clicked(gtx) {
-		if !node.Disabled && !t.wasDragging {
+		if !node.Disabled && !t.Session.WasDragging {
 			t.SelectNode(node)
 		}
 	}
@@ -552,13 +673,13 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 	contentDims := renderContent(gtxContent)
 	rowSize := image.Pt(gtx.Constraints.Max.X, contentDims.Size.Y)
 
-	isDropTarget := t.dropTargetNode == node
-	isDragged := t.draggedNode == node && t.wasDragging
+	isDropTarget := t.Session.DropTargetTree == t && t.Session.DropTargetNode == node
+	isDragged := t.Session.DraggedNode == node && t.Session.WasDragging
 
 	if isDragged {
 		rowBg.A = 80
 	}
-	if isDropTarget && t.dropPosition == DropInside {
+	if isDropTarget && t.Session.DropPosition == DropInside {
 		rowBg = th.Colors.Secondary
 		fgColor = th.Colors.Foreground
 	}
@@ -577,11 +698,11 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 				theme.DrawRRectBackground(gtx, rect, radius, rowBg)
 
 				// Draw Drop Indicators (Before / After insertion lines)
-				if isDropTarget && t.wasDragging {
+				if isDropTarget && t.Session.WasDragging {
 					lineColor := th.Colors.Primary
 					indicatorX := indentPx + gtx.Dp(unit.Dp(6))
 
-					if t.dropPosition == DropBefore {
+					if t.Session.DropPosition == DropBefore {
 						lineRect := image.Rectangle{
 							Min: image.Pt(indicatorX, 0),
 							Max: image.Pt(rowSize.X-gtx.Dp(unit.Dp(8)), gtx.Dp(unit.Dp(2))),
@@ -594,7 +715,7 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 							Max: image.Pt(indicatorX+2, 4),
 						}
 						theme.DrawRRectBackground(gtx, dotRect, 3, lineColor)
-					} else if t.dropPosition == DropAfter {
+					} else if t.Session.DropPosition == DropAfter {
 						lineRect := image.Rectangle{
 							Min: image.Pt(indicatorX, rowSize.Y-gtx.Dp(unit.Dp(2))),
 							Max: image.Pt(rowSize.X-gtx.Dp(unit.Dp(8)), rowSize.Y),
@@ -607,7 +728,7 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 							Max: image.Pt(indicatorX+2, rowSize.Y+2),
 						}
 						theme.DrawRRectBackground(gtx, dotRect, 3, lineColor)
-					} else if t.dropPosition == DropInside {
+					} else if t.Session.DropPosition == DropInside {
 						theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Muted)
 					}
 				}
@@ -624,11 +745,11 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 }
 
 func (t *Tree) layoutDragGhost(gtx layout.Context, th *theme.Theme, mTheme *material.Theme) {
-	if t.draggedNode == nil {
+	if t.Session.DraggedNode == nil {
 		return
 	}
 
-	ghostOffset := image.Pt(int(t.dragPos.X)+12, int(t.dragPos.Y)+8)
+	ghostOffset := image.Pt(int(t.Session.LocalDragX)+12, int(t.Session.DraggedNode.cachedY)+int(t.Session.LocalDragY)+8)
 	trans := op.Offset(ghostOffset).Push(gtx.Ops)
 	defer trans.Pop()
 
@@ -643,9 +764,9 @@ func (t *Tree) layoutDragGhost(gtx layout.Context, th *theme.Theme, mTheme *mate
 		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					ic := t.draggedNode.Icon
+					ic := t.Session.DraggedNode.Icon
 					if ic == nil {
-						if t.draggedNode.isFolder {
+						if t.Session.DraggedNode.isFolder {
 							ic = lucide.Folder
 						} else {
 							ic = lucide.File
@@ -656,7 +777,7 @@ func (t *Tree) layoutDragGhost(gtx layout.Context, th *theme.Theme, mTheme *mate
 					})
 				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.draggedNode.Label)
+					lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Session.DraggedNode.Label)
 					lbl.Color = th.Colors.PrimaryFg
 					lbl.Font.Weight = font.SemiBold
 					return lbl.Layout(gtx)
