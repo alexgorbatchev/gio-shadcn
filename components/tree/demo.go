@@ -13,7 +13,9 @@ import (
 )
 
 type DemoState struct {
-	FileSystemTree *Tree
+	SharedSession  *DragSession
+	WorkspaceTree  *Tree
+	LibraryTree    *Tree
 	SelectedPath   string
 	StatusBadge    *badge.Badge
 
@@ -24,14 +26,19 @@ type DemoState struct {
 	btnNewFileComp   widget.Clickable
 	btnNewFolderComp widget.Clickable
 	btnInfoTree      widget.Clickable
+	btnNewAsset      widget.Clickable
+	btnNewDoc        widget.Clickable
 }
 
 var defaultDemo = NewDemoState()
 
 func NewDemoState() *DemoState {
+	session := NewDragSession()
+
 	s := &DemoState{
-		SelectedPath: "src/components/Tree.tsx",
-		StatusBadge:  badge.New(badge.Config{Text: "Selected: src/components/Tree.tsx", Variant: theme.VariantSecondary}),
+		SharedSession: session,
+		SelectedPath:  "src/components/Tree.tsx",
+		StatusBadge:   badge.New(badge.Config{Text: "Selected: src/components/Tree.tsx", Variant: theme.VariantSecondary}),
 	}
 
 	makeAction := func(btn *widget.Clickable, icon *lucide.Icon, actionDesc string) layout.Widget {
@@ -49,6 +56,7 @@ func NewDemoState() *DemoState {
 		}
 	}
 
+	// Tree A: Workspace Project Tree
 	btnNode := NewNode(NodeConfig{ID: "btn", Label: "Button.tsx", Icon: lucide.FileCode})
 	cardNode := NewNode(NodeConfig{ID: "card", Label: "Card.tsx", Icon: lucide.FileCode})
 	dialogNode := NewNode(NodeConfig{ID: "dialog", Label: "Dialog.tsx", Icon: lucide.FileCode})
@@ -58,7 +66,7 @@ func NewDemoState() *DemoState {
 		Icon:     lucide.FileCode,
 		Selected: true,
 		Actions: []layout.Widget{
-			makeAction(&s.btnInfoTree, lucide.Info, "Action: Info for Tree.tsx (16.8 KB, 420 lines)"),
+			makeAction(&s.btnInfoTree, lucide.Info, "Action: Info for Tree.tsx (16.8 KB)"),
 		},
 	})
 
@@ -74,8 +82,8 @@ func NewDemoState() *DemoState {
 		Expanded: true,
 		Children: []*Node{btnNode, cardNode, dialogNode, treeNode},
 		Actions: []layout.Widget{
-			makeAction(&s.btnNewFileComp, lucide.FilePlus, "Action: Create new component file in src/components/"),
-			makeAction(&s.btnNewFolderComp, lucide.FolderPlus, "Action: Create new subfolder in src/components/"),
+			makeAction(&s.btnNewFileComp, lucide.FilePlus, "Action: Create new file in components/"),
+			makeAction(&s.btnNewFolderComp, lucide.FolderPlus, "Action: Create subfolder in components/"),
 		},
 	})
 
@@ -93,30 +101,75 @@ func NewDemoState() *DemoState {
 		Children: []*Node{compFolder, hooksFolder, appNode, mainNode},
 		Actions: []layout.Widget{
 			makeAction(&s.btnNewFileSrc, lucide.FilePlus, "Action: Create new file in src/"),
-			makeAction(&s.btnNewFolderSrc, lucide.FolderPlus, "Action: Create new directory in src/"),
-			makeAction(&s.btnInfoSrc, lucide.Info, "Action: Inspect folder src/ (8 items)"),
-		},
-	})
-
-	publicFolder := NewNode(NodeConfig{
-		ID:       "public_folder",
-		Label:    "public",
-		Expanded: false,
-		Children: []*Node{
-			NewNode(NodeConfig{ID: "fav", Label: "favicon.ico", Icon: lucide.Image}),
-			NewNode(NodeConfig{ID: "robots", Label: "robots.txt", Icon: lucide.FileText}),
+			makeAction(&s.btnNewFolderSrc, lucide.FolderPlus, "Action: Create directory in src/"),
+			makeAction(&s.btnInfoSrc, lucide.Info, "Action: Inspect folder src/"),
 		},
 	})
 
 	pkgJson := NewNode(NodeConfig{ID: "pkg", Label: "package.json", Icon: lucide.FileCode})
 	tsConfig := NewNode(NodeConfig{ID: "ts", Label: "tsconfig.json", Icon: lucide.FileCode})
-	readme := NewNode(NodeConfig{ID: "readme", Label: "README.md", Icon: lucide.FileText})
 
-	s.FileSystemTree = New(Config{
-		Nodes: []*Node{srcFolder, publicFolder, pkgJson, tsConfig, readme},
+	s.WorkspaceTree = New(Config{
+		Nodes:   []*Node{srcFolder, pkgJson, tsConfig},
+		Session: session,
 		OnSelect: func(node *Node) {
 			s.SelectedPath = node.Label
-			s.StatusBadge.Text = fmt.Sprintf("Selected: %s", node.Label)
+			s.StatusBadge.Text = fmt.Sprintf("Workspace: %s", node.Label)
+		},
+	})
+
+	// Tree B: Shared Library & Assets Tree
+	logoSvg := NewNode(NodeConfig{ID: "logo", Label: "logo.svg", Icon: lucide.Image})
+	favicon := NewNode(NodeConfig{ID: "fav", Label: "favicon.ico", Icon: lucide.Image})
+	themeJson := NewNode(NodeConfig{ID: "th_json", Label: "theme.json", Icon: lucide.FileCode})
+
+	iconsFolder := NewNode(NodeConfig{
+		ID:       "icons_folder",
+		Label:    "icons",
+		Expanded: true,
+		Children: []*Node{logoSvg, favicon},
+	})
+
+	audioLoop := NewNode(NodeConfig{ID: "loop", Label: "deck_loop.wav", Icon: lucide.Music})
+	audioFlac := NewNode(NodeConfig{ID: "flac", Label: "starlight.flac", Icon: lucide.Music})
+
+	audioFolder := NewNode(NodeConfig{
+		ID:       "audio_folder",
+		Label:    "audio",
+		Expanded: true,
+		Children: []*Node{audioLoop, audioFlac},
+	})
+
+	assetsFolder := NewNode(NodeConfig{
+		ID:       "assets_folder",
+		Label:    "assets",
+		Expanded: true,
+		Children: []*Node{iconsFolder, audioFolder, themeJson},
+		Actions: []layout.Widget{
+			makeAction(&s.btnNewAsset, lucide.FolderPlus, "Action: New folder in assets/"),
+		},
+	})
+
+	readmeDoc := NewNode(NodeConfig{ID: "readme_doc", Label: "README.md", Icon: lucide.FileText})
+	changelogDoc := NewNode(NodeConfig{ID: "changelog", Label: "CHANGELOG.md", Icon: lucide.FileText})
+	licenseDoc := NewNode(NodeConfig{ID: "license", Label: "LICENSE", Icon: lucide.FileText})
+
+	docsFolder := NewNode(NodeConfig{
+		ID:       "docs_folder",
+		Label:    "docs",
+		Expanded: false,
+		Children: []*Node{readmeDoc, changelogDoc},
+		Actions: []layout.Widget{
+			makeAction(&s.btnNewDoc, lucide.FilePlus, "Action: New doc in docs/"),
+		},
+	})
+
+	s.LibraryTree = New(Config{
+		Nodes:   []*Node{assetsFolder, docsFolder, licenseDoc},
+		Session: session,
+		OnSelect: func(node *Node) {
+			s.SelectedPath = node.Label
+			s.StatusBadge.Text = fmt.Sprintf("Shared Library: %s", node.Label)
 		},
 	})
 
@@ -130,19 +183,52 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("File System Tree View (Drag & Drop Reordering)", label.H3, "").Layout(gtx, th)
+			return label.NewTypography("Dual-Tree Split View (Cross-Tree Drag & Drop)", label.H3, "").Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("Click items to select, drag to reorder/nest, or use right-aligned action buttons (New File, New Folder, Info).", label.Muted, "").Layout(gtx, th)
+			return label.NewTypography("Drag files and folders across trees to move items between your Workspace and Shared Assets library.", label.Muted, "").Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return s.StatusBadge.Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx) }),
+
+		// 50/50 Horizontal Split Container
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return s.FileSystemTree.Layout(gtx, th)
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Start}.Layout(gtx,
+				// Left Panel (50%): Workspace Tree
+				layout.Flexed(0.5, func(gtx layout.Context) layout.Dimensions {
+					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return label.NewTypography("PRIMARY WORKSPACE", label.Small, "").Layout(gtx, th)
+						}),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return s.WorkspaceTree.Layout(gtx, th)
+						}),
+					)
+				}),
+
+				// Center Divider Spacer
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Width: th.Spacing.Space6}.Layout(gtx)
+				}),
+
+				// Right Panel (50%): Shared Library Tree
+				layout.Flexed(0.5, func(gtx layout.Context) layout.Dimensions {
+					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return label.NewTypography("SHARED ASSET LIBRARY", label.Small, "").Layout(gtx, th)
+						}),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return s.LibraryTree.Layout(gtx, th)
+						}),
+					)
+				}),
+			)
 		}),
 	)
 }
