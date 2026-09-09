@@ -2,7 +2,7 @@
 Package spinner provides a loading activity indicator component for gio-shadcn applications.
 
 Spinners indicate background processing following
-shadcn/ui design principles.
+shadcn/ui design principles with continuous smooth rotation animations.
 */
 package spinner
 
@@ -12,6 +12,7 @@ import (
 
 	"gioui.org/f32"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
@@ -43,11 +44,14 @@ func New(config Config) *Spinner {
 	}
 }
 
-// Layout renders the circular arc spinner.
+// Layout renders the smoothly rotating circular arc spinner.
 func (s *Spinner) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
+
+	// Invalidate frame for continuous fluid 60/120 FPS rotation
+	gtx.Execute(op.InvalidateCmd{})
 
 	sizePx := gtx.Dp(s.Size)
 	size := image.Pt(sizePx, sizePx)
@@ -59,22 +63,23 @@ func (s *Spinner) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		spinColor = styles.Background
 	}
 
-	// Draw arc stroke path
 	center := float32(sizePx) / 2.0
-	radius := center - float32(gtx.Dp(unit.Dp(2)))
+	radius := center - float32(gtx.Dp(unit.Dp(2.5)))
 	strokeWidth := float32(gtx.Dp(unit.Dp(2.5)))
 
 	var p clip.Path
 	p.Begin(gtx.Ops)
 
-	// Draw 270 degree arc
-	startAngle := float64(0)
-	endAngle := float64(270) * (math.Pi / 180.0)
+	// Continuous time-driven rotation angle
+	nanos := gtx.Now.UnixNano()
+	spinPhase := float64(nanos%1_000_000_000) / 1_000_000_000.0 * 2 * math.Pi
 
+	// Draw 270 degree rotating arc
 	first := true
-	for a := startAngle; a <= endAngle; a += 0.1 {
-		x := center + radius*float32(math.Cos(a))
-		y := center + radius*float32(math.Sin(a))
+	for a := 0.0; a <= 1.5*math.Pi; a += 0.1 {
+		angle := a + spinPhase
+		x := center + radius*float32(math.Cos(angle))
+		y := center + radius*float32(math.Sin(angle))
 		if first {
 			p.MoveTo(f32.Pt(x, y))
 			first = false
