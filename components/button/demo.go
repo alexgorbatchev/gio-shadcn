@@ -26,12 +26,13 @@ type DemoState struct {
 	BtnGroupA      *Button
 	BtnGroupB      *Button
 	BtnGroupC      *Button
+	ButtonGroup    *ButtonGroup
 }
 
 var defaultDemo = NewDemoState()
 
 func NewDemoState() *DemoState {
-	return &DemoState{
+	s := &DemoState{
 		BtnDefault:     New(Config{Text: "Button", Variant: theme.VariantDefault}),
 		BtnSecondary:   New(Config{Text: "Secondary", Variant: theme.VariantSecondary}),
 		BtnDestructive: New(Config{Text: "Destructive", Variant: theme.VariantDestructive}),
@@ -51,6 +52,8 @@ func NewDemoState() *DemoState {
 		BtnGroupB:      New(Config{Text: "Settings", Variant: theme.VariantOutline}),
 		BtnGroupC:      New(Config{Text: "Messages", Variant: theme.VariantOutline}),
 	}
+	s.ButtonGroup = NewGroup(s.BtnGroupA, s.BtnGroupB, s.BtnGroupC)
+	return s
 }
 
 func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
@@ -111,17 +114,11 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
 
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("Button Group", label.H4, "").Layout(gtx, th)
+			return label.NewTypography("Button Group (Segmented Capsule)", label.H4, "").Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.BtnGroupA.Layout(gtx, th) }),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx) }),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.BtnGroupB.Layout(gtx, th) }),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space1}.Layout(gtx) }),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.BtnGroupC.Layout(gtx, th) }),
-			)
+			return s.ButtonGroup.Layout(gtx, th)
 		}),
 	)
 }

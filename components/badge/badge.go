@@ -11,6 +11,7 @@ import (
 	"image/color"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
@@ -130,7 +131,9 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		return lbl.Layout(gtx)
 	}
 
+	macro := op.Record(gtx.Ops)
 	contentDims := padding.Layout(gtxContent, renderContent)
+	callOp := macro.Stop()
 
 	badgeSize := contentDims.Size
 	gtx.Constraints = layout.Exact(badgeSize)
@@ -156,7 +159,8 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		}),
 
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return padding.Layout(gtx, renderContent)
+			callOp.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 
