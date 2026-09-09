@@ -366,3 +366,27 @@ func TestCrossTreeMoveMaintainsTargetSelection(t *testing.T) {
 		t.Errorf("expected dropped node (fileA) to have Selected=false so target tree does not have two selected items")
 	}
 }
+
+func TestTreeNodeCustomContainerContent(t *testing.T) {
+	th := theme.NewDark()
+	customRendered := false
+
+	node := tree.NewNode(tree.NodeConfig{
+		ID: "custom",
+		Content: func(gtx layout.Context) layout.Dimensions {
+			customRendered = true
+			return layout.Dimensions{Size: image.Pt(120, 24)}
+		},
+	})
+
+	tr := tree.New(tree.Config{
+		Nodes: []*tree.Node{node},
+	})
+
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(300, 100))}
+	_ = tr.Layout(gtx, th)
+
+	if !customRendered {
+		t.Errorf("expected custom container content widget to be rendered")
+	}
+}

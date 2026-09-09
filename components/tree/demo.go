@@ -3,9 +3,11 @@ package tree
 import (
 	"fmt"
 
+	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
+	"gioui.org/widget/material"
 	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/badge"
 	"github.com/bnema/gio-shadcn/components/label"
@@ -13,11 +15,12 @@ import (
 )
 
 type DemoState struct {
-	SharedSession  *DragSession
-	WorkspaceTree  *Tree
-	LibraryTree    *Tree
-	SelectedPath   string
-	StatusBadge    *badge.Badge
+	SharedSession   *DragSession
+	WorkspaceTree   *Tree
+	LibraryTree     *Tree
+	CustomNodesTree *Tree
+	SelectedPath    string
+	StatusBadge     *badge.Badge
 
 	// Action buttons
 	btnNewFileSrc    widget.Clickable
@@ -65,6 +68,24 @@ func NewDemoState() *DemoState {
 		Label:    "Tree.tsx",
 		Icon:     lucide.FileCode,
 		Selected: true,
+		Content: func(gtx layout.Context) layout.Dimensions {
+			th := theme.NewDark()
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(th.MaterialTheme, th.Typography.FontSizeSM, "Tree.tsx")
+					lbl.Color = th.Colors.Foreground
+					lbl.Font.Weight = font.Medium
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					b := badge.New(badge.Config{Text: "DnD", Variant: theme.VariantSecondary})
+					return b.Layout(gtx, th)
+				}),
+			)
+		},
 		Actions: []layout.Widget{
 			makeAction(&s.btnInfoTree, lucide.Info, "Action: Info for Tree.tsx (16.8 KB)"),
 		},
@@ -131,7 +152,28 @@ func NewDemoState() *DemoState {
 	})
 
 	audioLoop := NewNode(NodeConfig{ID: "loop", Label: "deck_loop.wav", Icon: lucide.Music})
-	audioFlac := NewNode(NodeConfig{ID: "flac", Label: "starlight.flac", Icon: lucide.Music})
+	audioFlac := NewNode(NodeConfig{
+		ID:    "flac",
+		Label: "starlight.flac",
+		Icon:  lucide.Music,
+		Content: func(gtx layout.Context) layout.Dimensions {
+			th := theme.NewDark()
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(th.MaterialTheme, th.Typography.FontSizeSM, "starlight.flac")
+					lbl.Color = th.Colors.Foreground
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					b := badge.New(badge.Config{Text: "96kHz", Variant: theme.VariantOutline})
+					return b.Layout(gtx, th)
+				}),
+			)
+		},
+	})
 
 	audioFolder := NewNode(NodeConfig{
 		ID:       "audio_folder",
@@ -170,6 +212,57 @@ func NewDemoState() *DemoState {
 		OnSelect: func(node *Node) {
 			s.SelectedPath = node.Label
 			s.StatusBadge.Text = fmt.Sprintf("Shared Library: %s", node.Label)
+		},
+	})
+
+	// Tree C: React-Style Custom Node Containers Demo
+	customNode1 := NewNode(NodeConfig{
+		ID:    "cust1",
+		Label: "Button.tsx (Custom Container)",
+		Icon:  lucide.FileCode,
+		Content: func(gtx layout.Context) layout.Dimensions {
+			th := theme.NewDark()
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(th.MaterialTheme, th.Typography.FontSizeSM, "Button.tsx")
+					lbl.Color = th.Colors.Foreground
+					lbl.Font.Weight = font.SemiBold
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					b := badge.New(badge.Config{Text: "v2.4.0", Variant: theme.VariantDefault})
+					return b.Layout(gtx, th)
+				}),
+			)
+		},
+	})
+
+	customNode2 := NewNode(NodeConfig{
+		ID:    "cust2",
+		Label: "Audio Synthesis Engine",
+		Icon:  lucide.Activity,
+		Content: func(gtx layout.Context) layout.Dimensions {
+			th := theme.NewDark()
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(th.MaterialTheme, th.Typography.FontSizeSM, "CoreAudio Stream")
+					lbl.Color = th.Colors.Foreground
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Width: th.Spacing.Space2}.Layout(gtx) }),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					b := badge.New(badge.Config{Text: "0.7ms latency", Variant: theme.VariantOutline})
+					return b.Layout(gtx, th)
+				}),
+			)
+		},
+	})
+
+	s.CustomNodesTree = New(Config{
+		Nodes: []*Node{customNode1, customNode2},
+		OnSelect: func(node *Node) {
+			s.StatusBadge.Text = fmt.Sprintf("Custom Container: %s", node.Label)
 		},
 	})
 
@@ -229,6 +322,20 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 					)
 				}),
 			)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+
+		// Section 2: React-Style Custom Node Containers
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return label.NewTypography("React-Style Custom Node Containers (Badges & Metrics)", label.H4, "").Layout(gtx, th)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return label.NewTypography("Nodes can render arbitrary container widgets (version badges, status telemetry) instead of plain text strings.", label.Muted, "").Layout(gtx, th)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return s.CustomNodesTree.Layout(gtx, th)
 		}),
 	)
 }

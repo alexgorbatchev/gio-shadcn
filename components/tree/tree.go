@@ -4,7 +4,7 @@ for gio-shadcn applications.
 
 Trees display nested hierarchical items (such as file systems, categories, or navigation paths)
 with expandable chevrons, optional sub-icons (folders, files), interactive node selection,
-right-aligned action elements, and intuitive drag-and-drop reordering within or across tree views.
+React-style custom container widgets, right-aligned action elements, and intuitive drag-and-drop reordering within or across tree views.
 */
 package tree
 
@@ -173,6 +173,7 @@ func (s *DragSession) MoveNodeCrossTree(sourceTree, targetTree *Tree, source, ta
 type Node struct {
 	ID        string
 	Label     string
+	Content   layout.Widget
 	Icon      *lucide.Icon
 	Expanded  bool
 	Selected  bool
@@ -196,6 +197,7 @@ type Node struct {
 type NodeConfig struct {
 	ID        string
 	Label     string
+	Content   layout.Widget
 	Icon      *lucide.Icon
 	Expanded  bool
 	Selected  bool
@@ -220,6 +222,7 @@ func NewNode(config NodeConfig) *Node {
 	return &Node{
 		ID:        config.ID,
 		Label:     config.Label,
+		Content:   config.Content,
 		Icon:      config.Icon,
 		Expanded:  config.Expanded,
 		Selected:  config.Selected,
@@ -638,8 +641,11 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 					return layout.Dimensions{}
 				}),
 
-				// 3. Label Text
+				// 3. Label Text or Custom Container Widget (React-style)
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+					if node.Content != nil {
+						return node.Content(gtx)
+					}
 					lbl := material.Label(mTheme, th.Typography.FontSizeSM, node.Label)
 					lbl.Color = fgColor
 					lbl.Font.Weight = font.Medium
@@ -777,6 +783,9 @@ func (t *Tree) layoutDragGhost(gtx layout.Context, th *theme.Theme, mTheme *mate
 					})
 				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if t.Session.DraggedNode.Content != nil {
+						return t.Session.DraggedNode.Content(gtx)
+					}
 					lbl := material.Label(mTheme, th.Typography.FontSizeXS, t.Session.DraggedNode.Label)
 					lbl.Color = th.Colors.PrimaryFg
 					lbl.Font.Weight = font.SemiBold
