@@ -8,13 +8,13 @@ package dialog
 
 import (
 	"image"
-	"image/color"
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
-	"gioui.org/widget"
+	"gioui.org/unit"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
@@ -23,31 +23,36 @@ import (
 
 // Dialog represents a modal window dialog component.
 type Dialog struct {
-	Title       string
-	Description string
-	Open        bool
-	ConfirmText string
-	CancelText  string
-	Classes     string
-	Content     layout.Widget
+	Title         string
+	Description   string
+	Open          bool
+	ConfirmText   string
+	CancelText    string
+	Classes       string
+	Content       layout.Widget
+	TriggerButton *button.Button
+	Trigger       layout.Widget
 
 	OnConfirm func()
 	OnCancel  func()
 
-	cancelBtn     *button.Button
-	confirmBtn    *button.Button
-	backdropClick widget.Clickable
+	cancelBtn  *button.Button
+	confirmBtn *button.Button
+	dimmer     *theme.Dimmer
 }
 
 // Config represents configuration for creating a Dialog.
 type Config struct {
-	Title       string
-	Description string
-	Open        bool
-	ConfirmText string
-	CancelText  string
-	Classes     string
-	Content     layout.Widget
+	TriggerText   string
+	TriggerButton *button.Button
+	Trigger       layout.Widget
+	Title         string
+	Description   string
+	Open          bool
+	ConfirmText   string
+	CancelText    string
+	Classes       string
+	Content       layout.Widget
 
 	OnConfirm func()
 	OnCancel  func()
@@ -65,15 +70,28 @@ func New(config Config) *Dialog {
 	}
 
 	d := &Dialog{
-		Title:       config.Title,
-		Description: config.Description,
-		Open:        config.Open,
-		ConfirmText: confText,
-		CancelText:  cancText,
-		Classes:     config.Classes,
-		Content:     config.Content,
-		OnConfirm:   config.OnConfirm,
-		OnCancel:    config.OnCancel,
+		Title:         config.Title,
+		Description:   config.Description,
+		Open:          config.Open,
+		ConfirmText:   confText,
+		CancelText:    cancText,
+		Classes:       config.Classes,
+		Content:       config.Content,
+		TriggerButton: config.TriggerButton,
+		Trigger:       config.Trigger,
+		OnConfirm:     config.OnConfirm,
+		OnCancel:      config.OnCancel,
+		dimmer:        theme.NewDimmer(),
+	}
+
+	if config.TriggerText != "" && d.TriggerButton == nil {
+		d.TriggerButton = button.New(button.Config{
+			Text:    config.TriggerText,
+			Variant: theme.VariantOutline,
+			OnClick: func() {
+				d.Open = true
+			},
+		})
 	}
 
 	d.cancelBtn = button.New(button.Config{
@@ -101,22 +119,27 @@ func New(config Config) *Dialog {
 	return d
 }
 
-// Layout renders the modal backdrop and dialog window if Open == true.
+// Layout renders the trigger, and when Open == true, renders the modal backdrop and centered dialog card.
 func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !d.Open {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
 	}
 
-	// Process backdrop click to close when clicking outside
-	if d.backdropClick.Clicked(gtx) {
-		d.Open = false
-		if d.OnCancel != nil {
-			d.OnCancel()
-		}
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+
+	// 1. Trigger
+	var triggerDims layout.Dimensions
+	if d.TriggerButton != nil {
+		triggerDims = d.TriggerButton.Layout(gtx, th)
+	} else if d.Trigger != nil {
+		triggerDims = d.Trigger(gtx)
+	}
+
+	if !d.Open {
+		return triggerDims
 	}
 
 	bgColor := th.Colors.Card
@@ -127,19 +150,15 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	mTheme := th.MaterialTheme
-	if mTheme == nil {
-		mTheme = material.NewTheme()
-	}
-
-	dims := layout.Stack{}.Layout(gtx,
-		// Dark backdrop overlay across full window that intercepts outside clicks
+	macro := op.Record(gtx.Ops)
+	// Dark backdrop overlay across full window that intercepts outside clicks
+	layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return d.backdropClick.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				rect := image.Rectangle{Max: gtx.Constraints.Max}
-				backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
-				theme.DrawRRectBackground(gtx, rect, 0, backdropColor)
-				return layout.Dimensions{Size: gtx.Constraints.Max}
+			return d.dimmer.Layout(gtx, th, func() {
+				d.Open = false
+				if d.OnCancel != nil {
+					d.OnCancel()
+				}
 			})
 		}),
 
@@ -153,9 +172,12 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					Right:  th.Spacing.Space6,
 				}
 
-				// Measure content dimensions
 				gtxContent := gtx
 				gtxContent.Constraints.Min = image.Pt(0, 0)
+				maxW := gtx.Dp(unit.Dp(480))
+				if gtxContent.Constraints.Max.X > maxW {
+					gtxContent.Constraints.Max.X = maxW
+				}
 
 				renderBody := func(gtx layout.Context) layout.Dimensions {
 					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -205,7 +227,9 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					)
 				}
 
+				macroCard := op.Record(gtx.Ops)
 				contentDims := padding.Layout(gtxContent, renderBody)
+				callCard := macroCard.Stop()
 				cardSize := contentDims.Size
 
 				return layout.Stack{}.Layout(gtx,
@@ -222,17 +246,23 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 						return layout.Dimensions{Size: cardSize}
 					}),
 
-					// Dialog content drawn ON TOP of background
+					// Dialog card content drawn ON TOP
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-						return padding.Layout(gtx, renderBody)
+						callCard.Add(gtx.Ops)
+						return contentDims
 					}),
 				)
 			})
 		}),
 	)
+	callOp := macro.Stop()
+	callOp.Add(gtx.Ops)
 
 	// Reset active GPU paint color state back to background
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
-	return dims
+	if d.TriggerButton != nil || d.Trigger != nil {
+		return triggerDims
+	}
+	return layout.Dimensions{Size: gtx.Constraints.Max}
 }

@@ -24,32 +24,32 @@ func NewDemoState() *DemoState {
 		Icon:        lucide.ChevronDown,
 		Open:        false,
 		Items: []*Item{
-			NewItem("Profile", "⇧⌘P"),
-			NewItem("Billing", "⌘B"),
-			NewItem("Settings", "⌘S"),
-			NewItem("Keyboard shortcuts", "⌘K"),
-			NewItem("Team", ""),
-			NewItem("Invite users", ""),
-			NewItem("Log out", "⇧⌘Q"),
+			NewItemWithIcon("Profile", "⇧⌘P", lucide.User),
+			NewItemWithIcon("Billing", "⌘B", lucide.CreditCard),
+			NewItemWithIcon("Settings", "⌘S", lucide.Settings),
+			NewItemWithIcon("Keyboard shortcuts", "⌘K", lucide.SlidersHorizontal),
+			NewItemWithIcon("Team", "", lucide.Users),
+			NewItemWithIcon("Invite users", "", lucide.UserPlus),
+			NewItemWithIcon("Log out", "⇧⌘Q", lucide.LogOut),
 		},
 	})
 
 	s.MenuAccount = New(Config{
 		Open: true,
 		Items: []*Item{
-			NewItem("My Account", ""),
-			NewItem("Profile", "⇧⌘P"),
-			NewItem("Billing", "⌘B"),
-			NewItem("Settings", "⌘S"),
+			NewItemWithIcon("My Account", "", lucide.User),
+			NewItemWithIcon("Profile", "⇧⌘P", lucide.User),
+			NewItemWithIcon("Billing", "⌘B", lucide.CreditCard),
+			NewItemWithIcon("Settings", "⌘S", lucide.Settings),
 		},
 	})
 
 	s.MenuCheckboxes = New(Config{
 		Open: true,
 		Items: []*Item{
-			NewItem("✓ Status Bar", ""),
-			NewItem("✓ Activity Bar", ""),
-			NewItem("  Panel", ""),
+			NewCheckboxItem("Status Bar", true, nil),
+			NewCheckboxItem("Activity Bar", true, nil),
+			NewCheckboxItem("Panel", false, nil),
 		},
 	})
 
@@ -72,7 +72,7 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("1. Interactive Dropdown Menu (Click button to toggle)", label.H4, "").Layout(gtx, th)
+			return label.NewTypography("1. Interactive Dropdown Menu (Click button to toggle floating overlay)", label.H4, "").Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.DropdownDemo.Layout(gtx, th) }),
@@ -86,7 +86,7 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
 
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return label.NewTypography("3. Checkbox Menu Items", label.H4, "").Layout(gtx, th)
+			return label.NewTypography("3. Checkbox Menu Items (Click to toggle checkmarks)", label.H4, "").Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.MenuCheckboxes.Layout(gtx, th) }),

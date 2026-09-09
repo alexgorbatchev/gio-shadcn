@@ -274,6 +274,12 @@ func runWindow(w *app.Window) error {
 				}),
 			)
 
+			// Render any active window-level overlays (Bottom Drawer, Side Sheet, Modal Dialog, Command Palette)
+			// across the FULL ROOT APPLICATION SCREEN constraints!
+			gtxOverlay := gtx
+			gtxOverlay.Constraints = layout.Exact(e.Size)
+			th.RenderOverlays(gtxOverlay)
+
 			// RESET GPU PAINT COLOR TO BACKGROUND AT THE END OF THE FRAME LOOP BEFORE SUBMISSION
 			paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 

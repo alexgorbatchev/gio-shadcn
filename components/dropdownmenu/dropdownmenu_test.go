@@ -68,24 +68,56 @@ func TestDropdownMenuTriggerToggle(t *testing.T) {
 
 	dm.TriggerButton.OnClick()
 	if !dm.Open {
-		t.Errorf("expected Open to become true after trigger button click")
+		t.Errorf("expected Open to be true after trigger click")
 	}
 }
 
-func TestDropdownMenuItemSelection(t *testing.T) {
+func TestDropdownMenuCheckboxToggle(t *testing.T) {
+	toggled := false
+	chkItem := dropdownmenu.NewCheckboxItem("Status Bar", true, func(checked bool) {
+		toggled = true
+	})
+
+	if !chkItem.Checked {
+		t.Errorf("expected initially checked")
+	}
+	if !chkItem.IsCheck {
+		t.Errorf("expected IsCheck to be true")
+	}
+
+	// Simulate selecting checkbox item
+	if chkItem.OnSelect != nil {
+		chkItem.OnSelect()
+	}
+	if chkItem.Checked {
+		t.Errorf("expected Checked to toggle to false")
+	}
+	if !toggled {
+		t.Errorf("expected onToggle callback to have been called")
+	}
+}
+
+func TestDropdownMenuFloatingOverlayNonStretching(t *testing.T) {
 	th := theme.NewDark()
-	selected := -1
 	dm := dropdownmenu.New(dropdownmenu.Config{
-		Open: true,
+		TriggerText: "Actions",
+		Open:        false,
 		Items: []*dropdownmenu.Item{
-			dropdownmenu.NewItem("First Item", "⌘1"),
-			dropdownmenu.NewItem("Second Item", "⌘2"),
-		},
-		OnSelectItem: func(index int) {
-			selected = index
+			dropdownmenu.NewItem("One", ""),
+			dropdownmenu.NewItem("Two", ""),
+			dropdownmenu.NewItem("Three", ""),
 		},
 	})
-	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(240, 100))}
-	_ = dm.Layout(gtx, th)
-	_ = selected
+
+	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Constraints{Max: image.Pt(500, 500)}}
+	dimsClosed := dm.Layout(gtx, th)
+
+	// Now open the menu
+	dm.Open = true
+	dimsOpen := dm.Layout(gtx, th)
+
+	// Floating overlay menu should report the same trigger height so host flex layout does NOT stretch!
+	if dimsClosed.Size.Y != dimsOpen.Size.Y {
+		t.Errorf("floating overlay menu changed host layout height: closed %d != open %d", dimsClosed.Size.Y, dimsOpen.Size.Y)
+	}
 }

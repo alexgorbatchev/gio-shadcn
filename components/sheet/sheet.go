@@ -1,67 +1,107 @@
 /*
-Package sheet provides a side drawer overlay panel component for gio-shadcn applications.
+Package sheet provides a side modal sheet/drawer component for gio-shadcn applications.
 
-Sheets display slide-over side panels following
-shadcn/ui design principles.
+Sheets extend dialog and drawer semantics by sliding in from the screen edges
+following shadcn/ui design principles with smooth physics animations.
 */
 package sheet
 
 import (
 	"image"
-	"image/color"
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
+	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
-	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
+	"github.com/vibrantgio/effects/spring"
+)
+
+type Side int
+
+const (
+	SideRight Side = iota
+	SideLeft
+	SideTop
+	SideBottom
 )
 
 // Sheet represents a side drawer panel component.
 type Sheet struct {
-	Title       string
-	Description string
-	Open        bool
-	Width       unit.Dp
-	Classes     string
-	Content     layout.Widget
+	Title         string
+	Description   string
+	Open          bool
+	Width         unit.Dp
+	Height        unit.Dp
+	Side          Side
+	Classes       string
+	Content       layout.Widget
+	TriggerButton *button.Button
+	Trigger       layout.Widget
 
-	OnClose       func()
-	closeBtn      *button.Button
-	backdropClick widget.Clickable
+	OnClose     func()
+	closeBtn    *button.Button
+	dimmer      *theme.Dimmer
+	spring      *spring.Spring
+	initialized bool
 }
 
 // Config represents configuration for creating a Sheet.
 type Config struct {
-	Title       string
-	Description string
-	Open        bool
-	Width       unit.Dp
-	Classes     string
-	Content     layout.Widget
-	OnClose     func()
+	TriggerText   string
+	TriggerButton *button.Button
+	Trigger       layout.Widget
+	Title         string
+	Description   string
+	Open          bool
+	Width         unit.Dp
+	Height        unit.Dp
+	Side          Side
+	Classes       string
+	Content       layout.Widget
+	OnClose       func()
 }
 
 // New creates a new Sheet side drawer.
 func New(config Config) *Sheet {
 	w := config.Width
 	if w <= 0 {
-		w = unit.Dp(320)
+		w = unit.Dp(360)
+	}
+	h := config.Height
+	if h <= 0 {
+		h = unit.Dp(300)
 	}
 
 	s := &Sheet{
-		Title:       config.Title,
-		Description: config.Description,
-		Open:        config.Open,
-		Width:       w,
-		Classes:     config.Classes,
-		Content:     config.Content,
-		OnClose:     config.OnClose,
+		Title:         config.Title,
+		Description:   config.Description,
+		Open:          config.Open,
+		Width:         w,
+		Height:        h,
+		Side:          config.Side,
+		Classes:       config.Classes,
+		Content:       config.Content,
+		TriggerButton: config.TriggerButton,
+		Trigger:       config.Trigger,
+		OnClose:       config.OnClose,
+		dimmer:        theme.NewDimmer(),
+	}
+
+	if config.TriggerText != "" && s.TriggerButton == nil {
+		s.TriggerButton = button.New(button.Config{
+			Text:    config.TriggerText,
+			Variant: theme.VariantOutline,
+			OnClick: func() {
+				s.Open = true
+			},
+		})
 	}
 
 	s.closeBtn = button.New(button.Config{
@@ -79,22 +119,70 @@ func New(config Config) *Sheet {
 	return s
 }
 
-// Layout renders the dark backdrop overlay and side drawer panel when Open == true.
+// Layout renders the trigger, and when Open == true, queues the full-screen side sheet overlay.
 func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !s.Open {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
 	}
 
-	// Process backdrop click to close when clicking outside
-	if s.backdropClick.Clicked(gtx) {
-		s.Open = false
-		if s.OnClose != nil {
-			s.OnClose()
+	var triggerDims layout.Dimensions
+	if s.TriggerButton != nil {
+		triggerDims = s.TriggerButton.Layout(gtx, th)
+	} else if s.Trigger != nil {
+		triggerDims = s.Trigger(gtx)
+	}
+
+	if !s.Open && (!s.initialized || s.spring.Settled(0.001)) {
+		return triggerDims
+	}
+
+	th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
+		return s.renderOverlay(gtx, th)
+	})
+
+	if s.TriggerButton != nil || s.Trigger != nil {
+		return triggerDims
+	}
+	return s.renderOverlay(gtx, th)
+}
+
+func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+
+	if !s.initialized {
+		initVal := 0.0
+		if s.Open {
+			initVal = 1.0
 		}
+		s.spring = spring.New(initVal, initVal, spring.Options{
+			Stiffness: 220.0,
+			Damping:   24.0,
+		})
+		s.initialized = true
+	}
+
+	target := 0.0
+	if s.Open {
+		target = 1.0
+	}
+	s.spring.SetTarget(target)
+	s.spring.Tick(2.0)
+	progress := float32(s.spring.Value())
+	if progress < 0 {
+		progress = 0
+	} else if progress > 1 {
+		progress = 1
+	}
+
+	if !s.spring.Settled(0.001) {
+		gtx.Execute(op.InvalidateCmd{})
+	}
+
+	if progress <= 0.001 && !s.Open {
+		return layout.Dimensions{}
 	}
 
 	bgColor := th.Colors.Card
@@ -105,30 +193,55 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	mTheme := th.MaterialTheme
-	if mTheme == nil {
-		mTheme = material.NewTheme()
-	}
-
 	sheetWidthPx := gtx.Dp(s.Width)
+	sheetHeightPx := gtx.Dp(s.Height)
+	windowSize := gtx.Constraints.Max
 
-	dims := layout.Stack{}.Layout(gtx,
-		// Dark backdrop overlay across full window that intercepts outside clicks
+	macro := op.Record(gtx.Ops)
+	layout.Stack{}.Layout(gtx,
+		// 1. Dark backdrop dimmer across full window
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return s.backdropClick.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				rect := image.Rectangle{Max: gtx.Constraints.Max}
-				backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
-				theme.DrawRRectBackground(gtx, rect, 0, backdropColor)
-				return layout.Dimensions{Size: gtx.Constraints.Max}
+			return s.dimmer.Layout(gtx, th, func() {
+				s.Open = false
+				if s.OnClose != nil {
+					s.OnClose()
+				}
 			})
 		}),
 
-		// Side Sheet panel positioned on the right edge
+		// 2. Side drawer panel aligned to the configured edge of viewport with slide animation
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return layout.E.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				gtx.Constraints.Min.X = sheetWidthPx
-				gtx.Constraints.Max.X = sheetWidthPx
-				gtx.Constraints.Min.Y = gtx.Constraints.Max.Y
+			gtxSheet := gtx
+			gtxSheet.Constraints = layout.Exact(windowSize)
+
+			var align layout.Direction
+			var sheetSize image.Point
+			var slideOffset image.Point
+
+			switch s.Side {
+			case SideLeft:
+				align = layout.W
+				sheetSize = image.Pt(sheetWidthPx, windowSize.Y)
+				slideOffset = image.Pt(-int(float32(sheetWidthPx)*(1.0-progress)), 0)
+			case SideTop:
+				align = layout.N
+				sheetSize = image.Pt(windowSize.X, sheetHeightPx)
+				slideOffset = image.Pt(0, -int(float32(sheetHeightPx)*(1.0-progress)))
+			case SideBottom:
+				align = layout.S
+				sheetSize = image.Pt(windowSize.X, sheetHeightPx)
+				slideOffset = image.Pt(0, int(float32(sheetHeightPx)*(1.0-progress)))
+			default: // SideRight
+				align = layout.E
+				sheetSize = image.Pt(sheetWidthPx, windowSize.Y)
+				slideOffset = image.Pt(int(float32(sheetWidthPx)*(1.0-progress)), 0)
+			}
+
+			return align.Layout(gtxSheet, func(gtx layout.Context) layout.Dimensions {
+				gtx.Constraints = layout.Exact(sheetSize)
+
+				// Apply physics slide offset
+				op.Offset(slideOffset).Add(gtx.Ops)
 
 				padding := layout.Inset{
 					Top:    th.Spacing.Space6,
@@ -137,22 +250,17 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					Right:  th.Spacing.Space6,
 				}
 
-				sheetSize := image.Pt(sheetWidthPx, gtx.Constraints.Max.Y)
-
 				return layout.Stack{}.Layout(gtx,
-					// Sheet background drawn FIRST
 					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 						rect := image.Rectangle{Max: sheetSize}
 						theme.DrawRRectBackground(gtx, rect, 0, bgColor)
 
-						// Left border line
-						borderRect := image.Rectangle{Max: image.Pt(1, sheetSize.Y)}
-						theme.DrawRRectBackground(gtx, borderRect, 0, borderColor)
+						rr := clip.RRect{Rect: rect}
+						theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 						return layout.Dimensions{Size: sheetSize}
 					}),
 
-					// Sheet content drawn ON TOP of background
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 						return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -180,29 +288,14 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 									return lbl.Layout(gtx)
 								}),
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return layout.Spacer{Height: th.Spacing.Space4}.Layout(gtx)
+									return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx)
 								}),
 								// Custom or Illustrated Content Body
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 									if s.Content != nil {
 										return s.Content(gtx)
 									}
-									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											lbl := material.Label(mTheme, th.Typography.FontSizeBase, "Track Audio Metadata & Details")
-											lbl.Color = th.Colors.Foreground
-											lbl.Font.Weight = font.SemiBold
-											return lbl.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											lbl := material.Label(mTheme, th.Typography.FontSizeSM, "Format: FLAC 24-bit / 96kHz\nBPM: 128.00\nHarmonic Key: 8A\nChannels: Stereo\nDuration: 06:42")
-											lbl.Color = th.Colors.MutedFg
-											return lbl.Layout(gtx)
-										}),
-									)
+									return layout.Dimensions{}
 								}),
 							)
 						})
@@ -211,9 +304,10 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			})
 		}),
 	)
+	callOp := macro.Stop()
+	callOp.Add(gtx.Ops)
 
-	// Reset active GPU paint color state back to background
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
-	return dims
+	return layout.Dimensions{Size: windowSize}
 }

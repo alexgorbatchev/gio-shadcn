@@ -12,12 +12,14 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/alexgorbatchev/gio-lucide"
+	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -55,20 +57,28 @@ func NewItemFull(label, shortcut, group string, icon *lucide.Icon, disabled bool
 
 // Command represents a command search palette component.
 type Command struct {
-	Placeholder  string
-	Items        []*Item
-	Classes      string
-	OnSelectItem func(index int)
+	Open          bool
+	Placeholder   string
+	Items         []*Item
+	Classes       string
+	OnSelectItem  func(index int)
+	TriggerButton *button.Button
+	Trigger       layout.Widget
 
 	searchEditor *widget.Editor
+	dimmer       *theme.Dimmer
 }
 
 // Config represents configuration for creating a Command palette.
 type Config struct {
-	Placeholder  string
-	Items        []*Item
-	Classes      string
-	OnSelectItem func(index int)
+	Open          bool
+	Placeholder   string
+	Items         []*Item
+	Classes       string
+	TriggerText   string
+	TriggerButton *button.Button
+	Trigger       layout.Widget
+	OnSelectItem  func(index int)
 }
 
 // New creates a new Command palette component.
@@ -80,16 +90,32 @@ func New(config Config) *Command {
 	ed := new(widget.Editor)
 	ed.SingleLine = true
 
-	return &Command{
-		Placeholder:  ph,
-		Items:        config.Items,
-		Classes:      config.Classes,
-		OnSelectItem: config.OnSelectItem,
-		searchEditor: ed,
+	cmd := &Command{
+		Open:          config.Open,
+		Placeholder:   ph,
+		Items:         config.Items,
+		Classes:       config.Classes,
+		OnSelectItem:  config.OnSelectItem,
+		TriggerButton: config.TriggerButton,
+		Trigger:       config.Trigger,
+		searchEditor:  ed,
+		dimmer:        theme.NewDimmer(),
 	}
+
+	if config.TriggerText != "" && cmd.TriggerButton == nil {
+		cmd.TriggerButton = button.New(button.Config{
+			Text:    config.TriggerText,
+			Variant: theme.VariantOutline,
+			OnClick: func() {
+				cmd.Open = true
+			},
+		})
+	}
+
+	return cmd
 }
 
-// Layout renders the search bar and filterable command items with background drawn first.
+// Layout renders the trigger or palette, floating centered above all elements with a dimmed backdrop when Open == true.
 func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -100,6 +126,48 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		mTheme = material.NewTheme()
 	}
 
+	// 1. If trigger is configured, render trigger and modal floating palette with dimmed backdrop when Open == true
+	if c.TriggerButton != nil || c.Trigger != nil {
+		var triggerDims layout.Dimensions
+		if c.TriggerButton != nil {
+			triggerDims = c.TriggerButton.Layout(gtx, th)
+		} else if c.Trigger != nil {
+			triggerDims = c.Trigger(gtx)
+		}
+
+		if c.Open {
+			macro := op.Record(gtx.Ops)
+			layout.Stack{}.Layout(gtx,
+				// Dimmed backdrop filling entire window that closes on outside click
+				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+					return c.dimmer.Layout(gtx, th, func() {
+						c.Open = false
+					})
+				}),
+				// Centered modal floating command palette
+				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+					return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						maxW := gtx.Dp(unit.Dp(540))
+						if gtx.Constraints.Max.X > maxW {
+							gtx.Constraints.Max.X = maxW
+							gtx.Constraints.Min.X = maxW
+						}
+						return c.layoutPaletteBox(gtx, th, mTheme, true)
+					})
+				}),
+			)
+			callOp := macro.Stop()
+			callOp.Add(gtx.Ops)
+		}
+
+		return triggerDims
+	}
+
+	// 2. Inline/embedded command box rendering
+	return c.layoutPaletteBox(gtx, th, mTheme, false)
+}
+
+func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, isModal bool) layout.Dimensions {
 	query := strings.ToLower(c.searchEditor.Text())
 
 	gtxContent := gtx
@@ -124,7 +192,13 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 						})
 					}),
 					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-						return material.Editor(mTheme, c.searchEditor, c.Placeholder).Layout(gtx)
+						return layout.W.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							ed := material.Editor(mTheme, c.searchEditor, c.Placeholder)
+							ed.TextSize = th.Typography.FontSizeSM
+							ed.Color = th.Colors.Foreground
+							ed.HintColor = th.Colors.MutedFg
+							return ed.Layout(gtx)
+						})
 					}),
 				)
 			})
@@ -165,8 +239,13 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 				}))
 			}
 
-			if item.clickable.Clicked(gtx) && !item.Disabled && c.OnSelectItem != nil {
-				c.OnSelectItem(idx)
+			if item.clickable.Clicked(gtx) && !item.Disabled {
+				if isModal {
+					c.Open = false
+				}
+				if c.OnSelectItem != nil {
+					c.OnSelectItem(idx)
+				}
 			}
 
 			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -177,7 +256,10 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
 	}
 
+	macro := op.Record(gtx.Ops)
 	contentDims := renderContent(gtxContent)
+	callOp := macro.Stop()
+
 	cmdSize := contentDims.Size
 
 	bgColor := th.Colors.Card
@@ -201,9 +283,10 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 			return layout.Dimensions{Size: cmdSize}
 		}),
 
-		// Content drawn ON TOP
+		// Recorded content played EXACTLY ONCE
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			callOp.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 
@@ -221,56 +304,92 @@ func (c *Command) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *materi
 		Right:  th.Spacing.Space4,
 	}
 
-	gtxContent := gtx
-	gtxContent.Constraints.Min = image.Pt(0, 0)
-
 	fgColor := th.Colors.Foreground
 	if item.Disabled {
-		fgColor.A = 120
+		fgColor = th.Colors.MutedFg
 	}
 
-	renderItemContent := func(gtx layout.Context) layout.Dimensions {
-		return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					if item.Icon != nil {
-						return layout.Inset{Right: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-							return item.Icon.LayoutSize(gtx, unit.Dp(16), fgColor)
-						})
-					}
-					return layout.Dimensions{}
-				}),
-				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+	macro := op.Record(gtx.Ops)
+	contentDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if item.Icon != nil {
+					return layout.Inset{Right: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						return item.Icon.LayoutSize(gtx, unit.Dp(16), fgColor)
+					})
+				}
+				return layout.Dimensions{}
+			}),
+			layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+				return layout.W.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 					lbl := material.Label(mTheme, th.Typography.FontSizeSM, item.Label)
 					lbl.Color = fgColor
 					return lbl.Layout(gtx)
-				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					if item.Shortcut == "" {
-						return layout.Dimensions{}
-					}
-					lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
-					lbl.Color = th.Colors.MutedFg
-					return lbl.Layout(gtx)
-				}),
-			)
-		})
-	}
+				})
+			}),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if item.Shortcut == "" {
+					return layout.Dimensions{}
+				}
+				kbdPadding := layout.Inset{
+					Top:    unit.Dp(2),
+					Bottom: unit.Dp(2),
+					Left:   unit.Dp(6),
+					Right:  unit.Dp(6),
+				}
+				return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					macroKbd := op.Record(gtx.Ops)
+					kbdDims := kbdPadding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
+						lbl.Color = th.Colors.MutedFg
+						lbl.Font.Weight = font.Medium
+						return lbl.Layout(gtx)
+					})
+					callKbd := macroKbd.Stop()
 
-	contentDims := renderItemContent(gtxContent)
+					kbdSize := kbdDims.Size
+					minH := gtx.Dp(unit.Dp(20))
+					if kbdSize.Y < minH {
+						kbdSize.Y = minH
+					}
+
+					return layout.Stack{Alignment: layout.Center}.Layout(gtx,
+						layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+							rect := image.Rectangle{Max: kbdSize}
+							radius := gtx.Dp(th.Radius.RadiusSM)
+							theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Muted)
+							rr := clip.UniformRRect(rect, radius)
+							theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, th.Colors.Border)
+							return layout.Dimensions{Size: kbdSize}
+						}),
+						layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+							return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+								callKbd.Add(gtx.Ops)
+								return kbdDims
+							})
+						}),
+					)
+				})
+			}),
+		)
+	})
+	callOp := macro.Stop()
+
 	itemSize := contentDims.Size
 
 	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return layout.Stack{}.Layout(gtx,
+		return layout.Stack{Alignment: layout.Center}.Layout(gtx,
 			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 				if item.clickable.Hovered() && !item.Disabled {
 					rect := image.Rectangle{Max: itemSize}
-					theme.DrawRRectBackground(gtx, rect, 0, th.Colors.Secondary)
+					radius := gtx.Dp(th.Radius.RadiusSM)
+					theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Secondary)
 				}
 				return layout.Dimensions{Size: itemSize}
 			}),
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderItemContent(gtx)
+				callOp.Add(gtx.Ops)
+				return contentDims
 			}),
 		)
 	})

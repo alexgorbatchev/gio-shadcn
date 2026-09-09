@@ -11,8 +11,10 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/alexgorbatchev/gio-lucide"
@@ -25,6 +27,11 @@ import (
 type Item struct {
 	Label     string
 	Shortcut  string
+	Icon      *lucide.Icon
+	Checked   bool
+	IsCheck   bool
+	Disabled  bool
+	OnSelect  func()
 	clickable *widget.Clickable
 }
 
@@ -33,6 +40,33 @@ func NewItem(label, shortcut string) *Item {
 	return &Item{
 		Label:     label,
 		Shortcut:  shortcut,
+		clickable: new(widget.Clickable),
+	}
+}
+
+// NewCheckboxItem creates a new DropdownMenu item with a checkmark icon when selected.
+func NewCheckboxItem(label string, checked bool, onToggle func(checked bool)) *Item {
+	item := &Item{
+		Label:     label,
+		Checked:   checked,
+		IsCheck:   true,
+		clickable: new(widget.Clickable),
+	}
+	item.OnSelect = func() {
+		item.Checked = !item.Checked
+		if onToggle != nil {
+			onToggle(item.Checked)
+		}
+	}
+	return item
+}
+
+// NewItemWithIcon creates a new DropdownMenu Item with an icon.
+func NewItemWithIcon(label, shortcut string, icon *lucide.Icon) *Item {
+	return &Item{
+		Label:     label,
+		Shortcut:  shortcut,
+		Icon:      icon,
 		clickable: new(widget.Clickable),
 	}
 }
@@ -90,7 +124,7 @@ func New(config Config) *DropdownMenu {
 	return dm
 }
 
-// Layout renders the dropdown menu panel or trigger with anchored menu when Open == true.
+// Layout renders the dropdown menu panel or trigger with floating anchored overlay menu when Open == true.
 func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -105,7 +139,7 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 		mTheme = material.NewTheme()
 	}
 
-	// 1. If trigger is present, render trigger and conditionally render anchored menu below it
+	// 1. If trigger is present, render trigger and floating overlay menu on top without stretching layout
 	if dm.TriggerButton != nil || dm.Trigger != nil {
 		if dm.TriggerButton != nil {
 			if dm.Open {
@@ -115,36 +149,41 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 			}
 		}
 
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if dm.TriggerButton != nil {
-					return dm.TriggerButton.Layout(gtx, th)
-				}
-				if dm.Trigger != nil {
-					return dm.Trigger(gtx)
-				}
-				return layout.Dimensions{}
-			}),
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				if !dm.Open {
-					return layout.Dimensions{}
-				}
-				return layout.Inset{Top: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					return dm.layoutMenuBox(gtx, th, mTheme)
-				})
-			}),
-		)
+		// Lay out the trigger
+		var triggerDims layout.Dimensions
+		if dm.TriggerButton != nil {
+			triggerDims = dm.TriggerButton.Layout(gtx, th)
+		} else if dm.Trigger != nil {
+			triggerDims = dm.Trigger(gtx)
+		}
+
+		if dm.Open {
+			// Record the floating menu overlay call to render over surrounding elements
+			macro := op.Record(gtx.Ops)
+
+			// Floating menu box position: directly below trigger
+			offsetY := triggerDims.Size.Y + gtx.Dp(th.Spacing.Space2)
+			op.Offset(image.Pt(0, offsetY)).Add(gtx.Ops)
+
+			dm.layoutMenuBox(gtx, th, mTheme, true)
+			callOp := macro.Stop()
+
+			// Add floating menu overlay on top of the scene
+			callOp.Add(gtx.Ops)
+		}
+
+		// Host flex layout only occupies the trigger's dimensions!
+		return triggerDims
 	}
 
-	// 2. Standalone menu rendering without trigger
+	// 2. Standalone menu rendering without trigger (for showcase/panel usage)
 	if !dm.Open {
 		return layout.Dimensions{}
 	}
-
-	return dm.layoutMenuBox(gtx, th, mTheme)
+	return dm.layoutMenuBox(gtx, th, mTheme, false)
 }
 
-func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme) layout.Dimensions {
+func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, isOverlay bool) layout.Dimensions {
 	gtxContent := gtx
 	gtxContent.Constraints.Min = image.Pt(0, 0)
 
@@ -155,7 +194,12 @@ func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mThem
 			idx, item := idx, item
 
 			if item.clickable.Clicked(gtx) {
-				dm.Open = false
+				if item.OnSelect != nil {
+					item.OnSelect()
+				}
+				if isOverlay {
+					dm.Open = false
+				}
 				if dm.OnSelectItem != nil {
 					dm.OnSelectItem(idx)
 				}
@@ -169,8 +213,14 @@ func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mThem
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
 	}
 
+	macro := op.Record(gtx.Ops)
 	contentDims := renderContent(gtxContent)
+	callOp := macro.Stop()
+
 	menuSize := contentDims.Size
+	if menuSize.X < gtx.Dp(unit.Dp(180)) {
+		menuSize.X = gtx.Dp(unit.Dp(180))
+	}
 
 	bgColor := th.Colors.Popover
 	borderColor := th.Colors.Border
@@ -194,7 +244,8 @@ func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mThem
 		}),
 
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			callOp.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 
@@ -218,31 +269,44 @@ func (dm *DropdownMenu) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *
 	}
 
 	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		gtxContent := gtx
-		gtxContent.Constraints.Min = image.Pt(0, 0)
-
-		renderContent := func(gtx layout.Context) layout.Dimensions {
-			return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-						lbl := material.Label(mTheme, th.Typography.FontSizeSM, item.Label)
-						lbl.Color = th.Colors.PopoverFg
-						return lbl.Layout(gtx)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						if item.Shortcut == "" {
-							return layout.Dimensions{}
+		macro := op.Record(gtx.Ops)
+		itemDims := padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				// Left Icon or Checkmark slot
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if item.IsCheck {
+						if item.Checked {
+							return layout.Inset{Right: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+								return lucide.Check.LayoutSize(gtx, unit.Dp(14), th.Colors.PopoverFg)
+							})
 						}
-						lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
-						lbl.Color = th.Colors.MutedFg
-						lbl.Font.Weight = font.Medium
-						return lbl.Layout(gtx)
-					}),
-				)
-			})
-		}
-
-		itemDims := renderContent(gtxContent)
+						// Unchecked slot spacer (14dp + space2)
+						return layout.Spacer{Width: unit.Dp(14) + th.Spacing.Space2}.Layout(gtx)
+					}
+					if item.Icon != nil {
+						return layout.Inset{Right: th.Spacing.Space2}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							return item.Icon.LayoutSize(gtx, unit.Dp(14), th.Colors.PopoverFg)
+						})
+					}
+					return layout.Dimensions{}
+				}),
+				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, item.Label)
+					lbl.Color = th.Colors.PopoverFg
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if item.Shortcut == "" {
+						return layout.Dimensions{}
+					}
+					lbl := material.Label(mTheme, th.Typography.FontSizeXS, item.Shortcut)
+					lbl.Color = th.Colors.MutedFg
+					lbl.Font.Weight = font.Medium
+					return lbl.Layout(gtx)
+				}),
+			)
+		})
+		callOp := macro.Stop()
 		itemSize := itemDims.Size
 
 		return layout.Stack{}.Layout(gtx,
@@ -254,7 +318,8 @@ func (dm *DropdownMenu) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *
 			}),
 
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderContent(gtx)
+				callOp.Add(gtx.Ops)
+				return itemDims
 			}),
 		)
 	})

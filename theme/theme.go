@@ -22,6 +22,29 @@ type Theme struct {
 	Radius        RadiusScale
 	IsDark        bool
 	MaterialTheme *material.Theme
+	overlays      []layout.Widget
+}
+
+// AddOverlay registers a window-level overlay (drawer, sheet, modal dialog, command palette)
+// to be rendered at the root window level on top of all application content.
+func (t *Theme) AddOverlay(w layout.Widget) {
+	if w != nil {
+		t.overlays = append(t.overlays, w)
+	}
+}
+
+// RenderOverlays renders all registered window-level overlays across the full window constraints.
+func (t *Theme) RenderOverlays(gtx layout.Context) layout.Dimensions {
+	if len(t.overlays) == 0 {
+		return layout.Dimensions{}
+	}
+	current := t.overlays
+	t.overlays = nil
+
+	for _, overlay := range current {
+		overlay(gtx)
+	}
+	return layout.Dimensions{Size: gtx.Constraints.Max}
 }
 
 func New() *Theme {

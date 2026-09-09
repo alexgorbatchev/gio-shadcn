@@ -1,68 +1,88 @@
 /*
-Package drawer provides a bottom sheet overlay panel component for gio-shadcn applications.
+Package drawer provides a bottom sheet overlay component for gio-shadcn applications.
 
-Drawers display slide-up bottom sheets following
-shadcn/ui design principles.
+Drawers display slide-up contextual panels anchored to the screen edge
+following shadcn/ui design principles with smooth physics transitions.
 */
 package drawer
 
 import (
 	"image"
-	"image/color"
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
-	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
+	"github.com/vibrantgio/effects/spring"
 )
 
 // Drawer represents a bottom sheet overlay component.
 type Drawer struct {
-	Title       string
-	Description string
-	Open        bool
-	Height      unit.Dp
-	Classes     string
-	Content     layout.Widget
+	Title         string
+	Description   string
+	Open          bool
+	Height        unit.Dp
+	Classes       string
+	Content       layout.Widget
+	TriggerButton *button.Button
+	Trigger       layout.Widget
 
-	OnClose       func()
-	closeBtn      *button.Button
-	backdropClick widget.Clickable
+	OnClose     func()
+	closeBtn    *button.Button
+	dimmer      *theme.Dimmer
+	spring      *spring.Spring
+	initialized bool
 }
 
 // Config represents configuration for creating a Drawer.
 type Config struct {
-	Title       string
-	Description string
-	Open        bool
-	Height      unit.Dp
-	Classes     string
-	Content     layout.Widget
-	OnClose     func()
+	TriggerText   string
+	TriggerButton *button.Button
+	Trigger       layout.Widget
+	Title         string
+	Description   string
+	Open          bool
+	Height        unit.Dp
+	Classes       string
+	Content       layout.Widget
+	OnClose       func()
 }
 
 // New creates a new Drawer bottom sheet.
 func New(config Config) *Drawer {
 	h := config.Height
 	if h <= 0 {
-		h = unit.Dp(260)
+		h = unit.Dp(280)
 	}
 
 	d := &Drawer{
-		Title:       config.Title,
-		Description: config.Description,
-		Open:        config.Open,
-		Height:      h,
-		Classes:     config.Classes,
-		Content:     config.Content,
-		OnClose:     config.OnClose,
+		Title:         config.Title,
+		Description:   config.Description,
+		Open:          config.Open,
+		Height:        h,
+		Classes:       config.Classes,
+		Content:       config.Content,
+		TriggerButton: config.TriggerButton,
+		Trigger:       config.Trigger,
+		OnClose:       config.OnClose,
+		dimmer:        theme.NewDimmer(),
+	}
+
+	if config.TriggerText != "" && d.TriggerButton == nil {
+		d.TriggerButton = button.New(button.Config{
+			Text:    config.TriggerText,
+			Variant: theme.VariantOutline,
+			OnClick: func() {
+				d.Open = true
+			},
+		})
 	}
 
 	d.closeBtn = button.New(button.Config{
@@ -80,22 +100,70 @@ func New(config Config) *Drawer {
 	return d
 }
 
-// Layout renders the dark backdrop overlay and bottom drawer panel when Open == true.
+// Layout renders the trigger, and when Open == true, queues the full-screen bottom drawer overlay.
 func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !d.Open {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
 	}
 
-	// Process backdrop click to close when clicking outside
-	if d.backdropClick.Clicked(gtx) {
-		d.Open = false
-		if d.OnClose != nil {
-			d.OnClose()
+	var triggerDims layout.Dimensions
+	if d.TriggerButton != nil {
+		triggerDims = d.TriggerButton.Layout(gtx, th)
+	} else if d.Trigger != nil {
+		triggerDims = d.Trigger(gtx)
+	}
+
+	if !d.Open && (!d.initialized || d.spring.Settled(0.001)) {
+		return triggerDims
+	}
+
+	th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
+		return d.renderOverlay(gtx, th)
+	})
+
+	if d.TriggerButton != nil || d.Trigger != nil {
+		return triggerDims
+	}
+	return d.renderOverlay(gtx, th)
+}
+
+func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+
+	if !d.initialized {
+		initVal := 0.0
+		if d.Open {
+			initVal = 1.0
 		}
+		d.spring = spring.New(initVal, initVal, spring.Options{
+			Stiffness: 220.0,
+			Damping:   24.0,
+		})
+		d.initialized = true
+	}
+
+	target := 0.0
+	if d.Open {
+		target = 1.0
+	}
+	d.spring.SetTarget(target)
+	d.spring.Tick(2.0)
+	progress := float32(d.spring.Value())
+	if progress < 0 {
+		progress = 0
+	} else if progress > 1 {
+		progress = 1
+	}
+
+	if !d.spring.Settled(0.001) {
+		gtx.Execute(op.InvalidateCmd{})
+	}
+
+	if progress <= 0.001 && !d.Open {
+		return layout.Dimensions{}
 	}
 
 	bgColor := th.Colors.Card
@@ -106,33 +174,33 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	mTheme := th.MaterialTheme
-	if mTheme == nil {
-		mTheme = material.NewTheme()
-	}
-
 	drawerHeightPx := gtx.Dp(d.Height)
+	windowSize := gtx.Constraints.Max
 
-	dims := layout.Stack{}.Layout(gtx,
-		// Dark backdrop overlay across full window that intercepts outside clicks
+	slideOffset := int(float32(drawerHeightPx) * (1.0 - progress))
+
+	macro := op.Record(gtx.Ops)
+	layout.Stack{}.Layout(gtx,
+		// Full window dimmer backdrop
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return d.backdropClick.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				rect := image.Rectangle{Max: gtx.Constraints.Max}
-				backdropColor := color.NRGBA{R: 0, G: 0, B: 0, A: 160}
-				theme.DrawRRectBackground(gtx, rect, 0, backdropColor)
-				return layout.Dimensions{Size: gtx.Constraints.Max}
+			return d.dimmer.Layout(gtx, th, func() {
+				d.Open = false
+				if d.OnClose != nil {
+					d.OnClose()
+				}
 			})
 		}),
 
-		// Drawer panel aligned to the SOUTH (bottom edge) of the viewport
+		// Drawer panel anchored to the SOUTH (bottom edge) across the FULL window width with slide animation
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			gtxDrawer := gtx
-			gtxDrawer.Constraints.Min.Y = 0
+			gtxDrawer.Constraints = layout.Exact(windowSize)
 
 			return layout.S.Layout(gtxDrawer, func(gtx layout.Context) layout.Dimensions {
-				gtx.Constraints.Min.X = gtx.Constraints.Max.X
-				gtx.Constraints.Min.Y = drawerHeightPx
-				gtx.Constraints.Max.Y = drawerHeightPx
+				gtx.Constraints = layout.Exact(image.Pt(windowSize.X, drawerHeightPx))
+
+				// Apply physics slide offset
+				op.Offset(image.Pt(0, slideOffset)).Add(gtx.Ops)
 
 				padding := layout.Inset{
 					Top:    th.Spacing.Space4,
@@ -141,23 +209,32 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					Right:  th.Spacing.Space6,
 				}
 
-				drawerSize := image.Pt(gtx.Constraints.Max.X, drawerHeightPx)
+				drawerSize := image.Pt(windowSize.X, drawerHeightPx)
 
 				return layout.Stack{}.Layout(gtx,
-					// Drawer background drawn FIRST
+					// Drawer background drawn FIRST with top rounded corners
 					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 						rect := image.Rectangle{Max: drawerSize}
 						radiusPx := gtx.Dp(th.Radius.RadiusLG)
 
-						theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
+						var rr clip.RRect
+						rr.Rect = rect
+						rr.NW = radiusPx
+						rr.NE = radiusPx
+						rr.SW = 0
+						rr.SE = 0
 
-						rr := clip.UniformRRect(rect, radiusPx)
+						cl := rr.Op(gtx.Ops).Push(gtx.Ops)
+						paint.ColorOp{Color: bgColor}.Add(gtx.Ops)
+						paint.PaintOp{}.Add(gtx.Ops)
+						cl.Pop()
+
 						theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 						return layout.Dimensions{Size: drawerSize}
 					}),
 
-					// Drawer content drawn ON TOP of background
+					// Drawer content
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 						return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -204,22 +281,7 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 									if d.Content != nil {
 										return d.Content(gtx)
 									}
-									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											lbl := material.Label(mTheme, th.Typography.FontSizeBase, "Real-Time System & Hardware Metrics")
-											lbl.Color = th.Colors.Foreground
-											lbl.Font.Weight = font.SemiBold
-											return lbl.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											lbl := material.Label(mTheme, th.Typography.FontSizeSM, "CPU Usage: 2.1% | Physical RAM: 189.5 MB | Metal GPU Frame Rate: 120 FPS | Buffer Latency: 0.7 ms")
-											lbl.Color = th.Colors.MutedFg
-											return lbl.Layout(gtx)
-										}),
-									)
+									return layout.Dimensions{}
 								}),
 							)
 						})
@@ -228,9 +290,10 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			})
 		}),
 	)
+	callOp := macro.Stop()
+	callOp.Add(gtx.Ops)
 
-	// Reset active GPU paint color state back to background
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
-	return dims
+	return layout.Dimensions{Size: windowSize}
 }
