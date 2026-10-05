@@ -24,16 +24,26 @@ type VariantConfig struct {
 	FocusRing   color.NRGBA
 }
 
-// createSolidVariant creates a solid color variant configuration.
+// createSolidVariant creates a solid color variant configuration with high-contrast hover/active states.
 func createSolidVariant(bg, fg color.NRGBA, colors *ColorScheme) VariantConfig {
+	lum := 0.299*float32(bg.R) + 0.587*float32(bg.G) + 0.114*float32(bg.B)
+	var hoverBg, activeBg color.NRGBA
+	if lum < 128 {
+		hoverBg = lighten(bg, 0.18)
+		activeBg = lighten(bg, 0.28)
+	} else {
+		hoverBg = darken(bg, 0.15)
+		activeBg = darken(bg, 0.25)
+	}
+
 	return VariantConfig{
 		Background:  bg,
 		Foreground:  fg,
 		Border:      bg,
 		BorderWidth: 0,
-		HoverBg:     darken(bg, 0.1),
+		HoverBg:     hoverBg,
 		HoverFg:     fg,
-		ActiveBg:    darken(bg, 0.2),
+		ActiveBg:    activeBg,
 		ActiveFg:    fg,
 		DisabledBg:  colors.Muted,
 		DisabledFg:  colors.MutedFg,

@@ -177,8 +177,8 @@ func (b *Button) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	if !b.initialized {
 		b.hoverSpring = spring.New(0, 0, spring.Options{
-			Stiffness: 300.0,
-			Damping:   26.0,
+			Stiffness: 500.0,
+			Damping:   45.0,
 		})
 		b.initialized = true
 	}
@@ -188,7 +188,7 @@ func (b *Button) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		targetHover = 1.0
 	}
 	b.hoverSpring.SetTarget(targetHover)
-	b.hoverSpring.Tick(2.0)
+	b.hoverSpring.Tick(60.0)
 	hoverVal := b.hoverSpring.Value()
 	if !b.hoverSpring.Settled(0.005) {
 		gtx.Execute(op.InvalidateCmd{})

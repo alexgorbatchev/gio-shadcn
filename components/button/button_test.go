@@ -10,6 +10,7 @@ import (
 	"github.com/alexgorbatchev/gio-lucide"
 	"github.com/bnema/gio-shadcn/components/button"
 	"github.com/bnema/gio-shadcn/theme"
+	"github.com/vibrantgio/effects/spring"
 )
 
 func TestButtonDefault(t *testing.T) {
@@ -166,6 +167,62 @@ func TestButtonGroupConnectedCorners(t *testing.T) {
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
 		t.Errorf("expected valid group layout dimensions, got %v", dims.Size)
 	}
+}
+
+func TestButtonHoverSmoothAnimation(t *testing.T) {
+	s := spring.New(0, 0, spring.Options{
+		Stiffness: 500.0,
+		Damping:   45.0,
+	})
+
+	// Enter hover state
+	s.SetTarget(1.0)
+	var prevVal float64 = 0.0
+	settledFrame := -1
+
+	for frame := 0; frame < 60; frame++ {
+		s.Tick(60.0)
+		val := s.Value()
+
+		// Value must stay strictly monotonic or within reasonable bounds [0, 1.05]
+		if val < -0.01 || val > 1.05 {
+			t.Fatalf("frame %d: value %f went out of bounds", frame, val)
+		}
+
+		if frame < 15 && val < prevVal {
+			t.Fatalf("frame %d: expected monotonic increase during ease-in, got %f < %f", frame, val, prevVal)
+		}
+		prevVal = val
+
+		if s.Settled(0.005) {
+			settledFrame = frame
+			break
+		}
+	}
+
+	if settledFrame == -1 {
+		t.Fatalf("spring failed to settle within 60 frames")
+	}
+	t.Logf("Spring smoothly settled at frame %d with value %f", settledFrame, s.Value())
+
+	// Exit hover state
+	s.SetTarget(0.0)
+	settledExitFrame := -1
+	for frame := 0; frame < 60; frame++ {
+		s.Tick(60.0)
+		val := s.Value()
+		if val < -0.01 || val > 1.05 {
+			t.Fatalf("exit frame %d: value %f went out of bounds", frame, val)
+		}
+		if s.Settled(0.005) {
+			settledExitFrame = frame
+			break
+		}
+	}
+	if settledExitFrame == -1 {
+		t.Fatalf("spring failed to settle on exit within 60 frames")
+	}
+	t.Logf("Spring smoothly settled back to 0 at exit frame %d with value %f", settledExitFrame, s.Value())
 }
 
 func TestButtonGroupSelection(t *testing.T) {
