@@ -37,14 +37,24 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return label.NewTypography("1. Hover Card Demo (Hover over handle)", label.H4, "").Layout(gtx, th)
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.HoverCardDemo.Layout(gtx, th) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return s.HoverCardDemo.LayoutTrigger(gtx, th, func(gtx layout.Context) layout.Dimensions {
+				return label.NewTypography("@nextjs", label.Small, "").Layout(gtx, th)
+			})
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx)
+		}),
 
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return label.NewTypography("2. Expanded Hover Preview Box", label.H4, "").Layout(gtx, th)
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.HoverCardSides.Layout(gtx, th) }),
 	)
 }

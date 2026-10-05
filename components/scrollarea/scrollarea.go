@@ -45,12 +45,12 @@ func New(config Config) *ScrollArea {
 
 // Layout renders the scrollable area.
 func (sa *ScrollArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if sa.Widget == nil {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	if sa.Widget == nil {
+		return layout.Dimensions{}
 	}
 
 	dims := sa.List.Layout(gtx, 1, func(gtx layout.Context, index int) layout.Dimensions {

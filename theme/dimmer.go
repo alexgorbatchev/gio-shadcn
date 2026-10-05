@@ -48,6 +48,10 @@ func (d *Dimmer) Layout(gtx layout.Context, th *Theme, onClose func()) layout.Di
 
 // LayoutWithAlpha renders the dimmed backdrop with custom alpha (0-255) filling the available constraints and invokes onClose when clicked.
 func (d *Dimmer) LayoutWithAlpha(gtx layout.Context, th *Theme, alpha uint8, onClose func()) layout.Dimensions {
+	if th == nil {
+		th = New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 	for d.clickable.Clicked(gtx) {
 		if onClose != nil {
 			onClose()

@@ -12,7 +12,6 @@ import (
 	"gioui.org/font"
 	"gioui.org/layout"
 	"gioui.org/op"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -129,6 +128,7 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	if dm.backdropClick.Clicked(gtx) {
 		dm.Open = false
@@ -193,7 +193,7 @@ func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mThem
 		for idx, item := range dm.Items {
 			idx, item := idx, item
 
-			if item.clickable.Clicked(gtx) {
+			if item.clickable.Clicked(gtx) && !item.Disabled {
 				if item.OnSelect != nil {
 					item.OnSelect()
 				}
@@ -237,7 +237,7 @@ func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mThem
 
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: menuSize}
@@ -256,6 +256,9 @@ func (dm *DropdownMenu) layoutMenuBox(gtx layout.Context, th *theme.Theme, mThem
 }
 
 func (dm *DropdownMenu) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, item *Item) layout.Dimensions {
+	if item.Disabled {
+		gtx = gtx.Disabled()
+	}
 	padding := layout.Inset{
 		Top:    th.Spacing.Space2,
 		Bottom: th.Spacing.Space2,

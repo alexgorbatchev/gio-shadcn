@@ -1,5 +1,5 @@
 /*
-Package demo provides the full interactive 37-component gallery showcase application
+Package demo provides the interactive component gallery application
 for gio-shadcn following shadcn/ui design tokens and Gio immediate-mode rendering.
 */
 package demo
@@ -72,23 +72,22 @@ type GalleryItem struct {
 	clickable *widget.Clickable
 }
 
-var sidebarList = &widget.List{
-	List: layout.List{
-		Axis: layout.Vertical,
-	},
-}
-
-var contentList = &widget.List{
-	List: layout.List{
-		Axis: layout.Vertical,
-	},
+type gallery struct {
+	th          *theme.Theme
+	tb          *titlebar.TitleBar
+	items       []*GalleryItem
+	activeID    string
+	themeToggle *button.Button
+	card        *card.Card
+	sidebarList widget.List
+	contentList widget.List
 }
 
 // Run launches the full gio-shadcn component gallery window.
 func Run() {
 	go func() {
 		w := &app.Window{}
-		w.Option(app.Title("guipoc - Gio (gio-shadcn Gallery)"))
+		w.Option(app.Title("gio-shadcn Component Gallery"))
 		w.Option(app.Size(1200, 800))
 		w.Option(app.Maximized.Option())
 
@@ -101,22 +100,24 @@ func Run() {
 	app.Main()
 }
 
-func runWindow(w *app.Window) error {
+func newGallery(w *app.Window) *gallery {
 	th := theme.NewDark()
 
 	tb := titlebar.NewTitleBar(
-		titlebar.WithTitle("guipoc - Gio Component Gallery (37 Component Parity)"),
+		titlebar.WithTitle("Gio Component Gallery"),
 		titlebar.WithWindow(w),
 		titlebar.WithVariant(theme.VariantSecondary),
 	)
 
-	// Gallery Component List (1 View Per Component - 37 Total)
+	// One view per component package.
 	galleryItems := []*GalleryItem{
 		// General
 		{ID: "button", Category: "General", Name: "Button", clickable: new(widget.Clickable)},
 		{ID: "badge", Category: "General", Name: "Badge", clickable: new(widget.Clickable)},
 		{ID: "avatar", Category: "General", Name: "Avatar", clickable: new(widget.Clickable)},
 		{ID: "label", Category: "General", Name: "Label & Typography", clickable: new(widget.Clickable)},
+		{ID: "titlebar", Category: "General", Name: "Titlebar", clickable: new(widget.Clickable)},
+		{ID: "card", Category: "General", Name: "Card", clickable: new(widget.Clickable)},
 
 		// Form Controls
 		{ID: "input", Category: "Form Controls", Name: "Text Input", clickable: new(widget.Clickable)},
@@ -157,6 +158,8 @@ func runWindow(w *app.Window) error {
 
 		// Layout & Utilities
 		{ID: "separator", Category: "Utilities", Name: "Separator", clickable: new(widget.Clickable)},
+		{ID: "aspectratio", Category: "Utilities", Name: "Aspect Ratio", clickable: new(widget.Clickable)},
+		{ID: "scrollarea", Category: "Utilities", Name: "Scroll Area", clickable: new(widget.Clickable)},
 		{ID: "resizable", Category: "Utilities", Name: "Resizable Panels", clickable: new(widget.Clickable)},
 		{ID: "carousel", Category: "Utilities", Name: "Carousel Slider", clickable: new(widget.Clickable)},
 		{ID: "command", Category: "Utilities", Name: "Command Palette", clickable: new(widget.Clickable)},
@@ -175,134 +178,155 @@ func runWindow(w *app.Window) error {
 	// Theme Toggle
 	var themeToggleBtn *button.Button
 	themeToggleBtn = button.New(button.Config{
-		Text:    "☀️ Light Mode",
+		Text:    "Light Mode",
 		Variant: theme.VariantOutline,
 		Size:    theme.SizeSM,
 		OnClick: func() {
 			th.ToggleDark()
 			if th.IsDark {
-				themeToggleBtn.SetText("☀️ Light Mode")
+				themeToggleBtn.SetText("Light Mode")
 			} else {
-				themeToggleBtn.SetText("🌙 Dark Mode")
+				themeToggleBtn.SetText("Dark Mode")
 			}
 			w.Invalidate()
 		},
 	})
 
 	demoCard := card.New(card.Config{Variant: theme.VariantDefault})
+	g := &gallery{th: th, tb: tb, items: galleryItems, activeID: activeItemID, themeToggle: themeToggleBtn, card: demoCard}
+	g.sidebarList.Axis = layout.Vertical
+	g.contentList.Axis = layout.Vertical
+	return g
+}
 
+func runWindow(w *app.Window) error {
+	g := newGallery(w)
+	defer g.th.ReleaseBackdrop()
 	var ops op.Ops
 
 	for {
 		switch e := w.Event().(type) {
 		case app.DestroyEvent:
 			return e.Err
+		case app.ConfigEvent:
+			g.tb.SetMode(e.Config.Mode)
 
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
-
-			for {
-				ev, ok := gtx.Event(
-					key.Filter{Name: "1", Required: key.ModCtrl},
-				)
-				if !ok {
-					break
-				}
-				_ = ev
-			}
-
-			// 1. Record Main Content into macro
-			macro := op.Record(gtx.Ops)
-
-			// Background clip stack - fill FULL physical Retina framebuffer (e.Size)
-			bgClip := clip.Rect{Max: e.Size}.Push(gtx.Ops)
-			paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
-			paint.PaintOp{}.Add(gtx.Ops)
-			bgClip.Pop()
-
-			// Top Bar + Main Split View Layout
-			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				// Window Title Bar
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return tb.Layout(gtx, th, w)
-				}),
-
-				// Header Toolbar
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layout.Inset{
-						Top:    th.Spacing.Space4,
-						Bottom: th.Spacing.Space4,
-						Left:   th.Spacing.Space6,
-						Right:  th.Spacing.Space6,
-					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-								lblTitle := label.NewTypography("guipoc - Gio Component Gallery", label.H2, "")
-								return lblTitle.Layout(gtx, th)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return themeToggleBtn.Layout(gtx, th)
-							}),
-						)
-					})
-				}),
-
-				// Main Content Split Area (Left Navigation Sidebar + Right Component Viewer)
-				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
-						// Left Sidebar Navigation List
-						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return renderSidebar(gtx, th, galleryItems, &activeItemID)
-						}),
-
-						// Right Component Gallery Viewport (Vertically Scrollable Auto)
-						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-							return layout.Inset{
-								Left:   th.Spacing.Space6,
-								Right:  th.Spacing.Space6,
-								Bottom: th.Spacing.Space6,
-							}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-								return demoCard.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-									mTheme := th.MaterialTheme
-									if mTheme == nil {
-										mTheme = material.NewTheme()
-									}
-									return material.List(mTheme, contentList).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
-										return renderComponentGalleryPage(gtx, th, activeItemID)
-									})
-								})
-							})
-						}),
-					)
-				}),
-			)
-			mainCall := macro.Stop()
-			mainCall.Add(gtx.Ops)
-
-			// 2. If overlays are active, update blurred backdrop snapshot
-			if th.HasOverlays() {
-				th.UpdateBackdropIfNeeded(func(ops *op.Ops) {
-					mainCall.Add(ops)
-				}, e.Size, 24.0)
-			} else {
-				th.InvalidateBackdrop()
-			}
-
-			// Render any active window-level overlays (Bottom Drawer, Side Sheet, Modal Dialog, Command Palette)
-			// across the FULL ROOT APPLICATION SCREEN constraints!
-			gtxOverlay := gtx
-			gtxOverlay.Constraints = layout.Exact(e.Size)
-			th.RenderOverlays(gtxOverlay)
-
-			// RESET GPU PAINT COLOR TO BACKGROUND AT THE END OF THE FRAME LOOP BEFORE SUBMISSION
-			paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
-
+			g.layout(gtx, w, e.Size)
+			paint.ColorOp{Color: g.th.Colors.Background}.Add(&ops)
 			e.Frame(&ops)
 		}
 	}
 }
 
-func renderSidebar(gtx layout.Context, th *theme.Theme, items []*GalleryItem, activeID *string) layout.Dimensions {
+func (g *gallery) layout(gtx layout.Context, w *app.Window, size image.Point) layout.Dimensions {
+	th := g.th
+	// Apply theme changes before recording any paint operations for this frame.
+	g.themeToggle.Update(gtx)
+
+	for {
+		ev, ok := gtx.Event(
+			key.Filter{Name: "1", Required: key.ModCtrl},
+		)
+		if !ok {
+			break
+		}
+		_ = ev
+	}
+
+	// 1. Record Main Content into macro
+	macro := op.Record(gtx.Ops)
+
+	// Background clip stack - fill FULL physical Retina framebuffer (e.Size)
+	bgClip := clip.Rect{Max: size}.Push(gtx.Ops)
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+	paint.PaintOp{}.Add(gtx.Ops)
+	bgClip.Pop()
+
+	// Top Bar + Main Split View Layout
+	dims := layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+		// Window Title Bar
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return g.tb.Layout(gtx, th, w)
+		}),
+
+		// Header Toolbar
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{
+				Top:    th.Spacing.Space4,
+				Bottom: th.Spacing.Space4,
+				Left:   th.Spacing.Space6,
+				Right:  th.Spacing.Space6,
+			}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						lblTitle := label.NewTypography("gio-shadcn Component Gallery", label.H2, "")
+						return lblTitle.Layout(gtx, th)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return g.themeToggle.Layout(gtx, th)
+					}),
+				)
+			})
+		}),
+
+		// Main Content Split Area (Left Navigation Sidebar + Right Component Viewer)
+		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+				// Left Sidebar Navigation List
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return g.renderSidebar(gtx, th)
+				}),
+
+				// Right Component Gallery Viewport (Vertically Scrollable Auto)
+				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+					return layout.Inset{
+						Left:   th.Spacing.Space6,
+						Right:  th.Spacing.Space6,
+						Bottom: th.Spacing.Space6,
+					}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						return g.card.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
+							mTheme := th.MaterialTheme
+							if mTheme == nil {
+								mTheme = material.NewTheme()
+							}
+							return material.List(mTheme, &g.contentList).Layout(gtx, 1, func(gtx layout.Context, _ int) layout.Dimensions {
+								return renderComponentGalleryPage(gtx, th, g.activeID)
+							})
+						})
+					})
+				}),
+			)
+		}),
+	)
+	mainCall := macro.Stop()
+	mainCall.Add(gtx.Ops)
+
+	// 2. If overlays are active, update blurred backdrop snapshot
+	if th.HasOverlays() {
+		th.UpdateBackdropIfNeeded(func(ops *op.Ops) {
+			mainCall.Add(ops)
+		}, size, 24.0)
+	} else {
+		th.InvalidateBackdrop()
+	}
+
+	// Render any active window-level overlays (Bottom Drawer, Side Sheet, Modal Dialog, Command Palette)
+	// across the FULL ROOT APPLICATION SCREEN constraints!
+	gtxOverlay := gtx
+	gtxOverlay.Constraints = layout.Exact(size)
+	th.RenderOverlays(gtxOverlay)
+
+	// RESET GPU PAINT COLOR TO BACKGROUND AT THE END OF THE FRAME LOOP BEFORE SUBMISSION
+	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
+
+	return dims
+}
+
+func (g *gallery) renderSidebar(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	items := g.items
+	activeID := &g.activeID
 	sidebarWidth := gtx.Dp(unit.Dp(240))
 	gtx.Constraints.Min.X = sidebarWidth
 	gtx.Constraints.Max.X = sidebarWidth
@@ -315,9 +339,9 @@ func renderSidebar(gtx layout.Context, th *theme.Theme, items []*GalleryItem, ac
 	}
 
 	return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return material.List(th.MaterialTheme, sidebarList).Layout(gtx, len(items)+2, func(gtx layout.Context, index int) layout.Dimensions {
+		return material.List(th.MaterialTheme, &g.sidebarList).Layout(gtx, len(items)+2, func(gtx layout.Context, index int) layout.Dimensions {
 			if index == 0 {
-				lblCategory := label.NewTypography("COMPONENTS (37)", label.Small, "")
+				lblCategory := label.NewTypography("COMPONENTS", label.Small, "")
 				return lblCategory.Layout(gtx, th)
 			}
 			if index == 1 {
@@ -329,7 +353,7 @@ func renderSidebar(gtx layout.Context, th *theme.Theme, items []*GalleryItem, ac
 
 			if item.clickable.Clicked(gtx) {
 				if *activeID != item.ID {
-					contentList.Position = layout.Position{}
+					g.contentList.Position = layout.Position{}
 				}
 				*activeID = item.ID
 			}

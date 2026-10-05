@@ -8,8 +8,6 @@ require (
 	github.com/vibrantgio/effects v0.2.5
 )
 
-replace github.com/alexgorbatchev/gio-lucide => ../gio-lucide
-
 require (
 	gioui.org/shader v1.0.9 // indirect
 	github.com/go-text/typesetting v0.3.4 // indirect

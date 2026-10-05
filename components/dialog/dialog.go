@@ -10,6 +10,7 @@ import (
 	"image"
 
 	"gioui.org/font"
+	"gioui.org/gesture"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -39,6 +40,8 @@ type Dialog struct {
 	cancelBtn  *button.Button
 	confirmBtn *button.Button
 	dimmer     *theme.Dimmer
+	panel      gesture.Click
+	wasOpen    bool
 }
 
 // Config represents configuration for creating a Dialog.
@@ -124,11 +127,7 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
-
-	mTheme := th.MaterialTheme
-	if mTheme == nil {
-		mTheme = material.NewTheme()
-	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	// 1. Trigger
 	var triggerDims layout.Dimensions
@@ -139,7 +138,32 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	if !d.Open {
+		d.wasOpen = false
 		return triggerDims
+	}
+	th.AddOverlay(func(gtx layout.Context) layout.Dimensions { return d.renderOverlay(gtx, th) })
+	if d.TriggerButton != nil || d.Trigger != nil {
+		return triggerDims
+	}
+	return layout.Dimensions{Size: gtx.Constraints.Max}
+}
+
+func (d *Dialog) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	mTheme := th.MaterialTheme
+	if mTheme == nil {
+		mTheme = material.NewTheme()
+	}
+	gtx.Constraints = layout.Exact(gtx.Constraints.Max)
+	if !d.wasOpen {
+		d.cancelBtn.Focus(gtx)
+		d.wasOpen = true
+	}
+	for {
+		_, ok := d.panel.Update(gtx.Source)
+		if !ok {
+			break
+		}
 	}
 
 	bgColor := th.Colors.Card
@@ -152,7 +176,7 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	macro := op.Record(gtx.Ops)
 	// Dark backdrop overlay across full window that intercepts outside clicks
-	layout.Stack{}.Layout(gtx,
+	layout.Stack{Alignment: layout.Center}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return d.dimmer.Layout(gtx, th, func() {
 				d.Open = false
@@ -240,7 +264,7 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 						theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
 
-						rr := clip.UniformRRect(rect, radiusPx)
+						rr := theme.RRect(rect, radiusPx)
 						theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 						return layout.Dimensions{Size: cardSize}
@@ -248,7 +272,10 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 					// Dialog card content drawn ON TOP
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						area := clip.Rect(image.Rectangle{Max: cardSize}).Push(gtx.Ops)
+						d.panel.Add(gtx.Ops)
 						callCard.Add(gtx.Ops)
+						area.Pop()
 						return contentDims
 					}),
 				)
@@ -261,8 +288,5 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Reset active GPU paint color state back to background
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
 
-	if d.TriggerButton != nil || d.Trigger != nil {
-		return triggerDims
-	}
 	return layout.Dimensions{Size: gtx.Constraints.Max}
 }

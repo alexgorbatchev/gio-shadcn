@@ -11,6 +11,8 @@ import (
 	"strings"
 
 	"gioui.org/font"
+	"gioui.org/gesture"
+	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -67,6 +69,8 @@ type Command struct {
 
 	searchEditor *widget.Editor
 	dimmer       *theme.Dimmer
+	panel        gesture.Click
+	wasOpen      bool
 }
 
 // Config represents configuration for creating a Command palette.
@@ -120,6 +124,7 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	mTheme := th.MaterialTheme
 	if mTheme == nil {
@@ -136,28 +141,39 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		}
 
 		if c.Open {
-			macro := op.Record(gtx.Ops)
-			layout.Stack{}.Layout(gtx,
-				// Dimmed backdrop filling entire window that closes on outside click
-				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-					return c.dimmer.Layout(gtx, th, func() {
-						c.Open = false
-					})
-				}),
-				// Centered modal floating command palette
-				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						maxW := gtx.Dp(unit.Dp(540))
-						if gtx.Constraints.Max.X > maxW {
-							gtx.Constraints.Max.X = maxW
-							gtx.Constraints.Min.X = maxW
-						}
-						return c.layoutPaletteBox(gtx, th, mTheme, true)
-					})
-				}),
-			)
-			callOp := macro.Stop()
-			callOp.Add(gtx.Ops)
+			th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
+				gtx.Constraints = layout.Exact(gtx.Constraints.Max)
+				if !c.wasOpen {
+					gtx.Execute(key.FocusCmd{Tag: c.searchEditor})
+					c.wasOpen = true
+				}
+				for {
+					if _, ok := c.panel.Update(gtx.Source); !ok {
+						break
+					}
+				}
+				return layout.Stack{Alignment: layout.Center}.Layout(gtx,
+					// Dimmed backdrop filling entire window that closes on outside click
+					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+						return c.dimmer.Layout(gtx, th, func() {
+							c.Open = false
+						})
+					}),
+					// Centered modal floating command palette
+					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							maxW := gtx.Dp(unit.Dp(540))
+							if gtx.Constraints.Max.X > maxW {
+								gtx.Constraints.Max.X = maxW
+								gtx.Constraints.Min.X = maxW
+							}
+							return c.layoutPaletteBox(gtx, th, mTheme, true)
+						})
+					}),
+				)
+			})
+		} else {
+			c.wasOpen = false
 		}
 
 		return triggerDims
@@ -168,6 +184,11 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 }
 
 func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, isModal bool) layout.Dimensions {
+	for {
+		if _, ok := c.searchEditor.Update(gtx); !ok {
+			break
+		}
+	}
 	query := strings.ToLower(c.searchEditor.Text())
 
 	gtxContent := gtx
@@ -277,7 +298,7 @@ func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *
 			radius := gtx.Dp(th.Radius.RadiusLG)
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: cmdSize}
@@ -285,6 +306,10 @@ func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *
 
 		// Recorded content played EXACTLY ONCE
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			if isModal {
+				defer clip.Rect(image.Rectangle{Max: cmdSize}).Push(gtx.Ops).Pop()
+				c.panel.Add(gtx.Ops)
+			}
 			callOp.Add(gtx.Ops)
 			return contentDims
 		}),
@@ -358,7 +383,7 @@ func (c *Command) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *materi
 							rect := image.Rectangle{Max: kbdSize}
 							radius := gtx.Dp(th.Radius.RadiusSM)
 							theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Muted)
-							rr := clip.UniformRRect(rect, radius)
+							rr := theme.RRect(rect, radius)
 							theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, th.Colors.Border)
 							return layout.Dimensions{Size: kbdSize}
 						}),

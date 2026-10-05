@@ -9,10 +9,11 @@ package card
 import (
 	"image"
 
+	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
+	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -111,7 +112,7 @@ func (c *Card) Layout(gtx layout.Context, th *theme.Theme, content layout.Widget
 			theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
 
 			if variant.BorderWidth > 0 {
-				rr := clip.UniformRRect(rect, radiusPx)
+				rr := theme.RRect(rect, radiusPx)
 				theme.DrawStroke(gtx, rr.Path(gtx.Ops), float32(gtx.Dp(unit.Dp(variant.BorderWidth))), variant.Border)
 			}
 
@@ -168,19 +169,26 @@ func (h *Header) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
-	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Bottom: th.Spacing.Space1}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Dimensions{}
-			})
-		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Top: 0}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Dimensions{}
-			})
-		}),
-	)
+	return utils.ParseClasses(h.Classes).Padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if h.Title == "" {
+					return layout.Dimensions{}
+				}
+				return layout.Inset{Bottom: th.Spacing.Space1}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return NewTitle(TitleConfig{Text: h.Title}).Layout(gtx, th)
+				})
+			}),
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				if h.Description == "" {
+					return layout.Dimensions{}
+				}
+				return NewDescription(DescriptionConfig{Text: h.Description}).Layout(gtx, th)
+			}),
+		)
+	})
 }
 
 type Title struct {
@@ -201,7 +209,11 @@ func NewTitle(config TitleConfig) *Title {
 }
 
 func (t *Title) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	return layout.Dimensions{}
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	return cardText(gtx, th, t.Text, t.Classes, true)
 }
 
 type Description struct {
@@ -222,7 +234,30 @@ func NewDescription(config DescriptionConfig) *Description {
 }
 
 func (d *Description) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	return layout.Dimensions{}
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	return cardText(gtx, th, d.Text, d.Classes, false)
+}
+
+func cardText(gtx layout.Context, th *theme.Theme, value, classes string, title bool) layout.Dimensions {
+	m := th.MaterialTheme
+	if m == nil {
+		m = material.NewTheme()
+	}
+	lbl := material.Label(m, th.Typography.FontSizeSM, value)
+	lbl.Color = th.Colors.MutedFg
+	if title {
+		lbl.TextSize = th.Typography.FontSizeBase
+		lbl.Font.Weight = font.SemiBold
+		lbl.Color = th.Colors.CardFg
+	}
+	styles := utils.ParseClasses(classes)
+	if styles.Background.A > 0 {
+		lbl.Color = styles.Background
+	}
+	return styles.Padding.Layout(gtx, lbl.Layout)
 }
 
 type Content struct {
@@ -240,7 +275,11 @@ func NewContent(config ContentConfig) *Content {
 }
 
 func (c *Content) Layout(gtx layout.Context, th *theme.Theme, children layout.Widget) layout.Dimensions {
-	return children(gtx)
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	return utils.ParseClasses(c.Classes).Padding.Layout(gtx, children)
 }
 
 type Footer struct {
@@ -258,5 +297,9 @@ func NewFooter(config FooterConfig) *Footer {
 }
 
 func (f *Footer) Layout(gtx layout.Context, th *theme.Theme, children layout.Widget) layout.Dimensions {
-	return children(gtx)
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	return utils.ParseClasses(f.Classes).Padding.Layout(gtx, children)
 }

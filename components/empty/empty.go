@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/unit"
@@ -100,7 +99,9 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					}
 					return layout.Dimensions{}
 				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx) }),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Height: th.Spacing.Space3}.Layout(gtx)
+				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					lbl := material.Label(mTheme, th.Typography.FontSizeLG, e.Title)
 					lbl.Color = th.Colors.Foreground
@@ -108,7 +109,9 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					lbl.Alignment = text.Middle
 					return lbl.Layout(gtx)
 				}),
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx) }),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layout.Spacer{Height: th.Spacing.Space1}.Layout(gtx)
+				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					lbl := material.Label(mTheme, th.Typography.FontSizeSM, e.Description)
 					lbl.Color = th.Colors.MutedFg
@@ -125,7 +128,7 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	emptySize := contentDims.Size
 
 	dims := layout.Stack{}.Layout(gtx,
@@ -135,7 +138,7 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			radius := gtx.Dp(th.Radius.RadiusLG)
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: emptySize}
@@ -143,7 +146,8 @@ func (e *Empty) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 		// Content drawn ON TOP of background
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 

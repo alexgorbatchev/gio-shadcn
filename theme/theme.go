@@ -78,6 +78,7 @@ func (t *Theme) AddOverlay(w layout.Widget) {
 
 // RenderOverlays renders all registered window-level overlays across the full window constraints.
 func (t *Theme) RenderOverlays(gtx layout.Context) layout.Dimensions {
+	defer func() { paint.ColorOp{Color: t.Colors.Background}.Add(gtx.Ops) }()
 	if len(t.overlays) == 0 {
 		return layout.Dimensions{}
 	}
@@ -147,11 +148,31 @@ func DrawRRectBackground(gtx layout.Context, rect image.Rectangle, radius int, c
 	if c.A == 0 || rect.Dx() <= 0 || rect.Dy() <= 0 {
 		return
 	}
-	rr := clip.UniformRRect(rect, radius)
+	rr := RRect(rect, radius)
 	cl := rr.Push(gtx.Ops)
 	paint.ColorOp{Color: c}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 	cl.Pop()
+}
+
+// RRect creates a rounded rectangle with radii safe for narrow and short bounds.
+func RRect(rect image.Rectangle, radius int) clip.RRect {
+	radius = max(0, min(radius, rect.Dx()/2, rect.Dy()/2))
+	return clip.UniformRRect(rect, radius)
+}
+
+// DrawCornerBackground fills a rectangle with independently rounded corners.
+func DrawCornerBackground(gtx layout.Context, rr clip.RRect, c color.NRGBA) {
+	if rr.Rect.Dx() <= 0 || rr.Rect.Dy() <= 0 {
+		return
+	}
+	limit := min(rr.Rect.Dx(), rr.Rect.Dy()) / 2
+	rr.NW = max(0, min(rr.NW, limit))
+	rr.NE = max(0, min(rr.NE, limit))
+	rr.SW = max(0, min(rr.SW, limit))
+	rr.SE = max(0, min(rr.SE, limit))
+	defer rr.Push(gtx.Ops).Pop()
+	DrawRRectBackground(gtx, rr.Rect, 0, c)
 }
 
 // DrawStroke safely draws a stroke path with isolated push/pop clips.
@@ -167,6 +188,14 @@ func DrawStroke(gtx layout.Context, path clip.PathSpec, width float32, c color.N
 	paint.ColorOp{Color: c}.Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 	cl.Pop()
+}
+
+// RecordLayout measures a widget while retaining its operations for one replay.
+// This prevents measurement from drawing or processing child input twice.
+func RecordLayout(gtx layout.Context, w layout.Widget) (layout.Dimensions, op.CallOp) {
+	macro := op.Record(gtx.Ops)
+	dims := w(gtx)
+	return dims, macro.Stop()
 }
 
 func ValidateTheme(t *Theme) error {

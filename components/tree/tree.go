@@ -109,6 +109,12 @@ func (s *DragSession) MoveNodeCrossTree(sourceTree, targetTree *Tree, source, ta
 	if sourceTree == nil || targetTree == nil || source == nil || target == nil || source == target {
 		return
 	}
+	if pos != DropBefore && pos != DropInside && pos != DropAfter {
+		return
+	}
+	if _, index := targetTree.findParentAndIndex(nil, targetTree.Nodes, target); index < 0 {
+		return
+	}
 
 	// Prevent dropping a parent into its own descendant
 	if sourceTree == targetTree && sourceTree.isDescendant(source, target) {
@@ -161,11 +167,12 @@ func (s *DragSession) MoveNodeCrossTree(sourceTree, targetTree *Tree, source, ta
 		}
 	}
 
+	parent, index := targetTree.findParentAndIndex(nil, targetTree.Nodes, source)
 	if sourceTree.OnMove != nil {
-		sourceTree.OnMove(source, target, int(pos))
+		sourceTree.OnMove(source, parent, index)
 	}
 	if targetTree != sourceTree && targetTree.OnMove != nil {
-		targetTree.OnMove(source, target, int(pos))
+		targetTree.OnMove(source, parent, index)
 	}
 }
 
@@ -426,7 +433,7 @@ func (t *Tree) processDnD(gtx layout.Context) {
 					session.DropPosition = pos
 				}
 			case pointer.Release, pointer.Cancel:
-				if session.WasDragging && session.DraggedNode != nil && session.DropTargetTree != nil && session.DropTargetNode != nil && session.DraggedNode != session.DropTargetNode {
+				if ev.Kind == pointer.Release && session.WasDragging && session.DraggedNode != nil && session.DropTargetTree != nil && session.DropTargetNode != nil && session.DraggedNode != session.DropTargetNode {
 					session.MoveNodeCrossTree(session.SourceTree, session.DropTargetTree, session.DraggedNode, session.DropTargetNode, session.DropPosition)
 				}
 				session.DraggedNode = nil
@@ -676,7 +683,7 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	rowSize := image.Pt(gtx.Constraints.Max.X, contentDims.Size.Y)
 
 	isDropTarget := t.Session.DropTargetTree == t && t.Session.DropTargetNode == node
@@ -744,7 +751,8 @@ func (t *Tree) layoutNode(gtx layout.Context, th *theme.Theme, mTheme *material.
 
 			// Row content drawn ON TOP of background
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderContent(gtx)
+				content.Add(gtx.Ops)
+				return contentDims
 			}),
 		)
 	})
@@ -797,9 +805,9 @@ func (t *Tree) layoutDragGhost(gtx layout.Context, th *theme.Theme, mTheme *mate
 
 	gtxGhost := gtx
 	gtxGhost.Constraints.Min = image.Pt(0, 0)
-	ghostDims := renderGhost(gtxGhost)
+	ghostDims, content := theme.RecordLayout(gtxGhost, renderGhost)
 
 	ghostRect := image.Rectangle{Max: ghostDims.Size}
 	theme.DrawRRectBackground(gtx, ghostRect, gtx.Dp(th.Radius.RadiusSM), th.Colors.Primary)
-	renderGhost(gtx)
+	content.Add(gtx.Ops)
 }

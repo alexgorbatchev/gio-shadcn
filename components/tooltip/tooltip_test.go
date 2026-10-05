@@ -13,6 +13,7 @@ import (
 func TestTooltipBasic(t *testing.T) {
 	th := theme.NewDark()
 	tp := tooltip.New(tooltip.Config{Text: "Add to library"})
+	tp.Open = true
 	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(200, 30))}
 	dims := tp.Layout(gtx, th)
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
@@ -23,6 +24,7 @@ func TestTooltipBasic(t *testing.T) {
 func TestTooltipCustomText(t *testing.T) {
 	th := theme.NewDark()
 	tp := tooltip.New(tooltip.Config{Text: "Keyboard shortcut: ⌘S"})
+	tp.Open = true
 	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(250, 30))}
 	dims := tp.Layout(gtx, th)
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {

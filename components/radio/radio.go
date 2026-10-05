@@ -52,6 +52,10 @@ func (r *Radio) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	if r.Disabled {
+		gtx = gtx.Disabled()
+	}
 
 	if r.clickable.Clicked(gtx) && !r.Disabled {
 		r.Selected = true
@@ -87,11 +91,7 @@ func (r *Radio) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		ellipse := clip.Ellipse(rect)
 
 		// Outer stroke
-		stroke := clip.Stroke{
-			Path:  ellipse.Path(gtx.Ops),
-			Width: 1.5,
-		}
-		paint.FillShape(gtx.Ops, borderColor, stroke.Op())
+		theme.DrawStroke(gtx, ellipse.Path(gtx.Ops), 1.5, borderColor)
 
 		// Draw inner dot if selected
 		if r.Selected {

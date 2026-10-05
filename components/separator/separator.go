@@ -49,6 +49,7 @@ func (s *Separator) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	thickPx := gtx.Dp(s.Thickness)
 	if thickPx < 1 {

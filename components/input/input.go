@@ -2,8 +2,8 @@
 Package input provides versatile text input components for gio-shadcn applications.
 
 The input component supports multiple input types (text, password, number, email),
-visual variants, sizes, and features like validation, placeholder text, and helper text.
-It follows shadcn/ui design principles and integrates seamlessly with the theme system.
+visual variants, sizes, placeholder text, and change/focus/submit callbacks.
+Required, label, and helper fields retain metadata; validation belongs to the application.
 
 # Quick Start
 
@@ -15,7 +15,7 @@ Create a password input:
 
 	passwordInput := input.Password("Enter password")
 
-Create an email input with validation:
+Create an email input with required metadata:
 
 	emailInput := input.Email("Enter email")
 
@@ -91,9 +91,7 @@ import (
 	"image"
 	"image/color"
 
-	"gioui.org/io/key"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -265,6 +263,12 @@ func (i *Input) Text() string {
 
 // Layout renders the input component.
 func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+	if i.Disabled {
+		gtx = gtx.Disabled()
+	}
 	// Configure editor based on type
 	i.configureEditor()
 
@@ -284,19 +288,14 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		}
 	}
 
-	// Handle focus events separately for UI state tracking
-	for {
-		event, ok := gtx.Event(key.FocusFilter{Target: &i.editor})
-		if !ok {
-			break
-		}
-		if e, ok := event.(key.FocusEvent); ok {
-			i.focused = e.Focus
-			if e.Focus && i.OnFocus != nil {
-				i.OnFocus()
-			} else if !e.Focus && i.OnBlur != nil {
-				i.OnBlur()
-			}
+	// Editor.Update consumes focus events; query the router's current focus.
+	focused := gtx.Focused(&i.editor)
+	if focused != i.focused {
+		i.focused = focused
+		if focused && i.OnFocus != nil {
+			i.OnFocus()
+		} else if !focused && i.OnBlur != nil {
+			i.OnBlur()
 		}
 	}
 
@@ -324,6 +323,7 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	// Set minimum height for the context
 	minHeight := gtx.Dp(inputHeight)
 	gtx.Constraints.Min.Y = minHeight
+	gtx.Constraints.Min.X = gtx.Constraints.Max.X
 
 	// Calculate the bounds for background/border
 	bounds := image.Rectangle{Max: image.Point{X: gtx.Constraints.Max.X, Y: minHeight}}
@@ -340,7 +340,7 @@ func (i *Input) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	// Draw border SECOND (behind the text)
-	rr := clip.UniformRRect(bounds, radiusPx)
+	rr := theme.RRect(bounds, radiusPx)
 	theme.DrawStroke(gtx, rr.Path(gtx.Ops), borderWidth, i.getBorderColor(th))
 
 	// Layout the editor with padding LAST (in front of background)
@@ -396,6 +396,8 @@ func (is *State) IsDisabled() bool {
 }
 
 func (i *Input) configureEditor() {
+	i.editor.Mask = 0
+	i.editor.Filter = ""
 	switch i.Type {
 	case InputPassword:
 		i.editor.Mask = '*'
@@ -409,6 +411,7 @@ func (i *Input) configureEditor() {
 	}
 
 	i.editor.SingleLine = true
+	i.editor.Submit = true
 	i.editor.ReadOnly = i.Disabled
 }
 

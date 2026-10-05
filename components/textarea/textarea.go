@@ -10,7 +10,6 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -114,7 +113,7 @@ func (ta *TextArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		})
 	}
 
-	contentDims := renderEditor(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderEditor)
 	finalHeight := contentDims.Size.Y
 	if finalHeight < hPx {
 		finalHeight = hPx
@@ -130,7 +129,7 @@ func (ta *TextArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: areaSize}
@@ -138,7 +137,8 @@ func (ta *TextArea) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 
 		// Text Editor drawn ON TOP of background
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderEditor(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 

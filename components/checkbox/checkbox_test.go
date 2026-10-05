@@ -7,6 +7,7 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"github.com/bnema/gio-shadcn/components/checkbox"
+	"github.com/bnema/gio-shadcn/internal/testui"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
@@ -49,7 +50,14 @@ func TestCheckboxClickToggle(t *testing.T) {
 			toggled = val
 		},
 	})
-	gtx := layout.Context{Ops: new(op.Ops), Constraints: layout.Exact(image.Pt(30, 30))}
-	_ = c.Layout(gtx, th)
-	_ = toggled
+	h := testui.Harness{Size: image.Pt(100, 40), Widget: func(gtx layout.Context) layout.Dimensions { return c.Layout(gtx, th) }}
+	h.Frame()
+	h.Click(10, 10)
+	if !toggled || !c.Value {
+		t.Fatal("click did not check the checkbox or invoke OnChange")
+	}
+	h.Click(10, 10)
+	if toggled || c.Value {
+		t.Fatal("second click did not uncheck the checkbox")
+	}
 }

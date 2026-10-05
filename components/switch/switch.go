@@ -7,10 +7,8 @@ package switchcomp
 
 import (
 	"image"
-	"image/color"
 
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -124,7 +122,7 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 		// Draw border if unselected or invalid
 		if !s.Value || s.Invalid {
-			rrTrack := clip.UniformRRect(trackRect, trackRadius)
+			rrTrack := theme.RRect(trackRect, trackRadius)
 			theme.DrawStroke(gtx, rrTrack.Path(gtx.Ops), 1.0, borderColor)
 		}
 
@@ -151,5 +149,3 @@ func (s *Switch) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 	return dims
 }
-
-func _(c color.NRGBA) {}

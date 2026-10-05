@@ -12,8 +12,8 @@ import (
 
 // Config represents a complete theme configuration that can be loaded from JSON.
 // This struct provides a way to define themes externally using JSON files,.
-// allowing for easy theme customization and distribution. It supports both
-// light and dark color schemes, custom radius values, and metadata.
+// allowing theme customization and distribution. NewThemeFromJSON applies both
+// color schemes; radius, spacing, typography, and other fields retain metadata.
 //
 // Example JSON structure:.
 //
@@ -275,13 +275,12 @@ func NewThemeFromJSON(path string) (*Theme, error) {
 		return nil, fmt.Errorf("failed to parse dark colors: %w", err)
 	}
 
-	return &Theme{
-		Colors:     lightColors,
-		DarkColors: darkColors,
-		Typography: DefaultTypography(),
-		Spacing:    DefaultSpacing(),
-		IsDark:     false,
-	}, nil
+	th := New()
+	th.Colors = lightColors
+	th.DarkColors = darkColors
+	th.MaterialTheme.Palette.Fg = lightColors.Foreground
+	th.MaterialTheme.Palette.Bg = lightColors.Background
+	return th, nil
 }
 
 // GenerateThemeConstants generates Go source code with color constants from a theme config.

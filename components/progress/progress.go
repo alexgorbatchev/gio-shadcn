@@ -107,7 +107,7 @@ func (p *Progress) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 
 	// 1. Draw track background
 	trackRect := image.Rectangle{Max: size}
-	trackRRect := clip.UniformRRect(trackRect, radius)
+	trackRRect := theme.RRect(trackRect, radius)
 	theme.DrawRRectBackground(gtx, trackRect, radius, trackColor)
 
 	// 2. Draw animated filled progress bar clipped to current progress width

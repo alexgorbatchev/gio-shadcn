@@ -7,12 +7,11 @@ shadcn/ui design principles.
 package numberinput
 
 import (
-	"fmt"
 	"image"
+	"strconv"
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget"
@@ -124,7 +123,7 @@ func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimens
 
 			renderVal := func(gtx layout.Context) layout.Dimensions {
 				return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					lbl := material.Label(mTheme, th.Typography.FontSizeSM, fmt.Sprintf("%.0f", ni.Value))
+					lbl := material.Label(mTheme, th.Typography.FontSizeSM, formatValue(ni.Value))
 					lbl.Color = th.Colors.Foreground
 					lbl.Font.Weight = font.Bold
 					lbl.Alignment = text.Middle
@@ -132,7 +131,7 @@ func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimens
 				})
 			}
 
-			valDims := renderVal(gtxContent)
+			valDims, content := theme.RecordLayout(gtxContent, renderVal)
 			valSize := valDims.Size
 
 			return layout.Stack{}.Layout(gtx,
@@ -142,13 +141,14 @@ func (ni *NumberInput) Layout(gtx layout.Context, th *theme.Theme) layout.Dimens
 
 					theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Background)
 
-					rr := clip.UniformRRect(rect, radius)
+					rr := theme.RRect(rect, radius)
 					theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, th.Colors.Border)
 
 					return layout.Dimensions{Size: valSize}
 				}),
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					return renderVal(gtx)
+					content.Add(gtx.Ops)
+					return valDims
 				}),
 			)
 		}),
@@ -196,7 +196,7 @@ func (ni *NumberInput) layoutBtn(gtx layout.Context, th *theme.Theme, mTheme *ma
 		})
 	}
 
-	btnDims := renderBtn(gtxContent)
+	btnDims, content := theme.RecordLayout(gtxContent, renderBtn)
 	btnSize := btnDims.Size
 
 	return layout.Stack{}.Layout(gtx,
@@ -209,7 +209,12 @@ func (ni *NumberInput) layoutBtn(gtx layout.Context, th *theme.Theme, mTheme *ma
 			return layout.Dimensions{Size: btnSize}
 		}),
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderBtn(gtx)
+			content.Add(gtx.Ops)
+			return btnDims
 		}),
 	)
+}
+
+func formatValue(value float32) string {
+	return strconv.FormatFloat(float64(value), 'f', -1, 32)
 }

@@ -10,6 +10,7 @@ import (
 	"image"
 	"image/color"
 
+	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -135,6 +136,10 @@ func (bg *ButtonGroup) Select(index int) {
 
 // Layout renders the connected buttons horizontally without gaps and highlights the active selection.
 func (bg *ButtonGroup) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 	children := make([]layout.FlexChild, len(bg.Buttons))
 	for i, btn := range bg.Buttons {
 		b := btn
@@ -157,6 +162,7 @@ func (b *Button) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	variant := theme.GetButtonVariant(b.Variant, &th.Colors)
 	padding, targetHeight, fontSize := b.getSizeConfig(th)
@@ -213,10 +219,9 @@ func (b *Button) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		bgColor = styles.Background
 	}
 
-	for b.clickable.Clicked(gtx) {
-		if !b.Disabled && b.OnClick != nil {
-			b.OnClick()
-		}
+	b.processClicks(gtx)
+	if b.Disabled {
+		gtx = gtx.Disabled()
 	}
 
 	return b.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -228,13 +233,31 @@ func (b *Button) Click() {
 	b.clickable.Click()
 }
 
+// Focus requests keyboard focus for the button on the next frame.
+func (b *Button) Focus(gtx layout.Context) {
+	gtx.Execute(key.FocusCmd{Tag: &b.clickable})
+}
+
 func (b *Button) Update(gtx layout.Context) theme.ComponentState {
 	return &State{
-		active:   b.clickable.Clicked(gtx),
+		active:   b.processClicks(gtx),
 		hovered:  b.clickable.Hovered(),
 		pressed:  b.clickable.Pressed(),
 		disabled: b.Disabled,
 	}
+}
+
+func (b *Button) processClicks(gtx layout.Context) bool {
+	active := false
+	for b.clickable.Clicked(gtx) {
+		if !b.Disabled {
+			active = true
+			if b.OnClick != nil {
+				b.OnClick()
+			}
+		}
+	}
+	return active
 }
 
 func (b *Button) SetText(text string) {
@@ -279,7 +302,7 @@ func (b *Button) drawButton(gtx layout.Context, th *theme.Theme, bgColor, fgColo
 		// Background & Border drawn FIRST
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			rect := image.Rectangle{Max: btnSize}
-			radiusPx := gtx.Dp(radius)
+			radiusPx := max(0, min(gtx.Dp(radius), rect.Dx()/2, rect.Dy()/2))
 
 			var rr clip.RRect
 			rr.Rect = rect
@@ -308,10 +331,7 @@ func (b *Button) drawButton(gtx layout.Context, th *theme.Theme, bgColor, fgColo
 			}
 
 			if bgColor.A > 0 {
-				cl := rr.Op(gtx.Ops).Push(gtx.Ops)
-				paint.ColorOp{Color: bgColor}.Add(gtx.Ops)
-				paint.PaintOp{}.Add(gtx.Ops)
-				cl.Pop()
+				theme.DrawCornerBackground(gtx, rr, bgColor)
 			}
 
 			if variant.BorderWidth > 0 {

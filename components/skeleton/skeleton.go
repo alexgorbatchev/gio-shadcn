@@ -1,5 +1,5 @@
 /*
-Package skeleton provides a shimmer placeholder component for gio-shadcn applications.
+Package skeleton provides a static placeholder component for gio-shadcn applications.
 
 Skeletons display placeholder shapes while content is loading following
 shadcn/ui design principles.
@@ -16,7 +16,7 @@ import (
 	"github.com/bnema/gio-shadcn/utils"
 )
 
-// Skeleton represents a shimmer loading placeholder component.
+// Skeleton represents a static loading placeholder component.
 type Skeleton struct {
 	Width   unit.Dp
 	Height  unit.Dp

@@ -10,9 +10,11 @@ import (
 	"image"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/widget/material"
+	"github.com/bnema/gio-shadcn/internal/hover"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -21,6 +23,8 @@ import (
 type Tooltip struct {
 	Text    string
 	Classes string
+	Open    bool
+	trigger hover.Trigger
 }
 
 // Config represents configuration for creating a Tooltip.
@@ -41,6 +45,10 @@ func New(config Config) *Tooltip {
 func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	if !t.Open {
+		return layout.Dimensions{}
 	}
 
 	bgColor := th.Colors.Primary
@@ -75,7 +83,7 @@ func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	tipSize := contentDims.Size
 
 	dims := layout.Stack{}.Layout(gtx,
@@ -89,7 +97,8 @@ func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 
 		// Text label drawn ON TOP
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 
@@ -98,3 +107,23 @@ func (t *Tooltip) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 
 	return dims
 }
+
+// LayoutTrigger renders a focusable trigger and its tooltip on hover or focus.
+// The trigger's dimensions remain unchanged when the tooltip opens.
+func (t *Tooltip) LayoutTrigger(gtx layout.Context, th *theme.Theme, w layout.Widget) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	dims, open := t.trigger.Layout(gtx, w)
+	t.Open = open
+	if open {
+		defer op.Offset(image.Pt(0, dims.Size.Y+gtx.Dp(th.Spacing.Space2))).Push(gtx.Ops).Pop()
+		gtx.Constraints.Min = image.Point{}
+		t.Layout(gtx, th)
+	}
+	return dims
+}
+
+// Focus requests keyboard focus for the tooltip trigger.
+func (t *Tooltip) Focus(gtx layout.Context) { t.trigger.Focus(gtx) }

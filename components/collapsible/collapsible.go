@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/unit"
@@ -140,7 +139,7 @@ func (c *Collapsible) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	itemSize := contentDims.Size
 
 	dims := c.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -150,13 +149,14 @@ func (c *Collapsible) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensi
 					rect := image.Rectangle{Max: itemSize}
 					radius := gtx.Dp(th.Radius.RadiusMD)
 					theme.DrawRRectBackground(gtx, rect, radius, bgColor)
-					rr := clip.UniformRRect(rect, radius)
+					rr := theme.RRect(rect, radius)
 					theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 				}
 				return layout.Dimensions{Size: itemSize}
 			}),
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderContent(gtx)
+				content.Add(gtx.Ops)
+				return contentDims
 			}),
 		)
 	})

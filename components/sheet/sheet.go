@@ -10,6 +10,7 @@ import (
 	"image"
 
 	"gioui.org/font"
+	"gioui.org/gesture"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -49,6 +50,7 @@ type Sheet struct {
 	closeBtn *button.Button
 	dimmer   *theme.Dimmer
 	spring   *spring.Spring
+	panel    gesture.Click
 }
 
 // Config represents configuration for creating a Sheet.
@@ -132,6 +134,7 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	var triggerDims layout.Dimensions
 	if s.TriggerButton != nil {
@@ -158,14 +161,20 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
 		return s.renderOverlay(gtx, th)
 	})
-
 	if s.TriggerButton != nil || s.Trigger != nil {
 		return triggerDims
 	}
-	return s.renderOverlay(gtx, th)
+	return layout.Dimensions{Size: gtx.Constraints.Max}
 }
 
 func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	gtx.Constraints = layout.Exact(gtx.Constraints.Max)
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	for {
+		if _, ok := s.panel.Update(gtx.Source); !ok {
+			break
+		}
+	}
 	mTheme := th.MaterialTheme
 	if mTheme == nil {
 		mTheme = material.NewTheme()
@@ -211,8 +220,8 @@ func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimens
 		bgColor = styles.Background
 	}
 
-	sheetWidthPx := gtx.Dp(s.Width)
-	sheetHeightPx := gtx.Dp(s.Height)
+	sheetWidthPx := min(gtx.Dp(s.Width), gtx.Constraints.Max.X)
+	sheetHeightPx := min(gtx.Dp(s.Height), gtx.Constraints.Max.Y)
 	windowSize := gtx.Constraints.Max
 
 	macro := op.Record(gtx.Ops)
@@ -281,6 +290,8 @@ func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimens
 					}),
 
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						defer clip.Rect(image.Rectangle{Max: sheetSize}).Push(gtx.Ops).Pop()
+						s.panel.Add(gtx.Ops)
 						return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 								// Header Row with Title and Close Button

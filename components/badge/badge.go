@@ -24,10 +24,10 @@ import (
 
 // Badge represents a shadcn/ui badge component.
 type Badge struct {
-	Text     string
-	Variant  theme.Variant
-	Classes  string
-	Icon     *lucide.Icon
+	Text      string
+	Variant   theme.Variant
+	Classes   string
+	Icon      *lucide.Icon
 	IconRight bool
 }
 
@@ -150,7 +150,7 @@ func (b *Badge) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			theme.DrawRRectBackground(gtx, rect, radiusPx, bgColor)
 
 			if borderWidth > 0 {
-				rr := clip.UniformRRect(rect, radiusPx)
+				rr := theme.RRect(rect, radiusPx)
 				theme.DrawStroke(gtx, rr.Path(gtx.Ops), borderWidth, borderColor)
 			}
 			bgClip.Pop()

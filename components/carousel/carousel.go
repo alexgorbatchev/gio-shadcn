@@ -8,10 +8,10 @@ package carousel
 
 import (
 	"fmt"
-	"image"
 
 	"gioui.org/font"
 	"gioui.org/layout"
+	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
@@ -48,6 +48,10 @@ func New(config Config) *Carousel {
 
 // Layout renders the current slide and navigation controls.
 func (c *Carousel) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 	if len(c.Items) == 0 {
 		return layout.Dimensions{}
 	}
@@ -116,5 +120,3 @@ func (c *Carousel) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 		}),
 	)
 }
-
-func _(i image.Point) {} // unused image guard

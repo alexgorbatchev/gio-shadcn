@@ -10,6 +10,7 @@ import (
 	"image"
 
 	"gioui.org/font"
+	"gioui.org/gesture"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -38,6 +39,7 @@ type Drawer struct {
 	closeBtn *button.Button
 	dimmer   *theme.Dimmer
 	spring   *spring.Spring
+	panel    gesture.Click
 }
 
 // Config represents configuration for creating a Drawer.
@@ -113,6 +115,7 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
 	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 
 	var triggerDims layout.Dimensions
 	if d.TriggerButton != nil {
@@ -139,14 +142,20 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
 		return d.renderOverlay(gtx, th)
 	})
-
 	if d.TriggerButton != nil || d.Trigger != nil {
 		return triggerDims
 	}
-	return d.renderOverlay(gtx, th)
+	return layout.Dimensions{Size: gtx.Constraints.Max}
 }
 
 func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	gtx.Constraints = layout.Exact(gtx.Constraints.Max)
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	for {
+		if _, ok := d.panel.Update(gtx.Source); !ok {
+			break
+		}
+	}
 	mTheme := th.MaterialTheme
 	if mTheme == nil {
 		mTheme = material.NewTheme()
@@ -192,7 +201,7 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 		bgColor = styles.Background
 	}
 
-	drawerHeightPx := gtx.Dp(d.Height)
+	drawerHeightPx := min(gtx.Dp(d.Height), gtx.Constraints.Max.Y)
 	windowSize := gtx.Constraints.Max
 
 	slideOffset := int(float32(drawerHeightPx) * (1.0 - progress))
@@ -234,7 +243,7 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 					// Drawer background drawn FIRST with top rounded corners
 					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 						rect := image.Rectangle{Max: drawerSize}
-						radiusPx := gtx.Dp(th.Radius.RadiusLG)
+						radiusPx := max(0, min(gtx.Dp(th.Radius.RadiusLG), rect.Dx()/2, rect.Dy()/2))
 
 						var rr clip.RRect
 						rr.Rect = rect
@@ -243,10 +252,7 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 						rr.SW = 0
 						rr.SE = 0
 
-						cl := rr.Op(gtx.Ops).Push(gtx.Ops)
-						paint.ColorOp{Color: bgColor}.Add(gtx.Ops)
-						paint.PaintOp{}.Add(gtx.Ops)
-						cl.Pop()
+						theme.DrawCornerBackground(gtx, rr, bgColor)
 
 						theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
@@ -255,6 +261,8 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 
 					// Drawer content
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+						defer clip.Rect(image.Rectangle{Max: drawerSize}).Push(gtx.Ops).Pop()
+						d.panel.Add(gtx.Ops)
 						return padding.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 								// Handle indicator bar

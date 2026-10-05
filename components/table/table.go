@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -99,7 +98,7 @@ func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx, children...)
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	tableSize := contentDims.Size
 
 	dims := layout.Stack{}.Layout(gtx,
@@ -110,7 +109,7 @@ func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: tableSize}
@@ -118,7 +117,8 @@ func (t *Table) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 		// Table Rows drawn ON TOP
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 
@@ -193,7 +193,7 @@ func (t *Table) layoutRow(gtx layout.Context, th *theme.Theme, row *Row) layout.
 			})
 		}
 
-		rowDims := renderRowContent(gtxContent)
+		rowDims, content := theme.RecordLayout(gtxContent, renderRowContent)
 		rowSize := rowDims.Size
 
 		return layout.Stack{}.Layout(gtx,
@@ -213,7 +213,8 @@ func (t *Table) layoutRow(gtx layout.Context, th *theme.Theme, row *Row) layout.
 
 			// Row Text drawn ON TOP
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderRowContent(gtx)
+				content.Add(gtx.Ops)
+				return rowDims
 			}),
 		)
 	})

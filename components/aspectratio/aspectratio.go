@@ -10,6 +10,7 @@ import (
 	"image"
 
 	"gioui.org/layout"
+	"gioui.org/op/paint"
 	"github.com/bnema/gio-shadcn/theme"
 )
 
@@ -39,6 +40,10 @@ func New(config Config) *AspectRatio {
 
 // Layout applies the aspect ratio constraints and renders the child widget.
 func (ar *AspectRatio) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
 	w := gtx.Constraints.Max.X
 	if w <= 0 {
 		w = gtx.Constraints.Min.X

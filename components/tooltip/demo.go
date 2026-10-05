@@ -29,15 +29,29 @@ func (s *DemoState) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return label.NewTypography("1. Add to Library Tooltip (Official Demo)", label.H4, "").Layout(gtx, th)
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.TipDemo.Layout(gtx, th) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return s.TipDemo.LayoutTrigger(gtx, th, func(gtx layout.Context) layout.Dimensions {
+				return label.NewTypography("Add to library", label.Small, "").Layout(gtx, th)
+			})
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Height: th.Spacing.Space6}.Layout(gtx)
+		}),
 
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return label.NewTypography("2. Detailed Hardware Tooltip", label.H4, "").Layout(gtx, th)
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx) }),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions { return s.TipSides.Layout(gtx, th) }),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Spacer{Height: th.Spacing.Space2}.Layout(gtx)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return s.TipSides.LayoutTrigger(gtx, th, func(gtx layout.Context) layout.Dimensions {
+				return label.NewTypography("Audio buffer", label.Small, "").Layout(gtx, th)
+			})
+		}),
 	)
 }
 

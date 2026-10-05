@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"
 	"github.com/bnema/gio-shadcn/theme"
@@ -46,12 +45,12 @@ func New(config Config) *Popover {
 
 // Layout renders the popover panel when Open == true.
 func (p *Popover) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !p.Open {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	if !p.Open {
+		return layout.Dimensions{}
 	}
 
 	bgColor := th.Colors.Popover
@@ -108,7 +107,7 @@ func (p *Popover) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	popoverSize := contentDims.Size
 
 	dims := layout.Stack{}.Layout(gtx,
@@ -118,7 +117,7 @@ func (p *Popover) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 			radius := gtx.Dp(th.Radius.RadiusMD)
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: popoverSize}
@@ -126,7 +125,8 @@ func (p *Popover) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 
 		// Content drawn ON TOP of background
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 

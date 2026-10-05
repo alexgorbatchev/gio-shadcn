@@ -3,7 +3,7 @@
 default:
     @just --list
 
-# Run interactive 37-component gallery demo
+# Run the interactive component gallery demo
 demo:
     @echo "Launching gio-shadcn component gallery demo..."
     go run ./demo/cmd

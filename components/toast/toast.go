@@ -11,7 +11,6 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
@@ -66,12 +65,12 @@ func New(config Config) *Toast {
 
 // Layout renders the toast notification banner if Visible == true.
 func (t *Toast) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !t.Visible {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	if !t.Visible {
+		return layout.Dimensions{}
 	}
 
 	bgColor := th.Colors.Card
@@ -149,7 +148,7 @@ func (t *Toast) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	toastSize := contentDims.Size
 
 	dims := layout.Stack{}.Layout(gtx,
@@ -160,7 +159,7 @@ func (t *Toast) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: toastSize}
@@ -168,7 +167,8 @@ func (t *Toast) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 		// Toast text content drawn ON TOP
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 

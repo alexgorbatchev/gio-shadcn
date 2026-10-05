@@ -9,8 +9,7 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/font"
-	"gioui.org/io/event"
-	"gioui.org/io/pointer"
+	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
@@ -19,6 +18,7 @@ import (
 	"gioui.org/widget/material"
 
 	"github.com/bnema/gio-shadcn/theme"
+	"github.com/bnema/gio-shadcn/utils"
 )
 
 type TitleBar struct {
@@ -29,13 +29,7 @@ type TitleBar struct {
 	classes      string
 	showControls bool
 
-	minimizeBtn widget.Clickable
-	maximizeBtn widget.Clickable
-	closeBtn    widget.Clickable
-
-	dragArea widget.Clickable
-
-	maximized bool
+	decorations widget.Decorations
 }
 
 type Option func(*TitleBar)
@@ -91,14 +85,18 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, window *app.Wind
 	if th == nil {
 		th = theme.New()
 	}
-
-	tb.handleWindowEvents(gtx)
+	if actions := tb.decorations.Update(gtx); actions != 0 && tb.window != nil {
+		tb.window.Perform(actions)
+	}
 
 	height := gtx.Dp(40)
 	gtx.Constraints.Min.Y = height
 	gtx.Constraints.Max.Y = height
 
 	variantConfig := theme.GetTitleBarVariant(tb.variant, &th.Colors)
+	if background := utils.ParseClasses(tb.classes).Background; background.A > 0 {
+		variantConfig.Background = background
+	}
 
 	// Safely draw background and border with push/pop clips FIRST
 	bgClip := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
@@ -126,19 +124,18 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, window *app.Wind
 				Alignment: layout.Middle,
 			}.Layout(gtx,
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					dragClip := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
-					event.Op(gtx.Ops, &tb.dragArea)
-					dragClip.Pop()
-
-					return layout.Inset{Left: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						mTheme := th.MaterialTheme
-						if mTheme == nil {
-							mTheme = material.NewTheme()
-						}
-						label := material.Label(mTheme, unit.Sp(14), tb.title)
-						label.Color = variantConfig.Foreground
-						label.Font.Weight = font.Medium
-						return label.Layout(gtx)
+					return tb.decorations.LayoutMove(gtx, func(gtx layout.Context) layout.Dimensions {
+						gtx.Constraints.Min = gtx.Constraints.Max
+						return layout.Inset{Left: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							mTheme := th.MaterialTheme
+							if mTheme == nil {
+								mTheme = material.NewTheme()
+							}
+							label := material.Label(mTheme, unit.Sp(14), tb.title)
+							label.Color = variantConfig.Foreground
+							label.Font.Weight = font.Medium
+							return label.Layout(gtx)
+						})
 					})
 				}),
 
@@ -158,23 +155,9 @@ func (tb *TitleBar) Layout(gtx layout.Context, th *theme.Theme, window *app.Wind
 	return dims
 }
 
-func (tb *TitleBar) handleWindowEvents(gtx layout.Context) {
-	if tb.window == nil {
-		return
-	}
-
-	for {
-		e, ok := gtx.Event(pointer.Filter{
-			Target: &tb.dragArea,
-			Kinds:  pointer.Press,
-		})
-		if !ok {
-			break
-		}
-		if pEv, ok := e.(pointer.Event); ok && pEv.Kind == pointer.Press && pEv.Buttons == pointer.ButtonPrimary {
-			_ = pEv
-		}
-	}
+// SetMode synchronizes decoration state with app.ConfigEvent.Config.Mode.
+func (tb *TitleBar) SetMode(mode app.WindowMode) {
+	tb.decorations.Maximized = mode == app.Maximized || mode == app.Fullscreen
 }
 
 func (tb *TitleBar) layoutWindowControls(gtx layout.Context, th *theme.Theme, variantConfig theme.VariantConfig) layout.Dimensions {
@@ -186,35 +169,24 @@ func (tb *TitleBar) layoutWindowControls(gtx layout.Context, th *theme.Theme, va
 	return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints = btnConstraints
-			return tb.layoutControlItem(gtx, &tb.minimizeBtn, "−", variantConfig.Foreground, func() {
-				_ = tb.window
-			})
+			return tb.layoutControlItem(gtx, tb.decorations.Clickable(system.ActionMinimize), "−", variantConfig.Foreground)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints = btnConstraints
 			symbol := "□"
-			if tb.maximized {
+			if tb.decorations.Maximized {
 				symbol = "❐"
 			}
-			return tb.layoutControlItem(gtx, &tb.maximizeBtn, symbol, variantConfig.Foreground, func() {
-				tb.maximized = !tb.maximized
-				_ = tb.window
-			})
+			return tb.layoutControlItem(gtx, tb.decorations.Clickable(system.ActionMaximize), symbol, variantConfig.Foreground)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			gtx.Constraints = btnConstraints
-			return tb.layoutControlItem(gtx, &tb.closeBtn, "✕", variantConfig.Foreground, func() {
-				_ = tb.window
-			})
+			return tb.layoutControlItem(gtx, tb.decorations.Clickable(system.ActionClose), "✕", variantConfig.Foreground)
 		}),
 	)
 }
 
-func (tb *TitleBar) layoutControlItem(gtx layout.Context, clickable *widget.Clickable, symbol string, fgColor color.NRGBA, onClick func()) layout.Dimensions {
-	for clickable.Clicked(gtx) {
-		onClick()
-	}
-
+func (tb *TitleBar) layoutControlItem(gtx layout.Context, clickable *widget.Clickable, symbol string, fgColor color.NRGBA) layout.Dimensions {
 	mTheme := material.NewTheme()
 	label := material.Label(mTheme, unit.Sp(12), symbol)
 	label.Color = fgColor

@@ -11,7 +11,7 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
+	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/unit"
@@ -220,7 +220,9 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 			})
 		}
 
+		macro := op.Record(gtx.Ops)
 		contentDims := renderContent(gtxContent)
+		content := macro.Stop()
 		itemSize := contentDims.Size
 
 		return layout.Stack{}.Layout(gtx,
@@ -231,7 +233,7 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 					radius := gtx.Dp(th.Radius.RadiusMD)
 					theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-					rr := clip.UniformRRect(rect, radius)
+					rr := theme.RRect(rect, radius)
 					theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 				}
 				return layout.Dimensions{Size: itemSize}
@@ -239,7 +241,8 @@ func (a *Accordion) layoutItem(gtx layout.Context, th *theme.Theme, item *Item) 
 
 			// Text content drawn ON TOP of background
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderContent(gtx)
+				content.Add(gtx.Ops)
+				return contentDims
 			}),
 		)
 	})

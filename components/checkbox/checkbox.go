@@ -53,6 +53,9 @@ func (c *Checkbox) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 	if th == nil {
 		th = theme.New()
 	}
+	if c.Disabled {
+		gtx = gtx.Disabled()
+	}
 
 	if c.clickable.Clicked(gtx) && !c.Disabled {
 		c.Value = !c.Value
@@ -95,7 +98,7 @@ func (c *Checkbox) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 
 		theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-		rr := clip.UniformRRect(rect, radius)
+		rr := theme.RRect(rect, radius)
 		theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 		// Draw checkmark vector path ON TOP when checked
@@ -109,14 +112,7 @@ func (c *Checkbox) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 			p.LineTo(f32.Pt(sz*0.45, sz*0.72))
 			p.LineTo(f32.Pt(sz*0.75, sz*0.28))
 
-			checkStroke := clip.Stroke{
-				Path:  p.End(),
-				Width: float32(gtx.Dp(unit.Dp(2))),
-			}
-			cl := checkStroke.Op().Push(gtx.Ops)
-			paint.ColorOp{Color: fgColor}.Add(gtx.Ops)
-			paint.PaintOp{}.Add(gtx.Ops)
-			cl.Pop()
+			theme.DrawStroke(gtx, p.End(), float32(gtx.Dp(unit.Dp(2))), fgColor)
 		}
 
 		return layout.Dimensions{Size: size}

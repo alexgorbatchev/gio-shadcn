@@ -11,9 +11,10 @@ import (
 
 	"gioui.org/font"
 	"gioui.org/layout"
-	"gioui.org/op/clip"
+	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"
+	"github.com/bnema/gio-shadcn/internal/hover"
 	"github.com/bnema/gio-shadcn/theme"
 	"github.com/bnema/gio-shadcn/utils"
 )
@@ -24,7 +25,27 @@ type HoverCard struct {
 	Title       string
 	Description string
 	Classes     string
+	trigger     hover.Trigger
 }
+
+// LayoutTrigger renders a focusable trigger and its preview on hover or focus.
+func (h *HoverCard) LayoutTrigger(gtx layout.Context, th *theme.Theme, w layout.Widget) layout.Dimensions {
+	if th == nil {
+		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	dims, open := h.trigger.Layout(gtx, w)
+	h.Hovered = open
+	if open {
+		defer op.Offset(image.Pt(0, dims.Size.Y+gtx.Dp(th.Spacing.Space2))).Push(gtx.Ops).Pop()
+		gtx.Constraints.Min = image.Point{}
+		h.Layout(gtx, th)
+	}
+	return dims
+}
+
+// Focus requests keyboard focus for the preview trigger.
+func (h *HoverCard) Focus(gtx layout.Context) { h.trigger.Focus(gtx) }
 
 // Config represents configuration for creating a HoverCard.
 type Config struct {
@@ -46,12 +67,12 @@ func New(config Config) *HoverCard {
 
 // Layout renders the hover preview card with background drawn before text using layout.Stack.
 func (h *HoverCard) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
-	if !h.Hovered {
-		return layout.Dimensions{}
-	}
-
 	if th == nil {
 		th = theme.New()
+	}
+	defer func() { paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops) }()
+	if !h.Hovered {
+		return layout.Dimensions{}
 	}
 
 	bgColor := th.Colors.Card
@@ -108,7 +129,7 @@ func (h *HoverCard) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	cardSize := contentDims.Size
 
 	dims := layout.Stack{}.Layout(gtx,
@@ -118,13 +139,14 @@ func (h *HoverCard) Layout(gtx layout.Context, th *theme.Theme) layout.Dimension
 
 			theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 			return layout.Dimensions{Size: cardSize}
 		}),
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 

@@ -10,7 +10,7 @@ import (
 	"image"
 
 	"gioui.org/layout"
-	"gioui.org/op/clip"
+	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -136,7 +136,9 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	triggerDims := s.triggerBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		macro := op.Record(gtx.Ops)
 		contentDims := renderTriggerContent(gtxContent)
+		content := macro.Stop()
 		tSize := contentDims.Size
 
 		return layout.Stack{}.Layout(gtx,
@@ -146,7 +148,7 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 				radius := gtx.Dp(th.Radius.RadiusMD)
 				theme.DrawRRectBackground(gtx, rect, radius, bgColor)
 
-				rr := clip.UniformRRect(rect, radius)
+				rr := theme.RRect(rect, radius)
 				theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, borderColor)
 
 				return layout.Dimensions{Size: tSize}
@@ -154,7 +156,8 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 			// Trigger Text Content drawn ON TOP
 			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-				return renderTriggerContent(gtx)
+				content.Add(gtx.Ops)
+				return contentDims
 			}),
 		)
 	})
@@ -165,6 +168,7 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	// 2. Render Dropdown Options List
+	defer op.Offset(image.Pt(0, triggerDims.Size.Y)).Push(gtx.Ops).Pop()
 	optionChildren := make([]layout.FlexChild, 0, len(s.Options))
 
 	for _, opt := range s.Options {
@@ -203,7 +207,9 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 					})
 				}
 
+				macro := op.Record(gtx.Ops)
 				itemContentDims := renderItemContent(gtxContent)
+				content := macro.Stop()
 				itemSize := itemContentDims.Size
 
 				return layout.Stack{}.Layout(gtx,
@@ -216,14 +222,17 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 					// Item text drawn ON TOP
 					layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-						return renderItemContent(gtx)
+						content.Add(gtx.Ops)
+						return itemContentDims
 					}),
 				)
 			})
 		}))
 	}
 
+	macro := op.Record(gtx.Ops)
 	optsContentDims := layout.Flex{Axis: layout.Vertical}.Layout(gtxContent, optionChildren...)
+	optsContent := macro.Stop()
 	optsSize := optsContentDims.Size
 
 	optsDims := layout.Stack{}.Layout(gtx,
@@ -233,7 +242,7 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 			radius := gtx.Dp(th.Radius.RadiusMD)
 			theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Popover)
 
-			rr := clip.UniformRRect(rect, radius)
+			rr := theme.RRect(rect, radius)
 			theme.DrawStroke(gtx, rr.Path(gtx.Ops), 1.0, th.Colors.Border)
 
 			return layout.Dimensions{Size: optsSize}
@@ -241,7 +250,8 @@ func (s *Select) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 
 		// Options list drawn ON TOP
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Vertical}.Layout(gtx, optionChildren...)
+			optsContent.Add(gtx.Ops)
+			return optsContentDims
 		}),
 	)
 

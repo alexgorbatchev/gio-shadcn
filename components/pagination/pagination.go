@@ -25,8 +25,9 @@ type Pagination struct {
 	TotalPages   int
 	OnSelectPage func(page int)
 
-	prevBtn widget.Clickable
-	nextBtn widget.Clickable
+	prevBtn  widget.Clickable
+	nextBtn  widget.Clickable
+	pageBtns []*widget.Clickable
 }
 
 // Config represents configuration for creating a Pagination component.
@@ -88,12 +89,15 @@ func (p *Pagination) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensio
 	}))
 
 	// Page Number Buttons
+	for len(p.pageBtns) < p.TotalPages {
+		p.pageBtns = append(p.pageBtns, new(widget.Clickable))
+	}
 	for i := 1; i <= p.TotalPages; i++ {
 		pageNum := i
 		isActive := pageNum == p.CurrentPage
 
 		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			btn := new(widget.Clickable)
+			btn := p.pageBtns[pageNum-1]
 			if btn.Clicked(gtx) {
 				p.CurrentPage = pageNum
 				if p.OnSelectPage != nil {
@@ -174,7 +178,7 @@ func (p *Pagination) layoutNavButton(gtx layout.Context, th *theme.Theme, mTheme
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	btnSize := contentDims.Size
 
 	return layout.Stack{}.Layout(gtx,
@@ -185,7 +189,8 @@ func (p *Pagination) layoutNavButton(gtx layout.Context, th *theme.Theme, mTheme
 			return layout.Dimensions{Size: btnSize}
 		}),
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 }
@@ -221,7 +226,7 @@ func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mThem
 		})
 	}
 
-	contentDims := renderContent(gtxContent)
+	contentDims, content := theme.RecordLayout(gtxContent, renderContent)
 	btnSize := contentDims.Size
 
 	return layout.Stack{}.Layout(gtx,
@@ -232,7 +237,8 @@ func (p *Pagination) layoutPageButton(gtx layout.Context, th *theme.Theme, mThem
 			return layout.Dimensions{Size: btnSize}
 		}),
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-			return renderContent(gtx)
+			content.Add(gtx.Ops)
+			return contentDims
 		}),
 	)
 }
