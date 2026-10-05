@@ -70,7 +70,7 @@ func (p *Progress) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 
 	// Update physics spring simulation
 	p.spring.SetTarget(float64(p.Value))
-	p.spring.Tick(2.0)
+	p.spring.Tick(60.0)
 	currentVal := float32(p.spring.Value())
 	if currentVal < 0 {
 		currentVal = 0
@@ -110,17 +110,16 @@ func (p *Progress) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions
 	trackRRect := clip.UniformRRect(trackRect, radius)
 	theme.DrawRRectBackground(gtx, trackRect, radius, trackColor)
 
-	// 2. Draw animated filled progress bar
+	// 2. Draw animated filled progress bar clipped to current progress width
 	filledWidth := int(float32(widthPx) * currentVal)
 	if filledWidth > 0 {
-		fillClip := trackRRect.Op(gtx.Ops).Push(gtx.Ops)
-
-		fillArea := image.Rect(0, 0, filledWidth, heightPx)
+		fillTrackClip := trackRRect.Op(gtx.Ops).Push(gtx.Ops)
+		fillRect := image.Rect(0, 0, filledWidth, heightPx)
+		fillRectClip := clip.Rect(fillRect).Push(gtx.Ops)
 		paint.ColorOp{Color: progressColor}.Add(gtx.Ops)
 		paint.PaintOp{}.Add(gtx.Ops)
-		_ = fillArea
-
-		fillClip.Pop()
+		fillRectClip.Pop()
+		fillTrackClip.Pop()
 	}
 
 	// Reset active GPU paint color state
