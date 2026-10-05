@@ -60,3 +60,30 @@ func TestDrawerLayout(t *testing.T) {
 		t.Errorf("invalid dimensions returned from Drawer.Layout")
 	}
 }
+
+func TestDrawerAnimation(t *testing.T) {
+	th := theme.NewDark()
+	dr := drawer.New(drawer.Config{
+		Title: "Animated Drawer",
+		Open:  false,
+	})
+
+	gtx := layout.Context{
+		Ops:         new(op.Ops),
+		Constraints: layout.Exact(image.Pt(800, 600)),
+	}
+
+	// Initially closed - no overlay queued
+	dr.Layout(gtx, th)
+	if th.RenderOverlays(gtx).Size.X != 0 {
+		t.Errorf("expected no overlay when closed and at rest")
+	}
+
+	// Open drawer
+	dr.Open = true
+	dr.Layout(gtx, th)
+	dims := th.RenderOverlays(gtx)
+	if dims.Size.X == 0 || dims.Size.Y == 0 {
+		t.Errorf("expected overlay to render when drawer opens")
+	}
+}

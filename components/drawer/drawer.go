@@ -34,11 +34,10 @@ type Drawer struct {
 	TriggerButton *button.Button
 	Trigger       layout.Widget
 
-	OnClose     func()
-	closeBtn    *button.Button
-	dimmer      *theme.Dimmer
-	spring      *spring.Spring
-	initialized bool
+	OnClose  func()
+	closeBtn *button.Button
+	dimmer   *theme.Dimmer
+	spring   *spring.Spring
 }
 
 // Config represents configuration for creating a Drawer.
@@ -62,6 +61,11 @@ func New(config Config) *Drawer {
 		h = unit.Dp(280)
 	}
 
+	initVal := 0.0
+	if config.Open {
+		initVal = 1.0
+	}
+
 	d := &Drawer{
 		Title:         config.Title,
 		Description:   config.Description,
@@ -73,6 +77,10 @@ func New(config Config) *Drawer {
 		Trigger:       config.Trigger,
 		OnClose:       config.OnClose,
 		dimmer:        theme.NewDimmer(),
+		spring: spring.New(initVal, initVal, spring.Options{
+			Stiffness: 1200.0,
+			Damping:   69.0,
+		}),
 	}
 
 	if config.TriggerText != "" && d.TriggerButton == nil {
@@ -100,7 +108,7 @@ func New(config Config) *Drawer {
 	return d
 }
 
-// Layout renders the trigger, and when Open == true, queues the full-screen bottom drawer overlay.
+// Layout renders the trigger, and when Open == true or animating, queues the full-screen bottom drawer overlay.
 func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -113,7 +121,18 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		triggerDims = d.Trigger(gtx)
 	}
 
-	if !d.Open && (!d.initialized || d.spring.Settled(0.001)) {
+	if d.spring == nil {
+		initVal := 0.0
+		if d.Open {
+			initVal = 1.0
+		}
+		d.spring = spring.New(initVal, initVal, spring.Options{
+			Stiffness: 1200.0,
+			Damping:   69.0,
+		})
+	}
+
+	if !d.Open && d.spring.Settled(0.001) && d.spring.Value() <= 0.001 {
 		return triggerDims
 	}
 
@@ -133,16 +152,15 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 		mTheme = material.NewTheme()
 	}
 
-	if !d.initialized {
+	if d.spring == nil {
 		initVal := 0.0
 		if d.Open {
 			initVal = 1.0
 		}
 		d.spring = spring.New(initVal, initVal, spring.Options{
-			Stiffness: 220.0,
-			Damping:   24.0,
+			Stiffness: 1200.0,
+			Damping:   69.0,
 		})
-		d.initialized = true
 	}
 
 	target := 0.0
@@ -150,7 +168,7 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 		target = 1.0
 	}
 	d.spring.SetTarget(target)
-	d.spring.Tick(2.0)
+	d.spring.Tick(60.0)
 	progress := float32(d.spring.Value())
 	if progress < 0 {
 		progress = 0
@@ -181,9 +199,10 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 
 	macro := op.Record(gtx.Ops)
 	layout.Stack{}.Layout(gtx,
-		// Full window dimmer backdrop
+		// Full window dimmer backdrop with animated fade & blur
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return d.dimmer.Layout(gtx, th, func() {
+			alpha := uint8(float32(160) * progress)
+			return d.dimmer.LayoutWithAlpha(gtx, th, alpha, func() {
 				d.Open = false
 				if d.OnClose != nil {
 					d.OnClose()

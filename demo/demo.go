@@ -211,6 +211,9 @@ func runWindow(w *app.Window) error {
 				_ = ev
 			}
 
+			// 1. Record Main Content into macro
+			macro := op.Record(gtx.Ops)
+
 			// Background clip stack - fill FULL physical Retina framebuffer (e.Size)
 			bgClip := clip.Rect{Max: e.Size}.Push(gtx.Ops)
 			paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)
@@ -273,6 +276,17 @@ func runWindow(w *app.Window) error {
 					)
 				}),
 			)
+			mainCall := macro.Stop()
+			mainCall.Add(gtx.Ops)
+
+			// 2. If overlays are active, update blurred backdrop snapshot
+			if th.HasOverlays() {
+				th.UpdateBackdropIfNeeded(func(ops *op.Ops) {
+					mainCall.Add(ops)
+				}, e.Size, 24.0)
+			} else {
+				th.InvalidateBackdrop()
+			}
 
 			// Render any active window-level overlays (Bottom Drawer, Side Sheet, Modal Dialog, Command Palette)
 			// across the FULL ROOT APPLICATION SCREEN constraints!

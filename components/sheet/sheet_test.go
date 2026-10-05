@@ -70,3 +70,31 @@ func TestSheetSides(t *testing.T) {
 		t.Errorf("expected right sheet to fill viewport 800x600, got %v", dimsRight.Size)
 	}
 }
+
+func TestSheetAnimation(t *testing.T) {
+	th := theme.NewDark()
+	sh := sheet.New(sheet.Config{
+		Title: "Animated Sheet",
+		Side:  sheet.SideRight,
+		Open:  false,
+	})
+
+	gtx := layout.Context{
+		Ops:         new(op.Ops),
+		Constraints: layout.Exact(image.Pt(800, 600)),
+	}
+
+	// Initially closed - no overlay queued
+	sh.Layout(gtx, th)
+	if th.RenderOverlays(gtx).Size.X != 0 {
+		t.Errorf("expected no overlay when closed and at rest")
+	}
+
+	// Open sheet
+	sh.Open = true
+	sh.Layout(gtx, th)
+	dims := th.RenderOverlays(gtx)
+	if dims.Size.X == 0 || dims.Size.Y == 0 {
+		t.Errorf("expected overlay to render when sheet opens")
+	}
+}

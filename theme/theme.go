@@ -9,9 +9,11 @@ import (
 	"image/color"
 
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"
+	"github.com/vibrantgio/effects/blur"
 )
 
 type Theme struct {
@@ -23,6 +25,47 @@ type Theme struct {
 	IsDark        bool
 	MaterialTheme *material.Theme
 	overlays      []layout.Widget
+	backdrop      *blur.Backdrop
+	backdropValid bool
+}
+
+// HasOverlays reports whether there are active window-level overlays queued for rendering.
+func (t *Theme) HasOverlays() bool {
+	return len(t.overlays) > 0
+}
+
+// UpdateBackdropIfNeeded renders a blurred snapshot of the background layer if not already cached.
+func (t *Theme) UpdateBackdropIfNeeded(layer func(ops *op.Ops), size image.Point, sigma float64) {
+	if t.backdropValid || size.X <= 0 || size.Y <= 0 {
+		return
+	}
+	if t.backdrop == nil {
+		t.backdrop = new(blur.Backdrop)
+	}
+	if err := t.backdrop.Update(layer, size, sigma, blur.WithDivisor(4)); err == nil {
+		t.backdropValid = true
+	}
+}
+
+// InvalidateBackdrop marks the cached backdrop snapshot as invalid so the next overlay opening captures fresh background.
+func (t *Theme) InvalidateBackdrop() {
+	t.backdropValid = false
+}
+
+// BackdropOp returns the cached blurred backdrop ImageOp if valid.
+func (t *Theme) BackdropOp() (paint.ImageOp, bool) {
+	if t == nil || t.backdrop == nil || !t.backdropValid {
+		return paint.ImageOp{}, false
+	}
+	return t.backdrop.Op()
+}
+
+// ReleaseBackdrop frees any allocated offscreen GPU resources held by the backdrop.
+func (t *Theme) ReleaseBackdrop() {
+	if t.backdrop != nil {
+		t.backdrop.Release()
+		t.backdropValid = false
+	}
 }
 
 // AddOverlay registers a window-level overlay (drawer, sheet, modal dialog, command palette)

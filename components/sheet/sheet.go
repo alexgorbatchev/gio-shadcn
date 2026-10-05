@@ -45,11 +45,10 @@ type Sheet struct {
 	TriggerButton *button.Button
 	Trigger       layout.Widget
 
-	OnClose     func()
-	closeBtn    *button.Button
-	dimmer      *theme.Dimmer
-	spring      *spring.Spring
-	initialized bool
+	OnClose  func()
+	closeBtn *button.Button
+	dimmer   *theme.Dimmer
+	spring   *spring.Spring
 }
 
 // Config represents configuration for creating a Sheet.
@@ -79,6 +78,11 @@ func New(config Config) *Sheet {
 		h = unit.Dp(300)
 	}
 
+	initVal := 0.0
+	if config.Open {
+		initVal = 1.0
+	}
+
 	s := &Sheet{
 		Title:         config.Title,
 		Description:   config.Description,
@@ -92,6 +96,10 @@ func New(config Config) *Sheet {
 		Trigger:       config.Trigger,
 		OnClose:       config.OnClose,
 		dimmer:        theme.NewDimmer(),
+		spring: spring.New(initVal, initVal, spring.Options{
+			Stiffness: 1200.0,
+			Damping:   69.0,
+		}),
 	}
 
 	if config.TriggerText != "" && s.TriggerButton == nil {
@@ -119,7 +127,7 @@ func New(config Config) *Sheet {
 	return s
 }
 
-// Layout renders the trigger, and when Open == true, queues the full-screen side sheet overlay.
+// Layout renders the trigger, and when Open == true or animating, queues the full-screen side sheet overlay.
 func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	if th == nil {
 		th = theme.New()
@@ -132,7 +140,18 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		triggerDims = s.Trigger(gtx)
 	}
 
-	if !s.Open && (!s.initialized || s.spring.Settled(0.001)) {
+	if s.spring == nil {
+		initVal := 0.0
+		if s.Open {
+			initVal = 1.0
+		}
+		s.spring = spring.New(initVal, initVal, spring.Options{
+			Stiffness: 1200.0,
+			Damping:   69.0,
+		})
+	}
+
+	if !s.Open && s.spring.Settled(0.001) && s.spring.Value() <= 0.001 {
 		return triggerDims
 	}
 
@@ -152,16 +171,15 @@ func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimens
 		mTheme = material.NewTheme()
 	}
 
-	if !s.initialized {
+	if s.spring == nil {
 		initVal := 0.0
 		if s.Open {
 			initVal = 1.0
 		}
 		s.spring = spring.New(initVal, initVal, spring.Options{
-			Stiffness: 220.0,
-			Damping:   24.0,
+			Stiffness: 1200.0,
+			Damping:   69.0,
 		})
-		s.initialized = true
 	}
 
 	target := 0.0
@@ -169,7 +187,7 @@ func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimens
 		target = 1.0
 	}
 	s.spring.SetTarget(target)
-	s.spring.Tick(2.0)
+	s.spring.Tick(60.0)
 	progress := float32(s.spring.Value())
 	if progress < 0 {
 		progress = 0
@@ -199,9 +217,10 @@ func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimens
 
 	macro := op.Record(gtx.Ops)
 	layout.Stack{}.Layout(gtx,
-		// 1. Dark backdrop dimmer across full window
+		// 1. Dark backdrop dimmer across full window with animated fade & blur
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return s.dimmer.Layout(gtx, th, func() {
+			alpha := uint8(float32(160) * progress)
+			return s.dimmer.LayoutWithAlpha(gtx, th, alpha, func() {
 				s.Open = false
 				if s.OnClose != nil {
 					s.OnClose()
