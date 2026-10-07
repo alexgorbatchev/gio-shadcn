@@ -157,19 +157,20 @@ func (dm *DropdownMenu) Layout(gtx layout.Context, th *theme.Theme) layout.Dimen
 			triggerDims = dm.Trigger(gtx)
 		}
 
-		if dm.Open {
+		if dm.Open && gtx.Enabled() {
 			// Record the floating menu overlay call to render over surrounding elements
 			macro := op.Record(gtx.Ops)
 
 			// Floating menu box position: directly below trigger
 			offsetY := triggerDims.Size.Y + gtx.Dp(th.Spacing.Space2)
-			op.Offset(image.Pt(0, offsetY)).Add(gtx.Ops)
+			offset := op.Offset(image.Pt(0, offsetY)).Push(gtx.Ops)
 
 			dm.layoutMenuBox(gtx, th, mTheme, true)
+			offset.Pop()
 			callOp := macro.Stop()
 
 			// Add floating menu overlay on top of the scene
-			callOp.Add(gtx.Ops)
+			op.Defer(gtx.Ops, callOp)
 		}
 
 		// Host flex layout only occupies the trigger's dimensions!

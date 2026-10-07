@@ -52,6 +52,16 @@ Whenever adding, modifying, or refactoring the `dropdownmenu` component implemen
     - dropdownmenu.go:175
   - tests:
     - dropdownmenu_test.go:12
+- [x] **Floating Popup Stacking, Anchor Transform & Parent Clip Escape**
+  - implementation:
+    - dropdownmenu.go:166
+  - tests:
+    - overlay_test.go:18
+- [x] **Disabled Background Popups Stay Beneath Active Modals**
+  - implementation:
+    - dropdownmenu.go:160
+  - tests:
+    - overlay_test.go:59
 
 ---
 
