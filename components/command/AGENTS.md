@@ -42,6 +42,36 @@ Whenever adding, modifying, or refactoring the `command` component implementatio
     - command.go:189
   - tests:
     - command_test.go:25
+- [x] **Modal Focus Containment, Escape Dismissal & Trigger Focus Restoration**
+  - implementation:
+    - command.go:151
+  - tests:
+    - ../../theme/modal_test.go:26
+- [x] **Arrow Navigation Skips Disabled Items & Enter Activates**
+  - implementation:
+    - keyboard.go:66
+  - tests:
+    - keyboard_test.go:13
+- [x] **Keyboard Selection Uses Current Filtered Results**
+  - implementation:
+    - keyboard.go:46
+  - tests:
+    - keyboard_test.go:31
+- [x] **Home, End & Up Navigation**
+  - implementation:
+    - keyboard.go:68
+  - tests:
+    - keyboard_test.go:55
+- [x] **Arrow Navigation Transfers Native Focus Between Command Items**
+  - implementation:
+    - keyboard.go:83
+  - tests:
+    - keyboard_test.go:85
+- [x] **Clamped Navigation with Optional Looping**
+  - implementation:
+    - keyboard.go:77
+  - tests:
+    - keyboard_test.go:108
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/command-basic.tsx

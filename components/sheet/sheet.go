@@ -45,6 +45,7 @@ type Sheet struct {
 	Content       layout.Widget
 	TriggerButton *button.Button
 	Trigger       layout.Widget
+	Modal         theme.Modal
 
 	OnClose  func()
 	closeBtn *button.Button
@@ -125,6 +126,9 @@ func New(config Config) *Sheet {
 			}
 		},
 	})
+	if s.TriggerButton != nil {
+		s.Modal.ReturnFocus = s.TriggerButton.Focus
+	}
 
 	return s
 }
@@ -158,7 +162,7 @@ func (s *Sheet) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		return triggerDims
 	}
 
-	th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
+	th.AddModal(&s.Modal, &s.Open, s.closeBtn.Focus, s.OnClose, func(gtx layout.Context) layout.Dimensions {
 		return s.renderOverlay(gtx, th)
 	})
 	if s.TriggerButton != nil || s.Trigger != nil {
@@ -205,7 +209,7 @@ func (s *Sheet) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimens
 	}
 
 	if !s.spring.Settled(0.001) {
-		gtx.Execute(op.InvalidateCmd{})
+		s.Modal.Invalidate()
 	}
 
 	if progress <= 0.001 && !s.Open {

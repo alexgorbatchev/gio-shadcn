@@ -52,3 +52,25 @@ func (h *Harness) Edit(text string, start, end int) {
 	h.Frame()
 	h.Frame()
 }
+
+// Key follows the native window's handling of unclaimed Tab events.
+func (h *Harness) Key(name key.Name, modifiers key.Modifiers) {
+	h.Router.WakeupTime()
+	e := key.Event{Name: name, Modifiers: modifiers, State: key.Press}
+	if name == key.NameTab {
+		h.Router.Queue(input.SystemEvent{Event: e})
+		if _, handled := h.Router.WakeupTime(); !handled {
+			dir := key.FocusForward
+			if modifiers == key.ModShift {
+				dir = key.FocusBackward
+			}
+			h.Router.MoveFocus(dir)
+		}
+	} else {
+		h.Router.Queue(e)
+	}
+	h.Frame()
+	h.Router.Queue(key.Event{Name: name, Modifiers: modifiers, State: key.Release})
+	h.Frame()
+	h.Frame()
+}

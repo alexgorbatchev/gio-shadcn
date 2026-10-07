@@ -221,6 +221,12 @@ func runWindow(w *app.Window) error {
 }
 
 func (g *gallery) layout(gtx layout.Context, w *app.Window, size image.Point) layout.Dimensions {
+	return g.th.LayoutRoot(gtx, func(gtx layout.Context) layout.Dimensions {
+		return g.layoutContent(gtx, w, size)
+	})
+}
+
+func (g *gallery) layoutContent(gtx layout.Context, w *app.Window, size image.Point) layout.Dimensions {
 	th := g.th
 	// Apply theme changes before recording any paint operations for this frame.
 	g.themeToggle.Update(gtx)
@@ -311,12 +317,6 @@ func (g *gallery) layout(gtx layout.Context, w *app.Window, size image.Point) la
 	} else {
 		th.InvalidateBackdrop()
 	}
-
-	// Render any active window-level overlays (Bottom Drawer, Side Sheet, Modal Dialog, Command Palette)
-	// across the FULL ROOT APPLICATION SCREEN constraints!
-	gtxOverlay := gtx
-	gtxOverlay.Constraints = layout.Exact(size)
-	th.RenderOverlays(gtxOverlay)
 
 	// RESET GPU PAINT COLOR TO BACKGROUND AT THE END OF THE FRAME LOOP BEFORE SUBMISSION
 	paint.ColorOp{Color: th.Colors.Background}.Add(gtx.Ops)

@@ -34,6 +34,7 @@ type Drawer struct {
 	Content       layout.Widget
 	TriggerButton *button.Button
 	Trigger       layout.Widget
+	Modal         theme.Modal
 
 	OnClose  func()
 	closeBtn *button.Button
@@ -106,6 +107,9 @@ func New(config Config) *Drawer {
 			}
 		},
 	})
+	if d.TriggerButton != nil {
+		d.Modal.ReturnFocus = d.TriggerButton.Focus
+	}
 
 	return d
 }
@@ -139,7 +143,7 @@ func (d *Drawer) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 		return triggerDims
 	}
 
-	th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
+	th.AddModal(&d.Modal, &d.Open, d.closeBtn.Focus, d.OnClose, func(gtx layout.Context) layout.Dimensions {
 		return d.renderOverlay(gtx, th)
 	})
 	if d.TriggerButton != nil || d.Trigger != nil {
@@ -186,7 +190,7 @@ func (d *Drawer) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 	}
 
 	if !d.spring.Settled(0.001) {
-		gtx.Execute(op.InvalidateCmd{})
+		d.Modal.Invalidate()
 	}
 
 	if progress <= 0.001 && !d.Open {

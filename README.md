@@ -51,10 +51,11 @@ func main() {
             case app.FrameEvent:
                 gtx := app.NewContext(&ops, e)
                 paint.Fill(&ops, th.Colors.Background)
-                layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-                    return btn.Layout(gtx, th)
+                th.LayoutRoot(gtx, func(gtx layout.Context) layout.Dimensions {
+                    return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+                        return btn.Layout(gtx, th)
+                    })
                 })
-                th.RenderOverlays(gtx)
                 paint.ColorOp{Color: th.Colors.Background}.Add(&ops)
                 e.Frame(&ops)
             }
@@ -81,7 +82,7 @@ The repository contains 42 component packages:
 
 Use `theme.New()` for light mode or `theme.NewDark()` for dark mode. `th.ToggleDark()` switches the active color scheme. Customize spacing and typography through the theme fields; corner tokens include `th.Radius.RadiusMD`. `theme.NewThemeFromJSON(path)` loads light and dark colors and initializes the default fonts, spacing, typography and radii. Other JSON configuration fields are currently metadata; customize those theme fields in Go.
 
-Render queued overlays after the main layout, using the full window constraints. Release the theme's backdrop resources when the window closes. The gallery in [demo/demo.go](demo/demo.go) shows backdrop capture and root overlay rendering.
+Wrap the main layout in `th.LayoutRoot(gtx, content)` using the full window constraints. It renders queued overlays and disables background input while a modal is open, so native Tab and Shift-Tab traversal stays inside the topmost modal. Dialog, Sheet, Drawer and modal Command transfer focus on opening, dismiss on Escape, and restore their default trigger's focus on closing. For custom triggers or externally opened modals, assign `component.Modal.ReturnFocus` a callback that executes Gio's `key.FocusCmd` for the return target. Release the theme's backdrop resources when the window closes. The gallery in [demo/demo.go](demo/demo.go) shows backdrop capture and root overlay rendering.
 
 Tooltip and hover card expose `LayoutTrigger(gtx, th, widget)` for pointer hover and keyboard focus. A tooltip's `Layout` draws only while `Open` is true; hover card's `Layout` uses `Hovered` for externally controlled previews.
 

@@ -47,6 +47,26 @@ Whenever adding, modifying, or refactoring the `dialog` component implementation
     - dialog.go:158
   - tests:
     - dialog_test.go:49
+- [x] **Native Tab & Shift-Tab Containment Including Custom Content**
+  - implementation:
+    - ../../theme/modal.go:31
+  - tests:
+    - keyboard_test.go:16
+- [x] **Escape Dismissal & Default Trigger Focus Restoration**
+  - implementation:
+    - dialog.go:146
+  - tests:
+    - keyboard_test.go:50
+- [x] **Nested Modal Focus & Topmost Escape Handling**
+  - implementation:
+    - ../../theme/modal.go:58
+  - tests:
+    - keyboard_test.go:71
+- [x] **Custom Focus Return Target & Focus Restoration on Removal**
+  - implementation:
+    - ../../theme/modal.go:100
+  - tests:
+    - keyboard_test.go:93
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/dialog-demo.tsx

@@ -57,6 +57,16 @@ Whenever adding, modifying, or refactoring the `sheet` component implementation 
     - sheet.go:179
   - tests:
     - sheet_test.go:25
+- [x] **Native Modal Focus, Escape Dismissal & Trigger Focus Restoration**
+  - implementation:
+    - sheet.go:165
+  - tests:
+    - ../../theme/modal_test.go:18
+- [x] **Closing Animation Removes Dimmer & Releases Background Input**
+  - implementation:
+    - sheet.go:212
+  - tests:
+    - ../../theme/animation_test.go:35
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/sheet-demo.tsx

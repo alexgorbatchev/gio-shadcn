@@ -66,11 +66,14 @@ type Command struct {
 	OnSelectItem  func(index int)
 	TriggerButton *button.Button
 	Trigger       layout.Widget
+	Modal         theme.Modal
+	Loop          bool
 
 	searchEditor *widget.Editor
 	dimmer       *theme.Dimmer
 	panel        gesture.Click
-	wasOpen      bool
+	activeIndex  int
+	lastQuery    string
 }
 
 // Config represents configuration for creating a Command palette.
@@ -104,6 +107,7 @@ func New(config Config) *Command {
 		Trigger:       config.Trigger,
 		searchEditor:  ed,
 		dimmer:        theme.NewDimmer(),
+		activeIndex:   -1,
 	}
 
 	if config.TriggerText != "" && cmd.TriggerButton == nil {
@@ -116,6 +120,9 @@ func New(config Config) *Command {
 		})
 	}
 
+	if cmd.TriggerButton != nil {
+		cmd.Modal.ReturnFocus = cmd.TriggerButton.Focus
+	}
 	return cmd
 }
 
@@ -141,12 +148,10 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 		}
 
 		if c.Open {
-			th.AddOverlay(func(gtx layout.Context) layout.Dimensions {
+			th.AddModal(&c.Modal, &c.Open, func(gtx layout.Context) {
+				gtx.Execute(key.FocusCmd{Tag: c.searchEditor})
+			}, nil, func(gtx layout.Context) layout.Dimensions {
 				gtx.Constraints = layout.Exact(gtx.Constraints.Max)
-				if !c.wasOpen {
-					gtx.Execute(key.FocusCmd{Tag: c.searchEditor})
-					c.wasOpen = true
-				}
 				for {
 					if _, ok := c.panel.Update(gtx.Source); !ok {
 						break
@@ -172,8 +177,6 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 					}),
 				)
 			})
-		} else {
-			c.wasOpen = false
 		}
 
 		return triggerDims
@@ -184,12 +187,14 @@ func (c *Command) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions 
 }
 
 func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, isModal bool) layout.Dimensions {
+	keys := c.keyboardEvents(gtx)
 	for {
 		if _, ok := c.searchEditor.Update(gtx); !ok {
 			break
 		}
 	}
 	query := strings.ToLower(c.searchEditor.Text())
+	c.updateSelection(gtx, query, isModal, keys)
 
 	gtxContent := gtx
 	gtxContent.Constraints.Min = image.Pt(0, 0)
@@ -261,12 +266,7 @@ func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *
 			}
 
 			if item.clickable.Clicked(gtx) && !item.Disabled {
-				if isModal {
-					c.Open = false
-				}
-				if c.OnSelectItem != nil {
-					c.OnSelectItem(idx)
-				}
+				c.activate(idx, isModal)
 			}
 
 			children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -322,6 +322,9 @@ func (c *Command) layoutPaletteBox(gtx layout.Context, th *theme.Theme, mTheme *
 }
 
 func (c *Command) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *material.Theme, item *Item) layout.Dimensions {
+	if item.Disabled {
+		gtx = gtx.Disabled()
+	}
 	padding := layout.Inset{
 		Top:    th.Spacing.Space2,
 		Bottom: th.Spacing.Space2,
@@ -405,7 +408,7 @@ func (c *Command) layoutItem(gtx layout.Context, th *theme.Theme, mTheme *materi
 	return item.clickable.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		return layout.Stack{Alignment: layout.Center}.Layout(gtx,
 			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-				if item.clickable.Hovered() && !item.Disabled {
+				if !item.Disabled && (item.clickable.Hovered() || (c.activeIndex >= 0 && c.activeIndex < len(c.Items) && c.Items[c.activeIndex] == item)) {
 					rect := image.Rectangle{Max: itemSize}
 					radius := gtx.Dp(th.Radius.RadiusSM)
 					theme.DrawRRectBackground(gtx, rect, radius, th.Colors.Secondary)

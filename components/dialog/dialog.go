@@ -33,6 +33,7 @@ type Dialog struct {
 	Content       layout.Widget
 	TriggerButton *button.Button
 	Trigger       layout.Widget
+	Modal         theme.Modal
 
 	OnConfirm func()
 	OnCancel  func()
@@ -41,7 +42,6 @@ type Dialog struct {
 	confirmBtn *button.Button
 	dimmer     *theme.Dimmer
 	panel      gesture.Click
-	wasOpen    bool
 }
 
 // Config represents configuration for creating a Dialog.
@@ -118,6 +118,9 @@ func New(config Config) *Dialog {
 			}
 		},
 	})
+	if d.TriggerButton != nil {
+		d.Modal.ReturnFocus = d.TriggerButton.Focus
+	}
 
 	return d
 }
@@ -138,10 +141,10 @@ func (d *Dialog) Layout(gtx layout.Context, th *theme.Theme) layout.Dimensions {
 	}
 
 	if !d.Open {
-		d.wasOpen = false
 		return triggerDims
 	}
-	th.AddOverlay(func(gtx layout.Context) layout.Dimensions { return d.renderOverlay(gtx, th) })
+	th.AddModal(&d.Modal, &d.Open, d.cancelBtn.Focus, d.OnCancel,
+		func(gtx layout.Context) layout.Dimensions { return d.renderOverlay(gtx, th) })
 	if d.TriggerButton != nil || d.Trigger != nil {
 		return triggerDims
 	}
@@ -155,10 +158,6 @@ func (d *Dialog) renderOverlay(gtx layout.Context, th *theme.Theme) layout.Dimen
 		mTheme = material.NewTheme()
 	}
 	gtx.Constraints = layout.Exact(gtx.Constraints.Max)
-	if !d.wasOpen {
-		d.cancelBtn.Focus(gtx)
-		d.wasOpen = true
-	}
 	for {
 		_, ok := d.panel.Update(gtx.Source)
 		if !ok {

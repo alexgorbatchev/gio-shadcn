@@ -52,6 +52,16 @@ Whenever adding, modifying, or refactoring the `drawer` component implementation
     - drawer.go:193
   - tests:
     - drawer_test.go:13
+- [x] **Native Modal Focus, Escape Dismissal & Trigger Focus Restoration**
+  - implementation:
+    - drawer.go:146
+  - tests:
+    - ../../theme/modal_test.go:22
+- [x] **Closing Animation Removes Dimmer & Releases Background Input**
+  - implementation:
+    - drawer.go:193
+  - tests:
+    - ../../theme/animation_test.go:39
 
 ### Demos
 * [ ] https://github.com/shadcn-ui/ui/blob/main/apps/v4/examples/aria/drawer-demo.tsx

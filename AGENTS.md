@@ -1,6 +1,6 @@
 ---
 created_on: 2026-08-22 14:45
-last_modified: 2026-10-05 06:53
+last_modified: 2026-10-07 07:18
 status: current
 ---
 
@@ -88,6 +88,8 @@ To prevent GPU canvas color bleeding, clipping bugs, or Metal swapchain clear pa
 
 - **Review remediation:** Fix all reported implementation defects and due-diligence findings from the 2026-10-04 review, including behavioral tests, coverage, GPU safety, component specification mappings, README accuracy, and hover interactions.
 - **Parity completion:** Implement the remaining shadcn parity gaps, including modal focus trapping and keyboard interactions. Commit the completed review fixes before continuing implementation.
+- **Overlay repair:** Fix dropdown menus appearing beneath later content and sheets leaving a dimmer behind after closing. Preserve the existing agent instructions and component inventories; make only targeted, manually verified mapping updates.
+- **Laptop handoff:** Commit and push the pending fixes so work can continue on another laptop.
 
 - **Always:** Automatically record all new user instructions in the appropriate `AGENTS.md` file immediately upon receipt (check with user if existing instructions conflict).
 - **Always:** Any time code is changed such that results from running that code are changed, a test file must be changed as well; 90% code coverage is required (the `scripts/` folder is excluded from this rule).

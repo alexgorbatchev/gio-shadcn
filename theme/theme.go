@@ -27,6 +27,9 @@ type Theme struct {
 	overlays      []layout.Widget
 	backdrop      *blur.Backdrop
 	backdropValid bool
+	modals        []*Modal
+	seenModals    map[*Modal]bool
+	restoreFocus  func(layout.Context)
 }
 
 // HasOverlays reports whether there are active window-level overlays queued for rendering.
@@ -79,14 +82,22 @@ func (t *Theme) AddOverlay(w layout.Widget) {
 // RenderOverlays renders all registered window-level overlays across the full window constraints.
 func (t *Theme) RenderOverlays(gtx layout.Context) layout.Dimensions {
 	defer func() { paint.ColorOp{Color: t.Colors.Background}.Add(gtx.Ops) }()
-	if len(t.overlays) == 0 {
-		return layout.Dimensions{}
+	restore := t.restoreFocus
+	t.restoreFocus = nil
+	hadOverlays := len(t.overlays) > 0
+	for len(t.overlays) > 0 {
+		current := t.overlays
+		t.overlays = nil
+		for _, overlay := range current {
+			overlay(gtx)
+		}
 	}
-	current := t.overlays
-	t.overlays = nil
-
-	for _, overlay := range current {
-		overlay(gtx)
+	t.finishModals(gtx)
+	if restore != nil {
+		restore(gtx)
+	}
+	if !hadOverlays {
+		return layout.Dimensions{}
 	}
 	return layout.Dimensions{Size: gtx.Constraints.Max}
 }
